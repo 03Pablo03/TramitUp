@@ -1,0 +1,50 @@
+[
+  {
+    "content": "Ley 29/1994 LAU actualizada 2024. Contrato mínimo 5 años persona jurídica, 7 años persona física. Prórroga automática anual hasta completar duración mínima. Subida alquiler: máximo IPC anual. Fianza: 1 mes vivienda, 2 meses local. Desistimiento inquilino: 30 días preaviso tras primer año.",
+    "metadata": {"fuente": "LAU 2024", "categoria": "vivienda", "subcategoria": "alquiler", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Ley 12/2023 Vivienda - Zonas tensionadas. Declaración autonómica si precio alquiler/compra >120% media nacional. Efectos: limitación subidas alquiler 2% anual, tanteo y retracto administración, cesión forzosa vivienda vacía >2 años. Cataluña, Baleares aplicando.",
+    "metadata": {"fuente": "Ley 12/2023", "categoria": "vivienda", "subcategoria": "regulacion_precios", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Ley Propiedad Horizontal actualizada. Mayorías: obras conservación (mayoría simple), obras mejora (3/5 cuotas y votos), instalación ascensor (3/5 si >3 plantas). Administrador: obligatorio >4 propietarios. Impugnación acuerdos: 3 meses. Morosos: corte suministros individual posible.",
+    "metadata": {"fuente": "Ley 49/1960", "categoria": "vivienda", "subcategoria": "comunidad", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Hipotecas - Ley 5/2019 Contratos Crédito Inmobiliario. FEIN obligatorio. Notario verifica comprensión cliente. Gastos: tasación y registro a cargo comprador, notaría 50% cada parte, gestoría libre pacto. Vencimiento anticipado: solo incumplimientos >3% capital o 12 cuotas.",
+    "metadata": {"fuente": "Ley 5/2019", "categoria": "vivienda", "subcategoria": "hipotecas", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Desahucio por falta pago. Procedimiento monitorio: reclamación cantidad + desahucio. Oposición inquilino: 20 días. Si no paga ni se opone: lanzamiento directo. Con oposición: juicio verbal. Suspensión lanzamiento: consignar rentas debidas + futuras.",
+    "metadata": {"fuente": "LEC Art. 250", "categoria": "vivienda", "subcategoria": "desahucio", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Alquiler social Cataluña - Decreto 17/2019. Viviendas protegidas: alquiler máximo 30% renta familiar. Ayudas complementarias hasta 40% alquiler. Requisitos: ingresos <2,5 IPREM, empadronamiento, no propiedad vivienda. Gestión: Agència Habitatge Catalunya.",
+    "metadata": {"fuente": "Decreto 17/2019 Cat", "categoria": "vivienda", "subcategoria": "alquiler_social", "ccaa": "cataluna", "vigente": true}
+  },
+  {
+    "content": "Plan Estatal Vivienda 2022-2025. Ayudas alquiler jóvenes: hasta 250€/mes, menores 35 años, ingresos <3 IPREM. Ayudas rehabilitación: hasta 60% coste, mejora eficiencia energética. Avales ICO: hasta 20% precio vivienda habitual jóvenes.",
+    "metadata": {"fuente": "RD 42/2022", "categoria": "vivienda", "subcategoria": "ayudas", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Okupación - Procedimiento desalojo. Denuncia penal: allanamiento morada (Art. 202 CP). Civil: juicio verbal por precario. Urgente si vivienda habitual: 5 días vista. Lanzamiento: ejecutivo tras sentencia. Medidas cautelares: desalojo provisional posible.",
+    "metadata": {"fuente": "CP/LEC", "categoria": "vivienda", "subcategoria": "okupacion", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "IBI - Impuesto Bienes Inmuebles. Gestión municipal. Valor catastral base. Bonificaciones: familia numerosa (hasta 90%), discapacidad (hasta 50%), eficiencia energética (hasta 50%). Recurso: reposición 1 mes, contencioso 2 meses. Fraccionamiento: solicitar antes vencimiento.",
+    "metadata": {"fuente": "TRLHL", "categoria": "vivienda", "subcategoria": "impuestos", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Certificado Eficiencia Energética obligatorio. Venta/alquiler: mostrar etiqueta en anuncios. Validez: 10 años. Técnico competente: arquitecto, ingeniero, certificador autorizado. Registro autonómico obligatorio. Sanción por incumplimiento: 300-6.000€.",
+    "metadata": {"fuente": "RD 390/2021", "categoria": "vivienda", "subcategoria": "eficiencia_energetica", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Vivienda habitual Madrid - Beneficios fiscales. ITP: 6% (vs 6,5% general). Plusvalía municipal: bonificación hasta 95% si >65 años o familia numerosa. Ayudas rehabilitación: Plan Rehabilita hasta 8.000€. Alquiler jóvenes: deducción IRPF hasta 1.000€.",
+    "metadata": {"fuente": "Normativa Madrid", "categoria": "vivienda", "subcategoria": "beneficios_fiscales", "ccaa": "madrid", "vigente": true}
+  },
+  {
+    "content": "Derecho tanteo y retracto Andalucía. Viviendas protegidas: 30 años desde calificación. Comunicación venta: 30 días para ejercer tanteo. Ejercicio retracto: 30 días desde conocimiento venta. Precio: mismo que tercero. Finalidad: mantener régimen protección.",
+    "metadata": {"fuente": "Ley 1/2010 And", "categoria": "vivienda", "subcategoria": "vivienda_protegida", "ccaa": "andalucia", "vigente": true}
+  }
+]

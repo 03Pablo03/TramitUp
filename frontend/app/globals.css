@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #1a56db;
+  --primary-dark: #1340a8;
+  --primary-light: #eff6ff;
+  --accent: #10b981;
+  --text-dark: #111827;
+  --text-body: #374151;
+  --text-muted: #6b7280;
+  --surface: #f9fafb;
+  --white: #ffffff;
+  --border: #e5e7eb;
+  --warning: #f59e0b;
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-dm-sans: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+/* Dynamic background animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}

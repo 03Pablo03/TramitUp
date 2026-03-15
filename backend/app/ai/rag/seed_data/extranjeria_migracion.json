@@ -1,0 +1,42 @@
+[
+  {
+    "content": "Ley Orgánica 4/2000 de Extranjería actualizada 2024. Residencia temporal: 1 año renovable. Residencia permanente: tras 5 años residencia legal continuada. Reagrupación familiar: cónyuge, hijos menores, ascendientes dependientes. Requisitos económicos: IPREM como referencia.",
+    "metadata": {"fuente": "LO 4/2000", "categoria": "burocracia_general", "subcategoria": "extranjeria", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Autorización trabajo por cuenta ajena. Duración inicial: 1 año. Renovación: 2 años, después 5 años. Cambio empleador: libre tras 1 año. Requisitos: contrato trabajo, carencia nacional empleo, medios económicos suficientes. Tramitación: 3 meses máximo.",
+    "metadata": {"fuente": "RD 557/2011", "categoria": "burocracia_general", "subcategoria": "trabajo_extranjeros", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Nacionalidad española por residencia. Plazo general: 10 años. Reducido: 5 años (refugiados), 2 años (iberoamericanos, Andorra, Filipinas, Guinea Ecuatorial, Portugal), 1 año (nacidos en España, casados con español). Examen CCSE y DELE A2 obligatorios.",
+    "metadata": {"fuente": "CC Art. 22", "categoria": "burocracia_general", "subcategoria": "nacionalidad", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Tarjeta de Identidad de Extranjero (TIE). Obligatoria para estancias >6 meses. Solicitud: 30 días desde entrada o concesión autorización. Renovación: 60 días antes vencimiento. Pérdida o robo: denuncia + solicitud duplicado. Tasa: 15,84€ (2024).",
+    "metadata": {"fuente": "RD 557/2011", "categoria": "burocracia_general", "subcategoria": "documentacion", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Arraigo social. Requisitos: 3 años permanencia continuada, contrato trabajo 1 año, vínculos familiares o informe integración social. Documentación: empadronamiento, antecedentes penales, contrato trabajo. Resolución: 3 meses. Autorización: 1 año.",
+    "metadata": {"fuente": "RD 557/2011", "categoria": "burocracia_general", "subcategoria": "arraigo", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Reagrupación familiar. Reagrupante: residencia legal 1 año + autorización renovada. Familiares: cónyuge, hijos menores, ascendientes >65 años dependientes. Medios económicos: IPREM mensual + 50% por familiar. Vivienda adecuada + seguro médico.",
+    "metadata": {"fuente": "LO 4/2000", "categoria": "burocracia_general", "subcategoria": "reagrupacion", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Protección internacional - Asilo. Solicitud: 30 días desde entrada (prorrogable). Entrevista personal obligatoria. Resolución: 6 meses (prorrogable 21 meses). Derecho trabajo: 6 meses desde solicitud si no hay resolución. Asistencia jurídica gratuita.",
+    "metadata": {"fuente": "Ley 12/2009", "categoria": "burocracia_general", "subcategoria": "asilo", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Estudiantes extranjeros. Estancia estudios: >90 días. Renovación anual. Trabajo: 30 horas/semana durante estudios. Cambio a trabajo: tras finalizar estudios superiores. Familiar estudiante: reagrupación posible si estudios >1 año y medios suficientes.",
+    "metadata": {"fuente": "RD 557/2011", "categoria": "burocracia_general", "subcategoria": "estudiantes", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Expulsión y devolución. Causas: estancia irregular, condena >1 año, actividades contrarias orden público. Procedimiento: audiencia, resolución motivada, recurso contencioso 30 días. Prohibición entrada: 3-5 años. Excepción: arraigo, vínculos familiares.",
+    "metadata": {"fuente": "LO 4/2000", "categoria": "burocracia_general", "subcategoria": "expulsion", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Ciudadanos UE - Registro central extranjeros. Obligatorio >3 meses estancia. Documentación: DNI/pasaporte + justificación estancia (trabajo, estudios, recursos). Certificado permanencia: tras 5 años residencia legal. Familiares no UE: tarjeta familiar UE.",
+    "metadata": {"fuente": "RD 240/2007", "categoria": "burocracia_general", "subcategoria": "ciudadanos_ue", "ccaa": "nacional", "vigente": true}
+  }
+]

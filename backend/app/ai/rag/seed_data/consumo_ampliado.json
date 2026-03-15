@@ -1,0 +1,42 @@
+[
+  {
+    "content": "Ley 3/2014 de Defensa de Consumidores de Madrid. Procedimiento específico: reclamación ante OMIC municipal en primera instancia, después ante Dirección General de Comercio y Consumo. Plazo: 2 años desde conocimiento del hecho. Documentación necesaria: DNI, justificantes de compra, comunicaciones con la empresa.",
+    "metadata": {"fuente": "Ley 3/2014 Madrid", "categoria": "reclamaciones", "subcategoria": "consumidores", "ccaa": "madrid", "vigente": true}
+  },
+  {
+    "content": "Decreto 98/2010 Cataluña - Arbitraje de consumo. Sistema de resolución extrajudicial gratuito. Competencia: Agencia Catalana del Consumo. Procedimiento online disponible. Plazo de resolución: máximo 6 meses. Vinculante para empresas adheridas al sistema.",
+    "metadata": {"fuente": "Decreto 98/2010 Cat", "categoria": "reclamaciones", "subcategoria": "consumidores", "ccaa": "cataluna", "vigente": true}
+  },
+  {
+    "content": "Ley 11/1998 Andalucía de Protección de Consumidores. Infracciones: leves (hasta 3.005€), graves (hasta 15.025€), muy graves (hasta 601.012€). Competencia sancionadora: Consejería de Salud y Consumo. Prescripción infracciones: leves 1 año, graves 3 años, muy graves 5 años.",
+    "metadata": {"fuente": "Ley 11/1998 And", "categoria": "reclamaciones", "subcategoria": "consumidores", "ccaa": "andalucia", "vigente": true}
+  },
+  {
+    "content": "Real Decreto 231/2008 - Sistema Arbitral de Consumo actualizado 2024. Ámbito nacional. Gratuito para consumidores. Resolución en máximo 6 meses. Laudo ejecutivo. Exclusiones: servicios sanitarios, conflictos laborales, intoxicaciones alimentarias.",
+    "metadata": {"fuente": "RD 231/2008", "categoria": "reclamaciones", "subcategoria": "arbitraje", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Garantía legal productos - Ley 3/2014. Duración: 3 años para productos con elementos digitales, 2 años resto productos. Carga de la prueba: 1 año a favor del consumidor. Reparación gratuita, sustitución o reducción precio. Garantía comercial adicional posible.",
+    "metadata": {"fuente": "Ley 3/2014", "categoria": "reclamaciones", "subcategoria": "garantias", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Compras online - Derecho de desistimiento. Plazo: 14 días desde recepción. Excepciones: productos personalizados, perecederos, software descargado, servicios completamente ejecutados. Devolución gastos envío a cargo del consumidor salvo que sea gratuita.",
+    "metadata": {"fuente": "RDL 1/2007", "categoria": "reclamaciones", "subcategoria": "comercio_electronico", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Ley 7/2017 País Vasco - Consumidores y Usuarios. Organismo: Dirección de Consumo del Gobierno Vasco. Mediación gratuita. Reclamaciones colectivas permitidas. Inspección de oficio. Sanciones específicas para comercio electrónico y servicios financieros.",
+    "metadata": {"fuente": "Ley 7/2017 PV", "categoria": "reclamaciones", "subcategoria": "consumidores", "ccaa": "pais_vasco", "vigente": true}
+  },
+  {
+    "content": "Decreto 6/2017 Valencia - Defensa Consumidores. Competencias municipales y autonómicas definidas. OMIC como primera instancia. Dirección General de Comercio, Consumo y Cooperativismo para segunda instancia. Procedimiento telemático disponible.",
+    "metadata": {"fuente": "Decreto 6/2017 Val", "categoria": "reclamaciones", "subcategoria": "consumidores", "ccaa": "valencia", "vigente": true}
+  },
+  {
+    "content": "Servicios financieros - Reclamaciones ante Banco de España, CNMV o DGS según tipo. Plazo: 2 años desde conocimiento. Gratuito. Resolución en 4-6 meses. Previo: reclamación ante servicio atención cliente entidad (1 mes respuesta). Si no satisface: organismo supervisor.",
+    "metadata": {"fuente": "Ley 44/2002", "categoria": "reclamaciones", "subcategoria": "servicios_financieros", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Telecomunicaciones - Reclamaciones ante operador (20 días), después ante Secretaría de Estado de Telecomunicaciones. Gratuito. Resolución 3 meses. Temas: facturación, calidad servicio, portabilidad, permanencia. Compensaciones automáticas por incumplimientos.",
+    "metadata": {"fuente": "Ley 9/2014", "categoria": "reclamaciones", "subcategoria": "telecomunicaciones", "ccaa": "nacional", "vigente": true}
+  }
+]

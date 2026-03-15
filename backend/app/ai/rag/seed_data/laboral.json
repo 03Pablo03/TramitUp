@@ -1,0 +1,50 @@
+[
+  {
+    "content": "Prestación desempleo 2024. Cotización mínima: 360 días en 6 años anteriores. Base reguladora: últimos 180 días cotización. Cuantía: 70% primeros 180 días, 50% resto. Duración: 4-24 meses según cotización. Topes: máximo 1.395,60€, mínimo 480,30€. Solicitud: 15 días desde cese.",
+    "metadata": {"fuente": "LGSS 2024", "categoria": "laboral", "subcategoria": "paro", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Subsidio desempleo mayores 52 años. Requisitos: agotado prestación contributiva, cotizado 6 años vida laboral, carencia rentas (<75% SMI). Cuantía: 480,30€/mes. Duración: hasta jubilación. Compatible trabajo tiempo parcial <50% jornada. Cotiza jubilación.",
+    "metadata": {"fuente": "LGSS Art. 274", "categoria": "laboral", "subcategoria": "subsidio_mayores", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Finiquito cálculo 2024. Incluye: salario días trabajados, vacaciones pendientes, pagas extra proporcionales, indemnización si procede. Plazo pago: día cese. Si no acuerdo: consignar judicial. Prescripción reclamación: 1 año. Documento: detalle conceptos obligatorio.",
+    "metadata": {"fuente": "ET Art. 49", "categoria": "laboral", "subcategoria": "finiquito", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Despidos 2024. Objetivo: 20 días/año, máximo 12 mensualidades. Improcedente: 33 días/año, máximo 24 mensualidades. Nulo: readmisión + salarios tramitación. Procedente: sin indemnización. Plazo impugnación: 20 días hábiles. Conciliación previa obligatoria.",
+    "metadata": {"fuente": "ET Art. 53-56", "categoria": "laboral", "subcategoria": "despidos", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Incapacidad Temporal 2024. Contingencias comunes: día 4-20 (60% base), día 21+ (75% base). Contingencias profesionales: desde día 1 (75% base). Duración máxima: 365 días + 180 prórroga. Topes: máximo 1.395,60€. Control: INSS o mutua según contingencia.",
+    "metadata": {"fuente": "LGSS Art. 169", "categoria": "laboral", "subcategora": "bajas_medicas", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Salario Mínimo Interprofesional 2024. SMI: 1.134€/mes (14 pagas), 37,8€/día. Trabajadores eventuales agrarios: 40,04€/día. Empleadas hogar: 1.134€/mes. Menores 18 años: sin reducción. Actualización: anual según IPC + productividad + empleo.",
+    "metadata": {"fuente": "RD 99/2024", "categoria": "laboral", "subcategoria": "salario_minimo", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Teletrabajo - Ley 10/2021. Derecho: trabajadores >1 año antigüedad. Acuerdo escrito obligatorio. Gastos: empresa asume equipos, herramientas, medios. Horario: derecho desconexión digital. Reversibilidad: vuelta presencial sin causa. Control horario obligatorio.",
+    "metadata": {"fuente": "Ley 10/2021", "categoria": "laboral", "subcategoria": "teletrabajo", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Permisos parentales 2024. Maternidad: 16 semanas (6 obligatorias post-parto). Paternidad: 16 semanas (desde 2021). Lactancia: 1 hora diaria hasta 9 meses o reducción jornada. Excedencia cuidado hijos: hasta 3 años, primer año reserva puesto. 100% base reguladora.",
+    "metadata": {"fuente": "ET Art. 48", "categoria": "laboral", "subcategoria": "permisos_parentales", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Trabajo temporal - Ley 12/2001 reformada. Duración máxima: 3 años en 6 años (mismo puesto). Encadenamiento contratos: máximo 24 meses salvo convenio (30 meses). Superación límites: indefinido automático. ETT: mismo salario trabajador directo.",
+    "metadata": {"fuente": "ET Art. 15", "categoria": "laboral", "subcategoria": "contratos_temporales", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Acoso laboral - Protocolo obligatorio. Empresas >50 trabajadores: plan igualdad obligatorio. Denuncia: comité empresa, representantes trabajadores, inspección trabajo. Medidas cautelares: cambio puesto acosador. Indemnización: daños morales + perjuicios económicos.",
+    "metadata": {"fuente": "LO 3/2007", "categoria": "laboral", "subcategoria": "acoso_laboral", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Autónomos - RETA 2024. Cotización por ingresos reales desde 2023. Tramos: desde 230€/mes (ingresos <670€) hasta 500€/mes (ingresos >6.000€). Tarifa plana: 80€ primeros 12 meses nuevos autónomos. Cese actividad: prestación hasta 24 meses si cotización suficiente.",
+    "metadata": {"fuente": "Ley 20/2007", "categoria": "laboral", "subcategoria": "autonomos", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Inspección Trabajo - Procedimiento sancionador. Visita: identificación inspector, acta inicio. Alegaciones: 15 días hábiles. Resolución: 6 meses máximo. Sanciones: leves (60-625€), graves (626-6.250€), muy graves (6.251-187.515€). Recurso: alzada 1 mes.",
+    "metadata": {"fuente": "Ley 23/2015", "categoria": "laboral", "subcategoria": "inspeccion", "ccaa": "nacional", "vigente": true}
+  }
+]

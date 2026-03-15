@@ -1,0 +1,42 @@
+[
+  {
+    "content": "Ley 58/2003 General Tributaria actualizada 2024. Plazos de prescripción: 4 años para liquidar y recaudar, 4 años para sancionar. Recurso de reposición: 1 mes desde notificación. Recurso contencioso-administrativo: 2 meses desde desestimación o silencio administrativo.",
+    "metadata": {"fuente": "Ley 58/2003", "categoria": "burocracia_general", "subcategoria": "hacienda", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "IRPF 2024 - Campaña Renta. Plazo presentación: 6 abril - 1 julio 2024. Obligados: ingresos >22.000€ (un pagador) o >15.000€ (varios pagadores). Borrador disponible desde 10 abril. Presentación: online (Renta Web), teléfono o presencial con cita.",
+    "metadata": {"fuente": "AEAT 2024", "categoria": "burocracia_general", "subcategoria": "renta", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Impuesto Sucesiones Madrid - Bonificación 99% residentes. Requisitos: fallecido y herederos residentes Madrid 5 años. Plazo presentación: 6 meses desde fallecimiento (prorrogable 6 meses más). Documentación: certificado defunción, testamento, inventario bienes.",
+    "metadata": {"fuente": "Ley 4/2008 Madrid", "categoria": "burocracia_general", "subcategoria": "sucesiones", "ccaa": "madrid", "vigente": true}
+  },
+  {
+    "content": "Impuesto Transmisiones Patrimoniales Cataluña. Tipos: 10% vivienda habitual primera compra <30 años, 11% resto casos. Bonificaciones familias numerosas: 15% reducción. Plazo: 30 días hábiles desde escritura. Presentación telemática obligatoria >3.000€.",
+    "metadata": {"fuente": "Ley 31/2002 Cat", "categoria": "burocracia_general", "subcategoria": "transmisiones", "ccaa": "cataluna", "vigente": true}
+  },
+  {
+    "content": "Procedimiento inspector tributario. Inicio: comunicación previa. Duración máxima: 12 meses (18 si varios ejercicios). Derechos contribuyente: asistencia letrado, no declarar contra sí mismo, conocer alcance investigación. Acta conformidad: reducción 30% sanción.",
+    "metadata": {"fuente": "Ley 58/2003", "categoria": "burocracia_general", "subcategoria": "inspeccion", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Aplazamiento y fraccionamiento deudas tributarias. Requisitos: garantía si >30.000€. Plazo máximo: 6 años. Interés demora: 3,75% anual (2024). Solicitud antes vencimiento período voluntario. Pérdida beneficio por impago 2 plazos consecutivos.",
+    "metadata": {"fuente": "RD 1065/2007", "categoria": "burocracia_general", "subcategoria": "aplazamientos", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Impuesto Patrimonio Andalucía. Mínimo exento: 700.000€. Tipos: 0,2% a 3,75%. Obligados: patrimonio neto >2.000.000€ o bienes >3.000.000€. Plazo: 30 junio. Bonificación vivienda habitual: hasta 300.000€.",
+    "metadata": {"fuente": "Ley 4/2011 And", "categoria": "burocracia_general", "subcategoria": "patrimonio", "ccaa": "andalucia", "vigente": true}
+  },
+  {
+    "content": "Recargo provincial IBI País Vasco. Competencia: Diputaciones Forales. Álava: 0,3%, Bizkaia: 0,3%, Gipuzkoa: 0,3%. Gestión: junto con IBI municipal. Bonificaciones específicas: familias numerosas, vivienda habitual jóvenes, eficiencia energética.",
+    "metadata": {"fuente": "Norma Foral", "categoria": "burocracia_general", "subcategoria": "ibi", "ccaa": "pais_vasco", "vigente": true}
+  },
+  {
+    "content": "Impuesto Grandes Fortunas 2024. Ámbito: estatal temporal. Mínimo: 3.000.000€. Tipos: 1,7% a 3,5%. Deducción: cuota íntegra Patrimonio autonómico. Solo aplicable si no existe Impuesto Patrimonio autonómico o bonificado >75%.",
+    "metadata": {"fuente": "Ley 38/2022", "categoria": "burocracia_general", "subcategoria": "grandes_fortunas", "ccaa": "nacional", "vigente": true, "temporal": true}
+  },
+  {
+    "content": "Tributación criptomonedas 2024. IRPF: ganancias patrimoniales por venta. Información Hacienda: operaciones >3.000€ anuales. Obligación informativa: modelo 721 si >50.000€ en el extranjero. Valoración: precio adquisición vs precio transmisión.",
+    "metadata": {"fuente": "AEAT 2024", "categoria": "burocracia_general", "subcategoria": "criptomonedas", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  }
+]

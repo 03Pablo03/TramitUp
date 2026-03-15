@@ -1,0 +1,50 @@
+[
+  {
+    "content": "Reglamento UE 261/2004 actualizado 2024. Compensación vuelos: <1.500km 250€, 1.500-3.500km 400€, >3.500km 600€. Retraso >3h llegada o cancelación <14 días aviso. Excepciones: circunstancias extraordinarias (meteorología, huelgas ATC, seguridad). Reclamación: 3 años desde vuelo. Asistencia: comida, alojamiento si necesario.",
+    "metadata": {"fuente": "EU261/2004", "categoria": "reclamaciones", "subcategoria": "aerolineas", "ccaa": "nacional", "vigente": true, "actualizado": "2024"}
+  },
+  {
+    "content": "Equipaje perdido/dañado - Convenio Montreal. Responsabilidad aerolínea: hasta 1.288 DEG (≈1.700€) por pasajero. Plazo reclamación: equipaje dañado 7 días, perdido 21 días desde entrega/debía entregarse. Documentación: tarjeta embarque, etiqueta equipaje, PIR (Property Irregularity Report).",
+    "metadata": {"fuente": "Convenio Montreal", "categoria": "reclamaciones", "subcategoria": "equipaje", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Overbooking vuelos. Compensación voluntarios: negociable con aerolínea. Denegación embarque involuntaria: compensación EU261 + reembolso/transporte alternativo + asistencia. Documentación necesaria: tarjeta embarque, certificado denegación embarque, justificantes gastos.",
+    "metadata": {"fuente": "EU261/2004", "categoria": "reclamaciones", "subcategoria": "overbooking", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Servicios bancarios - Reclamaciones 2024. Primera instancia: Servicio Atención Cliente banco (1 mes respuesta). Segunda instancia: Banco España, CNMV o DGS según servicio. Gratuito. Plazo: 2 años desde conocimiento. Resolución: 4-6 meses. Vinculante para entidad si favorable al cliente.",
+    "metadata": {"fuente": "Ley 44/2002", "categoria": "reclamaciones", "subcategoria": "servicios_financieros", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Tarjetas crédito/débito - Operaciones no autorizadas. Responsabilidad cliente: máximo 50€ antes comunicación. Cero responsabilidad si: tarjeta no presente, después comunicación, negligencia entidad. Plazo comunicación: inmediato, máximo 13 meses desde cargo. Reembolso: máximo 10 días hábiles.",
+    "metadata": {"fuente": "PSD2", "categoria": "reclamaciones", "subcategoria": "medios_pago", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Suministros energéticos - Facturación incorrecta. Reclamación comercializadora: 30 días respuesta. Si no satisface: CNMC (nacional) u organismo autonómico. Documentación: facturas, contratos, lecturas contador. Compensaciones automáticas: cortes indebidos, cambios comercializadora.",
+    "metadata": {"fuente": "CNMC", "categoria": "reclamaciones", "subcategoria": "suministros", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Telecomunicaciones - Reclamaciones operador. Primera instancia: servicio atención cliente (1 mes). Segunda: Secretaría Estado Telecomunicaciones (3 meses resolución). Temas: facturación, calidad, portabilidad, permanencia. Compensaciones: cortes servicio, retrasos instalación/reparación.",
+    "metadata": {"fuente": "Ley 9/2014", "categoria": "reclamaciones", "subcategoria": "telecomunicaciones", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Seguros - Reclamaciones aseguradoras. Defensor Asegurado (si existe) o Dirección General Seguros. Plazo: 3 años desde conocimiento. Gratuito. Documentación: póliza, comunicaciones, peritajes. Temas: liquidación siniestros, primas, información precontractual, cancelaciones.",
+    "metadata": {"fuente": "Ley 20/2015", "categoria": "reclamaciones", "subcategoria": "seguros", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Transporte público - Retrasos y cancelaciones. Cercanías RENFE: >60min retraso, reembolso 50% billete. >120min: reembolso 100%. Metro/autobús: normativa autonómica/municipal. Documentación: billete, justificante retraso. Reclamación: web operador, oficinas atención cliente.",
+    "metadata": {"fuente": "Normativa transporte", "categoria": "reclamaciones", "subcategoria": "transporte_publico", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Comercio electrónico - Derecho desistimiento. Plazo: 14 días desde recepción producto. Excepciones: productos personalizados, perecederos, software descargado, servicios completamente ejecutados. Gastos devolución: consumidor salvo que sea gratuita. Reembolso: 14 días desde desistimiento.",
+    "metadata": {"fuente": "RDL 1/2007", "categoria": "reclamaciones", "subcategoria": "comercio_electronico", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Viajes combinados - Paquetes turísticos. Responsabilidad organizador: cumplimiento servicios contratados. Derecho desistimiento: cualquier momento con penalizaciones según proximidad fecha. Insolvencia organizador: garantía financiera obligatoria. Reclamación: OMIC, arbitraje consumo.",
+    "metadata": {"fuente": "RD 1/2007", "categoria": "reclamaciones", "subcategoria": "viajes", "ccaa": "nacional", "vigente": true}
+  },
+  {
+    "content": "Productos defectuosos - Garantía legal. Duración: 3 años productos elementos digitales, 2 años resto. Carga prueba: 1 año favor consumidor. Opciones: reparación, sustitución, reducción precio, resolución contrato. Garantía comercial: adicional a legal, condiciones libremente pactadas.",
+    "metadata": {"fuente": "Ley 3/2014", "categoria": "reclamaciones", "subcategoria": "garantias", "ccaa": "nacional", "vigente": true}
+  }
+]
