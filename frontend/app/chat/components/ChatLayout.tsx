@@ -57,54 +57,64 @@ export function ChatLayout({
               </span>
             )}
           </div>
-          <nav className="flex items-center gap-4">
-            {userPlan !== "pro" && userPlan !== "document" && (
-              <Link
-                href="/account"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
-              >
-                <span className="text-amber-300">★</span> Hazte PRO
-              </Link>
-            )}
+          <nav className="flex items-center gap-2">
+            {/* Herramientas destacadas */}
+            <Link
+              href="/calculadora"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition-all hover:bg-emerald-100 hover:border-emerald-300"
+            >
+              🧮 Calculadora
+            </Link>
+            <Link
+              href="/contrato"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700 transition-all hover:bg-violet-100 hover:border-violet-300"
+            >
+              📄 Analizar contrato
+            </Link>
+
+            {/* Separador */}
+            <span className="mx-1 h-5 w-px bg-slate-200" />
+
+            {/* Navegación secundaria */}
             <Link
               href="/alerts"
-              className="relative flex items-center gap-1.5 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+              className="relative flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
             >
-              <span className="text-amber-500">🔔</span>
-              Alertas
+              🔔
               {urgentAlertsCount > 0 && (
-                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white">
+                <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
                   {urgentAlertsCount > 99 ? "99+" : urgentAlertsCount}
                 </span>
               )}
             </Link>
             <Link
-              href="/calculadora"
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-            >
-              Calculadora
-            </Link>
-            <Link
               href="/casos"
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+              className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
             >
               Expedientes
             </Link>
             <Link
-              href="/contrato"
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-            >
-              Analizar contrato
-            </Link>
-            <Link
               href="/documents"
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+              className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
             >
               Documentos
             </Link>
+
+            {/* Separador */}
+            <span className="mx-1 h-5 w-px bg-slate-200" />
+
+            {/* PRO + Cuenta */}
+            {userPlan !== "pro" && userPlan !== "document" && (
+              <Link
+                href="/account"
+                className="inline-flex items-center gap-1 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:from-amber-500 hover:to-orange-600 transition-all"
+              >
+                ★ PRO
+              </Link>
+            )}
             <Link
               href="/account"
-              className="rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:from-[var(--primary-dark)] hover:to-blue-700"
+              className="rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm transition-all hover:from-[var(--primary-dark)] hover:to-blue-700"
             >
               Cuenta
             </Link>
