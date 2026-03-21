@@ -27,13 +27,13 @@ export default function AlertsPage() {
   const { startCheckout, loading: checkoutLoading } = useStripeCheckout();
 
   useEffect(() => {
-    if (user && !authLoading) {
+    if (user?.id && !authLoading) {
       apiFetch("/me")
         .then((r) => r.json())
         .then((data) => setUserPlan(data?.plan || "free"))
         .catch(() => setUserPlan("free"));
     }
-  }, [user, authLoading]);
+  }, [user?.id, authLoading]);
 
   useEffect(() => {
     if (!authLoading && !user) router.push("/login");

@@ -108,7 +108,7 @@ export default function ChatPage() {
         setRemainingChats(null);
         setUserPlan("free");
       });
-  }, [user, authLoading]);
+  }, [user?.id, authLoading]);
 
   const handleSend = async (text: string, attachments?: AttachedFile[]) => {
     if (!user) return;

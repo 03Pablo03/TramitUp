@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { createClient } from "@/lib/supabase/client";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 
 const CATEGORIES = [
   { id: "reclamaciones", label: "Reclamaciones", icon: "✈️" },
@@ -29,24 +30,23 @@ export default function AccountPage() {
   const [apiProfile, setApiProfile] = useState<ApiProfile | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
   const [savingPrefs, setSavingPrefs] = useState(false);
-  const [upgradeError, setUpgradeError] = useState<string | null>(null);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const { startCheckout, loading: checkoutLoading } = useStripeCheckout();
 
   useEffect(() => {
     if (!user && !isSigningOut) router.push("/login");
   }, [user, isSigningOut, router]);
 
   useEffect(() => {
-    if (user) {
-      apiFetch("/me")
-        .then((r) => r.json())
-        .then(setApiProfile)
-        .catch((error) => {
-          console.warn("Error loading user profile:", error);
-        });
-    }
-  }, [user]);
+    if (!user?.id) return;
+    apiFetch("/me")
+      .then((r) => r.json())
+      .then(setApiProfile)
+      .catch((error) => {
+        console.warn("Error loading user profile:", error);
+      });
+  }, [user?.id]);
 
   useEffect(() => {
     if (profile?.categories_interest) {
@@ -73,25 +73,6 @@ export default function AccountPage() {
       await refreshProfile();
     } finally {
       setSavingPrefs(false);
-    }
-  };
-
-  const handleUpgrade = async () => {
-    setUpgradeError(null);
-    try {
-      const res = await apiFetch("/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ price_type: "pro" }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setUpgradeError(data.detail || data.error || "No se pudo iniciar el pago. Verifica que Stripe esté configurado.");
-      }
-    } catch {
-      setUpgradeError("Error de conexión. Verifica que Stripe esté configurado en el backend.");
     }
   };
 
@@ -157,14 +138,13 @@ export default function AccountPage() {
               <p className="mb-4 text-sm text-slate-600">
                 Consultas ilimitadas, documentos y alertas por 9,99 €/mes.
               </p>
-              {upgradeError && (
-                <p className="mb-4 text-sm text-red-600">{upgradeError}</p>
-              )}
               <button
-                onClick={handleUpgrade}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-6 py-3 font-bold text-white shadow-lg hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
+                onClick={startCheckout}
+                disabled={checkoutLoading}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-6 py-3 font-bold text-white shadow-lg hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all disabled:opacity-70"
               >
-                <span className="text-amber-300">★</span> Hazte PRO — 9,99 €/mes
+                <span className="text-amber-300">★</span>
+                {checkoutLoading ? "Redirigiendo..." : "Hazte PRO — 9,99 €/mes"}
               </button>
             </div>
           )}

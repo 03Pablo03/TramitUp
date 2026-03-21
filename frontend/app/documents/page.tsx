@@ -29,11 +29,11 @@ export default function DocumentsPage() {
   }, [user, authLoading, router]);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
     apiFetch("/me")
       .then((r) => r.json())
       .then((data) => setUserPlan(data?.plan || "free"));
-  }, [user]);
+  }, [user?.id]);
 
   useEffect(() => {
     if (!user || (userPlan !== "pro" && userPlan !== "document")) return;
