@@ -87,6 +87,14 @@ async def generate_sse(user_id: str, request: ChatRequest):
     success = False
     try:
         yield {"data": json.dumps([{"type": "conversation_id", "id": conv_id}])}
+        # Emitir clasificación para que el frontend pueda mostrar sugerencias contextuales
+        if classification:
+            yield {"data": json.dumps([{
+                "type": "classification",
+                "category": classification.get("category", ""),
+                "subcategory": classification.get("subcategory", ""),
+                "keywords": classification.get("keywords", []),
+            }])}
         for chunk in stream:
             # LangChain stream yields AIMessageChunk; extract .content (str)
             content = getattr(chunk, "content", chunk)

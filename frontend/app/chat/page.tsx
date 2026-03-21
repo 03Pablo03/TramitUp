@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { ChatLayout } from "./components/ChatLayout";
 import { useAlerts } from "@/hooks/useAlerts";
@@ -63,6 +64,7 @@ export default function ChatPage() {
   const [currentCategory, setCurrentCategory] = useState<string>("");
   const [currentSubcategory, setCurrentSubcategory] = useState<string>("");
   const [userPlan, setUserPlan] = useState<string>("free");
+  const [showCalculatorBanner, setShowCalculatorBanner] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -211,6 +213,17 @@ export default function ChatPage() {
                       if (next[idx]) next[idx] = { ...next[idx], category: cat, subcategory: subcat };
                       return next;
                     });
+                    // Sugerir calculadora si la consulta es sobre despido laboral
+                    const keywords: string[] = item.keywords || [];
+                    const esDespido =
+                      cat === "laboral" &&
+                      (subcat?.includes("despido") ||
+                        keywords.some((k: string) =>
+                          ["despido", "despedir", "indemnización", "finiquito", "extinción"].includes(
+                            k.toLowerCase()
+                          )
+                        ));
+                    if (esDespido) setShowCalculatorBanner(true);
                   }
                   if (item.type === "chunk") {
                     full += item.content;
@@ -299,6 +312,7 @@ export default function ChatPage() {
   const handleNewChat = () => {
     setMessages([]);
     setConversationId(null);
+    setShowCalculatorBanner(false);
   };
 
   const handleSelectConversation = async (id: string) => {
@@ -398,6 +412,30 @@ export default function ChatPage() {
         onClose={() => setShowRateLimitModal(false)}
         message="Has usado tus 2 consultas gratuitas de hoy. Con PRO tienes consultas ilimitadas."
       />
+      {showCalculatorBanner && (
+        <div className="fixed bottom-6 right-6 z-40 w-72 rounded-2xl border border-blue-200 bg-white p-4 shadow-xl">
+          <button
+            onClick={() => setShowCalculatorBanner(false)}
+            className="absolute right-3 top-3 text-slate-400 hover:text-slate-600"
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+          <p className="text-lg">⚖️</p>
+          <p className="mt-1 text-sm font-semibold text-slate-800">
+            ¿Sabes cuánto te deben?
+          </p>
+          <p className="mt-1 text-xs text-slate-500">
+            Calcula tu indemnización exacta según la ley en menos de 1 minuto.
+          </p>
+          <Link
+            href="/calculadora"
+            className="mt-3 flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 py-2 text-sm font-bold text-white hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
+          >
+            Calcular ahora →
+          </Link>
+        </div>
+      )}
       {showProModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
