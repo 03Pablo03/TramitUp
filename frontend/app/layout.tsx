@@ -21,28 +21,42 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://tramitup.com"),
   title: {
-    default: "Tramitup — Entiende tus derechos. Actúa con información.",
-    template: "%s | Tramitup",
+    default: "TramitUp — Asistente jurídico para ciudadanos españoles",
+    template: "%s | TramitUp",
   },
   description:
-    "Servicio de información jurídica para ciudadanos españoles. Explica qué dice la normativa sobre tu situación y genera modelos de escritos personalizados.",
+    "TramitUp te ayuda a entender tus derechos y actuar. Calcula tu indemnización por despido, analiza cláusulas abusivas en contratos de alquiler o laborales, y gestiona tus reclamaciones en un expediente propio. Gratis y sin registro previo.",
   keywords: [
-    "reclamación",
-    "trámites",
-    "burocracia",
+    "calculadora indemnización despido",
+    "calcular finiquito España",
+    "analizar contrato alquiler cláusulas abusivas",
+    "analizar contrato laboral",
+    "reclamación despido improcedente",
+    "derechos ciudadano España",
+    "asistente jurídico online",
+    "información legal gratuita",
     "normativa española",
-    "derechos ciudadano",
+    "trámites legales",
+    "expediente legal",
+    "reclamar vuelo cancelado",
+    "reclamar factura incorrecta",
   ],
   openGraph: {
     type: "website",
     locale: "es_ES",
     url: "https://tramitup.com",
-    siteName: "Tramitup",
+    siteName: "TramitUp",
+    title: "TramitUp — Asistente jurídico para ciudadanos españoles",
+    description:
+      "Calcula tu indemnización por despido, analiza tu contrato de alquiler o laboral, y gestiona tus reclamaciones. Gratis.",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     site: "@tramitup",
+    title: "TramitUp — Asistente jurídico gratuito",
+    description:
+      "Calcula tu indemnización, analiza cláusulas abusivas en contratos y gestiona tus reclamaciones. Sin letra pequeña.",
   },
   robots: {
     index: true,
