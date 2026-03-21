@@ -108,9 +108,10 @@ def run_chat(user_id: str, message: str, conversation_id: str | None = None, att
     conv_id = get_or_create_conversation(user_id, conversation_id, message, classification)
     history = get_conversation_messages(conv_id) if conv_id else []
     save_message(conv_id, "user", message)
-    
-    # Stream con personalización (usar mensaje original, no el full_message)
-    stream = stream_chat_response_personalized(message, rag_context, classification, history, user_context)
+
+    # Si hay documentos adjuntos, incluir su contenido en el mensaje al LLM
+    message_for_ai = full_message if attachment_context else message
+    stream = stream_chat_response_personalized(message_for_ai, rag_context, classification, history, user_context)
     return conv_id, classification, stream
 
 

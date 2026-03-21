@@ -1,9 +1,11 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { CategoryBadge } from "./CategoryBadge";
 import { DocumentGenerator } from "@/components/DocumentGenerator";
 import { AlertBanner } from "@/components/alerts/AlertBanner";
+import { FileText, Image } from "lucide-react";
 
 type DetectedDeadline = {
   description: string;
@@ -20,6 +22,7 @@ type ChatMessageProps = {
   category?: string;
   subcategory?: string;
   detectedDeadlines?: DetectedDeadline[];
+  attachments?: { name: string; type: string }[];
   onCopy?: () => void;
   showGenerateDoc?: boolean;
   conversationId?: string | null;
@@ -28,12 +31,18 @@ type ChatMessageProps = {
   onProRequired?: () => void;
 };
 
+function getFileIcon(type: string) {
+  if (type.startsWith("image/")) return <Image className="w-4 h-4 shrink-0" />;
+  return <FileText className="w-4 h-4 shrink-0" />;
+}
+
 export function ChatMessage({
   role,
   content,
   category,
   subcategory,
   detectedDeadlines,
+  attachments,
   onCopy,
   showGenerateDoc,
   conversationId,
@@ -58,10 +67,25 @@ export function ChatMessage({
           }`}
         >
           {isUser ? (
-            <div className="whitespace-pre-wrap text-sm">{content}</div>
+            <div className="space-y-2">
+              {attachments && attachments.length > 0 && (
+                <div className="flex flex-wrap gap-2 pb-1">
+                  {attachments.map((a, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-1.5 rounded-lg bg-white/20 px-2.5 py-1.5 text-xs font-medium text-white/90 border border-white/25"
+                    >
+                      {getFileIcon(a.type)}
+                      <span className="max-w-[160px] truncate">{a.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {content && <div className="whitespace-pre-wrap text-sm">{content}</div>}
+            </div>
           ) : (
-            <div className="prose prose-sm max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0">
-              <ReactMarkdown>{content}</ReactMarkdown>
+            <div className="prose prose-sm max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0 prose-ol:my-1">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
             </div>
           )}
         </div>

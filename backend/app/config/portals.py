@@ -2,7 +2,7 @@
 Portales oficiales de reclamación en España.
 IMPORTANTE: Verificar URLs cada 3 meses. Los portales del gobierno
 cambian con frecuencia. Actualizar last_verified tras cada revisión.
-Última revisión: 2026-02-26
+Última revisión: 2026-03-21
 """
 
 from dataclasses import dataclass
@@ -36,10 +36,10 @@ PORTALS: dict[str, Portal] = {
     # ─── BANCA Y SEGUROS ────────────────────────────────────────────────────
     "banco": Portal(
         name="Banco de España — Portal del Cliente Bancario",
-        url="https://www.bde.es/bde/es/areas/clientes/Reclamaciones/",
+        url="https://www.bde.es/bde/es/areas/clientes/Reclamaciones/como_presentar_una_r.html",
         needs_digital_cert=False,
         also_by_post=True,
-        notes="Primero debes agotar el servicio de atención al cliente del banco (máximo 2 meses de espera).",
+        notes="Primero debes agotar el SAC del banco (plazo máximo 2 meses). Si no responden o la respuesta es insatisfactoria, acude al Banco de España.",
         last_verified="2026-02-26",
         official_form_url="https://www.bde.es/bde/es/areas/clientes/Reclamaciones/como_presentar_una_r.html",
     ),
@@ -48,8 +48,9 @@ PORTALS: dict[str, Portal] = {
         url="https://www.dgsfp.mineco.es/es/Consumidor/Reclamaciones/Paginas/Reclamaciones.aspx",
         needs_digital_cert=False,
         also_by_post=True,
-        notes="Para reclamaciones sobre seguros, planes de pensiones y mediadores.",
+        notes="Primero debes agotar el SAC de la aseguradora (plazo máximo 2 meses). Si no resuelven, acude a la DGSFP.",
         last_verified="2026-02-26",
+        official_form_url="https://www.dgsfp.mineco.es/es/Consumidor/Reclamaciones/Paginas/Reclamaciones.aspx",
     ),
 
     # ─── SUMINISTROS Y TELECOMUNICACIONES ───────────────────────────────────
@@ -58,16 +59,18 @@ PORTALS: dict[str, Portal] = {
         url="https://sede.cnmc.gob.es/reclamaciones",
         needs_digital_cert=False,
         also_by_post=True,
-        notes="Para reclamaciones sobre electricidad, gas natural y otros suministros energéticos.",
+        notes="Primero debes reclamar a la compañía suministradora. Si no responden en 1 mes, acude a la CNMC.",
         last_verified="2026-02-26",
+        official_form_url="https://sede.cnmc.gob.es/reclamaciones",
     ),
     "internet_telefono": Portal(
         name="CNMC — Oficina de Atención al Usuario de Telecomunicaciones",
         url="https://telecos.cnmc.es/oficina-atencion-usuario",
         needs_digital_cert=False,
         also_by_post=True,
-        notes="Para reclamaciones sobre internet, telefonía móvil y televisión de pago.",
+        notes="Primero debes reclamar a la operadora (tienen 1 mes para responder). Si no resuelven, acude a la CNMC Telecos.",
         last_verified="2026-02-26",
+        official_form_url="https://telecos.cnmc.es/oficina-atencion-usuario",
     ),
 
     # ─── CONSUMO Y COMERCIO ─────────────────────────────────────────────────
@@ -76,8 +79,9 @@ PORTALS: dict[str, Portal] = {
         url="https://www.consumo.gob.es/es/areas-de-actuacion/sistema-arbitral-de-consumo",
         needs_digital_cert=False,
         also_by_post=True,
-        notes="Arbitraje gratuito para conflictos entre consumidores y empresas adheridas al sistema.",
+        notes="Arbitraje gratuito y vinculante para conflictos entre consumidores y empresas adheridas. También puedes acudir a la OMIC de tu municipio como primer paso.",
         last_verified="2026-02-26",
+        official_form_url="https://www.consumo.gob.es/es/areas-de-actuacion/sistema-arbitral-de-consumo/como-presentar-una-solicitud-de-arbitraje",
     ),
     "omic": Portal(
         name="OMIC — Oficina Municipal de Información al Consumidor",
@@ -110,11 +114,12 @@ PORTALS: dict[str, Portal] = {
     # ─── HACIENDA / AEAT ────────────────────────────────────────────────────
     "hacienda": Portal(
         name="AEAT — Sede Electrónica (recursos y reclamaciones)",
-        url="https://sede.agenciatributaria.gob.es",
+        url="https://sede.agenciatributaria.gob.es/Sede/procedimientoini/GC24.shtml",
         needs_digital_cert=True,
         also_by_post=True,
-        notes="Para recursos de reposición y reclamaciones económico-administrativas ante la AEAT.",
+        notes="Para recursos de reposición y reclamaciones económico-administrativas ante la AEAT. Plazo: 1 mes desde la notificación.",
         last_verified="2026-02-27",
+        official_form_url="https://sede.agenciatributaria.gob.es/Sede/procedimientoini/GC24.shtml",
     ),
     "tribunal_economico": Portal(
         name="TEAR — Tribunal Económico-Administrativo Regional",
@@ -149,16 +154,18 @@ PORTALS: dict[str, Portal] = {
         url="https://www.mites.gob.es/es/sec_trabajo/smac/index.htm",
         needs_digital_cert=False,
         also_by_post=True,
-        notes="Paso obligatorio antes de acudir al juzgado laboral. Varía por comunidad autónoma — el enlace da acceso al directorio nacional.",
+        notes="Paso previo obligatorio antes de acudir al juzgado de lo social (art. 63 LRJS). Varía por comunidad autónoma — el enlace da acceso al directorio nacional.",
         last_verified="2026-02-27",
+        official_form_url="https://www.mites.gob.es/es/sec_trabajo/smac/papeleta.htm",
     ),
     "inspeccion_trabajo": Portal(
         name="Inspección de Trabajo y Seguridad Social",
-        url="https://sede.mites.gob.es/",
+        url="https://sede.mites.gob.es/nlt/faces/home",
         needs_digital_cert=False,
         also_by_post=True,
-        notes="Para denunciar irregularidades laborales, accidentes de trabajo o incumplimientos del convenio.",
+        notes="Para denunciar irregularidades laborales, accidentes de trabajo o incumplimientos del convenio colectivo.",
         last_verified="2026-02-27",
+        official_form_url="https://sede.mites.gob.es/nlt/faces/home",
     ),
 
     # ─── VIVIENDA ───────────────────────────────────────────────────────────

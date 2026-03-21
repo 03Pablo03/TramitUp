@@ -44,6 +44,7 @@ type Message = {
   detectedDeadlines?: DetectedDeadline[];
   portalInfo?: PortalInfo;
   compensationEstimate?: CompensationEstimate;
+  attachments?: { name: string; type: string }[];
 };
 
 type Conversation = { id: string; title: string; category?: string; created_at: string };
@@ -157,7 +158,11 @@ export default function ChatPage() {
       }
     }
     
-    setMessages((m) => [...m, { role: "user", content: text }]);
+    setMessages((m) => [...m, {
+      role: "user",
+      content: text,
+      attachments: attachments?.map(a => ({ name: a.name, type: a.type }))
+    }]);
     setMessages((m) => [...m, { role: "assistant", content: "", category: "", subcategory: "" }]);
     const idx = messages.length + 1;
 

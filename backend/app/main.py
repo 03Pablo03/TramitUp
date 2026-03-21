@@ -34,25 +34,30 @@ def create_app() -> FastAPI:
     app.add_exception_handler(Exception, generic_exception_handler)
 
     settings = get_settings()
-    
+
+    # CORS: en producción solo el dominio configurado; en desarrollo también localhost
+    allowed_origins = [settings.frontend_url] if settings.frontend_url else []
+    if not settings.is_production:
+        allowed_origins += [
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:3001",
+        ]
+    # Eliminar duplicados preservando orden
+    seen: set[str] = set()
+    cors_origins: list[str] = []
+    for o in allowed_origins:
+        if o and o not in seen:
+            seen.add(o)
+            cors_origins.append(o)
+
     # Add middleware
     app.add_middleware(MonitoringMiddleware)
     app.add_middleware(LoggingMiddleware)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            settings.frontend_url,
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "http://localhost:3002",
-            "http://localhost:3003",
-            "http://localhost:3004",
-            "http://127.0.0.1:3000",
-            "http://127.0.0.1:3001",
-            "http://127.0.0.1:3002",
-            "http://127.0.0.1:3003",
-            "http://127.0.0.1:3004",
-        ],
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

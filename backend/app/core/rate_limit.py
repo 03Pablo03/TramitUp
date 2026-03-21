@@ -1,4 +1,5 @@
 from datetime import date
+from zoneinfo import ZoneInfo
 from collections import defaultdict
 from typing import Dict
 
@@ -9,9 +10,13 @@ _rate_limit_store: Dict[str, dict] = defaultdict(lambda: {"count": 0, "date": No
 
 FREE_DAILY_LIMIT = 2
 
+_MADRID = ZoneInfo("Europe/Madrid")
+
 
 def _get_today() -> str:
-    return date.today().isoformat()
+    """Returns today's date in Spain timezone (resets at midnight Madrid time)."""
+    from datetime import datetime
+    return datetime.now(tz=_MADRID).date().isoformat()
 
 
 def _use_daily_usage_table() -> bool:
@@ -41,7 +46,8 @@ def check_rate_limit(user_id: str, plan: str) -> tuple[bool, int]:
         except Exception:
             pass  # fallback to in-memory
 
-    today = date.today()
+    from datetime import datetime
+    today = datetime.now(tz=_MADRID).date()
     data = _rate_limit_store[user_id]
     if data["date"] != today:
         data["date"] = today
@@ -69,7 +75,8 @@ def consume_rate_limit(user_id: str, plan: str) -> None:
             return
         except Exception:
             pass
-    today = date.today()
+    from datetime import datetime
+    today = datetime.now(tz=_MADRID).date()
     data = _rate_limit_store[user_id]
     if data["date"] != today:
         data["date"] = today
@@ -91,7 +98,8 @@ def get_remaining_chats(user_id: str, plan: str) -> int:
             return max(0, FREE_DAILY_LIMIT - count)
         except Exception:
             pass
-    today = date.today()
+    from datetime import datetime
+    today = datetime.now(tz=_MADRID).date()
     data = _rate_limit_store[user_id]
     if data["date"] != today:
         return FREE_DAILY_LIMIT

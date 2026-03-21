@@ -72,11 +72,17 @@ async function proxyRequest(
       headers,
     };
     if (method === "POST" || method === "PUT" || method === "PATCH") {
-      const contentType = request.headers.get("content-type");
+      const contentType = request.headers.get("content-type") ?? "";
       if (contentType) headers["Content-Type"] = contentType;
-      // Leer el body como texto evita el error "duplex option is required"
-      // que lanza Node.js 18+ cuando se pasa un ReadableStream directamente.
-      init.body = await request.text();
+      // multipart/form-data (file uploads) must be forwarded as ArrayBuffer to
+      // preserve binary content — text() corrupts PDFs and images.
+      // Keep the original Content-Type so the backend receives the correct boundary.
+      if (contentType.startsWith("multipart/form-data")) {
+        headers["Content-Type"] = contentType;
+        init.body = await request.arrayBuffer();
+      } else {
+        init.body = await request.text();
+      }
     }
 
     const res = await fetch(url, init);

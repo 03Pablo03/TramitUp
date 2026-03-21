@@ -49,6 +49,7 @@ type Message = {
   detectedDeadlines?: DetectedDeadline[];
   portalInfo?: PortalInfo;
   compensationEstimate?: CompensationEstimate;
+  attachments?: { name: string; type: string }[];
 };
 
 type ChatWindowProps = {
@@ -131,6 +132,7 @@ export function ChatWindow({
                 category={m.category}
                 subcategory={m.subcategory}
                 detectedDeadlines={m.detectedDeadlines}
+                attachments={m.attachments}
                 onCopy={m.role === "assistant" ? () => onCopy(m.content) : undefined}
                 showGenerateDoc={
                   m.role === "assistant" &&

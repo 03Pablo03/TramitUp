@@ -61,6 +61,10 @@ class DocumentAnalysisService:
         # Validaciones iniciales
         if len(file_content) > self.max_file_size:
             raise ValueError(f"Archivo demasiado grande. Máximo {self.max_file_size/1024/1024}MB")
+
+        # Convertir cadena vacía a None para compatibilidad con UUID en BD
+        if not conversation_id:
+            conversation_id = None
         
         if content_type not in self.supported_types:
             raise ValueError(f"Tipo de archivo no soportado: {content_type}")
@@ -133,7 +137,7 @@ class DocumentAnalysisService:
                 "file_type": content_type,
                 "storage_path": storage_path,
                 "analysis_summary": analysis_summary,
-                "extracted_text": extracted_text[:2000],  # Primeros 2000 caracteres
+                "extracted_text": extracted_text[:8000],  # Primeros 8000 caracteres
                 "legal_entities": legal_entities,  # NUEVO: entidades legales extraídas
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat()
@@ -289,7 +293,7 @@ ARCHIVO: {filename}
 TIPO: {content_type}
 
 CONTENIDO:
-{text[:3000]}  # Limitar para evitar tokens excesivos
+{text[:3000]}
 
 INSTRUCCIONES:
 1. Identifica el tipo de documento (factura, multa, contrato, notificación, etc.)
@@ -369,37 +373,42 @@ Responde en español, sé preciso y enfócate en información útil para reclama
             if attachment_info:
                 filename = attachment_info['filename']
                 analysis = attachment_info.get('analysis_summary', '')
+                extracted_text = attachment_info.get('extracted_text', '')
                 legal_entities = attachment_info.get('legal_entities', {})
-                
-                context_part = f"DOCUMENTO: {filename}\n"
-                
+
+                context_part = f"DOCUMENTO ADJUNTO: {filename}\n"
+
+                # Incluir el texto real del documento (prioridad máxima)
+                if extracted_text and extracted_text.strip():
+                    context_part += f"CONTENIDO DEL DOCUMENTO:\n{extracted_text}\n"
+
                 if analysis:
-                    context_part += f"Análisis: {analysis}\n"
-                
+                    context_part += f"\nResumen del análisis: {analysis}\n"
+
                 # Añadir entidades legales extraídas
                 if legal_entities and legal_entities.get('entities'):
                     context_part += "Entidades detectadas:\n"
-                    
+
                     entities = legal_entities['entities']
                     for entity in entities[:10]:  # Limitar a 10 entidades más relevantes
                         entity_type = entity.get('type', 'unknown')
                         entity_value = entity.get('value', '')
                         confidence = entity.get('confidence', 0)
-                        
+
                         if confidence > 0.5:  # Solo entidades con confianza alta
                             context_part += f"- {entity_type}: {entity_value}\n"
-                
+
                 # Añadir datos específicos del documento
                 specific_data = legal_entities.get('specific_data', {})
                 if specific_data:
                     context_part += "Datos específicos:\n"
                     for key, value in specific_data.items():
                         context_part += f"- {key}: {value}\n"
-                
+
                 context_parts.append(context_part)
         
         if context_parts:
-            return "\n=== ANÁLISIS AVANZADO DE DOCUMENTOS ===\n" + "\n\n".join(context_parts) + "\n=== FIN ANÁLISIS ===\n"
+            return "\n=== DOCUMENTOS ADJUNTOS POR EL USUARIO ===\nEl usuario ha adjuntado los siguientes documentos. Usa su contenido para responder con precisión:\n\n" + "\n\n".join(context_parts) + "\n=== FIN DOCUMENTOS ADJUNTOS ===\n"
         
         return ""
 

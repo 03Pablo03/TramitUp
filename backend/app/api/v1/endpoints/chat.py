@@ -56,12 +56,17 @@ def extract_compensation_info(text: str) -> CompensationEstimate | None:
     )
 
 
-def clean_response_text(text: str) -> str:
+def clean_response_text(text: str, final: bool = False) -> str:
     """Remove special markers from response text for display."""
-    # Remove PORTAL_KEY and COMPENSATION markers
     text = re.sub(r'\[PORTAL_KEY:[^\]]+\]', '', text, flags=re.IGNORECASE)
     text = re.sub(r'\[COMPENSATION:[^\]]+\]', '', text, flags=re.IGNORECASE)
-    return text.strip()
+    text = re.sub(r'\[SPECIFIC_EMAIL:[^\]]+\]', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\[SPECIFIC_URL:[^\]]+\]', '', text, flags=re.IGNORECASE)
+    # Solo hacer strip en el texto final completo, nunca en chunks individuales
+    # (strip en chunks elimina espacios entre palabras al concatenar)
+    if final:
+        return text.strip()
+    return text
 
 
 async def generate_sse(user_id: str, request: ChatRequest):
@@ -90,7 +95,7 @@ async def generate_sse(user_id: str, request: ChatRequest):
             else:
                 text = content if isinstance(content, str) else str(content or "")
             full.append(text)
-            clean_chunk = clean_response_text(text)
+            clean_chunk = clean_response_text(text)  # sin strip, preserva espacios
             yield {"data": json.dumps([{"type": "chunk", "content": clean_chunk}])}
         success = True
     except Exception as e:
@@ -105,8 +110,8 @@ async def generate_sse(user_id: str, request: ChatRequest):
             portal_key = extract_portal_key(full_text)
             compensation = extract_compensation_info(full_text)
             
-            # Clean the text for storage (remove markers)
-            clean_text = clean_response_text(full_text)
+            # Clean the text for storage (remove markers, strip solo en texto final)
+            clean_text = clean_response_text(full_text, final=True)
             save_message(conv_id, "assistant", clean_text)
             
             # Send additional information
