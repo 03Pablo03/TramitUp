@@ -79,6 +79,12 @@ export function ChatLayout({
               )}
             </Link>
             <Link
+              href="/contrato"
+              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+            >
+              Analizar contrato
+            </Link>
+            <Link
               href="/documents"
               className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
             >

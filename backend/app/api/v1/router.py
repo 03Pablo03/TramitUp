@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import me, classify, chat, history, document, alerts, stripe, conversations, auth, document_search, intelligent_templates, proactive_suggestions, attachments, calculator
+from app.api.v1.endpoints import me, classify, chat, history, document, alerts, stripe, conversations, auth, document_search, intelligent_templates, proactive_suggestions, attachments, calculator, contract_analysis
 
 api_router = APIRouter()
 
@@ -18,3 +18,4 @@ api_router.include_router(intelligent_templates.router, prefix="/templates", tag
 api_router.include_router(proactive_suggestions.router, prefix="/suggestions", tags=["proactive-suggestions"])
 api_router.include_router(attachments.router, prefix="/attachments", tags=["attachments"])
 api_router.include_router(calculator.router, prefix="/calculator", tags=["calculator"])
+api_router.include_router(contract_analysis.router, prefix="/contract-analysis", tags=["contract-analysis"])
