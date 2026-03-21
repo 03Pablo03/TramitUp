@@ -151,7 +151,7 @@ export default function AccountPage() {
             </div>
           </div>
 
-          {apiProfile?.plan === "free" && (
+          {apiProfile?.plan !== "pro" && (
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="mb-4 font-semibold text-slate-800">Hazte PRO</h2>
               <p className="mb-4 text-sm text-slate-600">

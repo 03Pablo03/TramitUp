@@ -1,4 +1,8 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 
 const plans = [
   {
@@ -33,6 +37,18 @@ const plans = [
 ];
 
 export function PricingSection() {
+  const { user } = useAuth();
+  const router = useRouter();
+  const { startCheckout, loading } = useStripeCheckout();
+
+  const handleProClick = () => {
+    if (user) {
+      startCheckout();
+    } else {
+      router.push("/login");
+    }
+  };
+
   return (
     <section className="bg-white px-4 py-20">
       <div className="mx-auto max-w-6xl">
@@ -78,17 +94,23 @@ export function PricingSection() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href={plan.ctaPrimary ? "/account" : "/login"}
-                className={`mt-8 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-center font-bold transition-colors ${
-                  plan.ctaPrimary
-                    ? "bg-gradient-to-r from-[var(--primary)] to-blue-600 text-white shadow-lg hover:from-[var(--primary-dark)] hover:to-blue-700"
-                    : "border border-[var(--border)] text-[var(--text-body)] hover:bg-[var(--surface)]"
-                }`}
-              >
-                {plan.ctaPrimary && <span className="text-amber-300">★</span>}
-                {plan.ctaPrimary ? "Hazte PRO" : plan.cta}
-              </Link>
+              {plan.ctaPrimary ? (
+                <button
+                  onClick={handleProClick}
+                  disabled={loading}
+                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-bold transition-colors bg-gradient-to-r from-[var(--primary)] to-blue-600 text-white shadow-lg hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
+                >
+                  <span className="text-amber-300">★</span>
+                  Hazte PRO
+                </button>
+              ) : (
+                <button
+                  onClick={() => router.push("/login")}
+                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-bold transition-colors border border-[var(--border)] text-[var(--text-body)] hover:bg-[var(--surface)]"
+                >
+                  {plan.cta}
+                </button>
+              )}
             </div>
           ))}
         </div>

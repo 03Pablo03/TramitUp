@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 
 type RateLimitModalProps = {
   open: boolean;
@@ -9,6 +9,7 @@ type RateLimitModalProps = {
 };
 
 export function RateLimitModal({ open, onClose, message }: RateLimitModalProps) {
+  const { startCheckout, loading } = useStripeCheckout();
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -27,12 +28,13 @@ export function RateLimitModal({ open, onClose, message }: RateLimitModalProps) 
           >
             Cerrar
           </button>
-          <Link
-            href="/account"
-            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 py-2.5 font-bold text-white hover:from-[var(--primary-dark)] hover:to-blue-700"
+          <button
+            onClick={startCheckout}
+            disabled={loading}
+            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 py-2.5 font-bold text-white hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
           >
             ★ Hazte PRO
-          </Link>
+          </button>
         </div>
       </div>
     </div>

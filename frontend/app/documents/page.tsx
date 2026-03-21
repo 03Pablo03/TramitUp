@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { DocumentDownloadCard } from "@/components/DocumentDownloadCard";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 
 type DocumentItem = {
   document_id: string;
@@ -21,6 +22,7 @@ export default function DocumentsPage() {
   const router = useRouter();
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [userPlan, setUserPlan] = useState<string>("free");
+  const { startCheckout, loading: checkoutLoading } = useStripeCheckout();
 
   useEffect(() => {
     if (!authLoading && !user) router.push("/login");
@@ -83,12 +85,13 @@ export default function DocumentsPage() {
           </div>
           <div className="flex items-center gap-4">
             {userPlan !== "pro" && userPlan !== "document" && (
-              <Link
-                href="/account"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700"
+              <button
+                onClick={startCheckout}
+                disabled={checkoutLoading}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
               >
                 ★ Hazte PRO
-              </Link>
+              </button>
             )}
             <Link href="/chat" className="text-slate-600 hover:text-slate-800">
               Chat
@@ -106,12 +109,13 @@ export default function DocumentsPage() {
             {userPlan !== "pro" && userPlan !== "document" ? (
               <>
                 <p className="mb-4 text-slate-600">Los modelos de escritos son exclusivos del plan PRO.</p>
-                <Link
-                  href="/account"
-                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700"
+                <button
+                  onClick={startCheckout}
+                  disabled={checkoutLoading}
+                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
                 >
                   ★ Hazte PRO para generar modelos
-                </Link>
+                </button>
               </>
             ) : (
               <>

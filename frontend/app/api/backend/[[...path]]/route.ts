@@ -64,6 +64,9 @@ async function proxyRequest(
   const headers: Record<string, string> = {
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
+    // Tell the backend not to compress — the proxy reads raw bytes and the
+    // browser would try to decompress twice (ERR_CONTENT_DECODING_FAILED).
+    "Accept-Encoding": "identity",
   };
 
   try {
@@ -97,10 +100,19 @@ async function proxyRequest(
     }
 
     if (res.body) {
+      // Copy headers but strip encoding headers that cause double-decompression
+      // (fetch() already decompresses gzip/br, so forwarding Content-Encoding
+      // makes the browser try to decompress again → ERR_CONTENT_DECODING_FAILED).
+      const responseHeaders = new Headers();
+      res.headers.forEach((value, key) => {
+        const lower = key.toLowerCase();
+        if (lower === "content-encoding" || lower === "transfer-encoding" || lower === "content-length") return;
+        responseHeaders.set(key, value);
+      });
       return new NextResponse(res.body, {
         status: res.status,
         statusText: res.statusText,
-        headers: res.headers,
+        headers: responseHeaders,
       });
     }
     return new NextResponse(null, { status: res.status });

@@ -1,30 +1,46 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { LandingNav } from "../landing/components/LandingNav";
 import { Footer } from "../landing/components/Footer";
+import { useAuth } from "@/context/AuthContext";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+
+const plans = [
+  {
+    name: "Gratis",
+    price: "0",
+    period: "€",
+    features: ["2 consultas al día", "Información basada en normativa real", "Acceso a todos los temas"],
+    notIncluded: ["Generación de modelos de escritos", "Alertas de plazos"],
+    cta: "Empezar gratis",
+    primary: false,
+    popular: false,
+  },
+  {
+    name: "PRO",
+    price: "9,99",
+    period: "€/mes",
+    features: ["Consultas ilimitadas", "Modelos de escritos ilimitados", "Alertas de plazos legales", "Historial completo"],
+    notIncluded: [],
+    cta: "Probar PRO",
+    primary: true,
+    popular: true,
+  },
+];
 
 export default function PricingPage() {
-  const plans = [
-    {
-      name: "Gratis",
-      price: "0",
-      period: "€",
-      features: ["2 consultas al día", "Información basada en normativa real", "Acceso a todos los temas"],
-      notIncluded: ["Generación de modelos de escritos", "Alertas de plazos"],
-      cta: "Empezar gratis",
-      primary: false,
-      popular: false,
-    },
-    {
-      name: "PRO",
-      price: "9,99",
-      period: "€/mes",
-      features: ["Consultas ilimitadas", "Modelos de escritos ilimitados", "Alertas de plazos legales", "Historial completo"],
-      notIncluded: [],
-      cta: "Probar PRO",
-      primary: true,
-      popular: true,
-    },
-  ];
+  const { user } = useAuth();
+  const router = useRouter();
+  const { startCheckout, loading } = useStripeCheckout();
+
+  const handleProClick = () => {
+    if (user) {
+      startCheckout();
+    } else {
+      router.push("/login");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -70,17 +86,23 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href={plan.primary ? "/account" : "/login"}
-                className={`mt-8 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-center font-bold transition-colors ${
-                  plan.primary
-                    ? "bg-gradient-to-r from-[var(--primary)] to-blue-600 text-white shadow-lg hover:from-[var(--primary-dark)] hover:to-blue-700"
-                    : "border border-[var(--border)] text-[var(--text-body)] hover:bg-[var(--surface)]"
-                }`}
-              >
-                {plan.primary && <span className="text-amber-300">★</span>}
-                {plan.primary ? "Hazte PRO" : plan.cta}
-              </Link>
+              {plan.primary ? (
+                <button
+                  onClick={handleProClick}
+                  disabled={loading}
+                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-bold transition-colors bg-gradient-to-r from-[var(--primary)] to-blue-600 text-white shadow-lg hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
+                >
+                  <span className="text-amber-300">★</span>
+                  Hazte PRO
+                </button>
+              ) : (
+                <button
+                  onClick={() => router.push("/login")}
+                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-bold transition-colors border border-[var(--border)] text-[var(--text-body)] hover:bg-[var(--surface)]"
+                >
+                  {plan.cta}
+                </button>
+              )}
             </div>
           ))}
         </div>

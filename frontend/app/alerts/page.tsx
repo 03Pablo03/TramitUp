@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useAlerts } from "@/hooks/useAlerts";
 import { apiFetch } from "@/lib/api";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { AlertCard } from "@/components/alerts/AlertCard";
 import { AlertCalendar } from "@/components/alerts/AlertCalendar";
 import { ManualCreateAlertModal } from "@/components/alerts/ManualCreateAlertModal";
@@ -23,6 +24,7 @@ export default function AlertsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [userPlan, setUserPlan] = useState<string>("free");
   const { alerts, isLoading, dismissAlert, deleteAlert, refresh } = useAlerts(!!user && !authLoading && (userPlan === "pro" || userPlan === "document"));
+  const { startCheckout, loading: checkoutLoading } = useStripeCheckout();
 
   useEffect(() => {
     if (user && !authLoading) {
@@ -79,12 +81,13 @@ export default function AlertsPage() {
           </div>
           <div className="flex items-center gap-4">
             {userPlan !== "pro" && userPlan !== "document" && (
-              <Link
-                href="/account"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700"
+              <button
+                onClick={startCheckout}
+                disabled={checkoutLoading}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
               >
                 ★ Hazte PRO
-              </Link>
+              </button>
             )}
             {/* View toggle */}
             <div className="flex items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
@@ -112,7 +115,7 @@ export default function AlertsPage() {
             <button
               onClick={() => {
                 if (userPlan !== "pro" && userPlan !== "document") {
-                  router.push("/account");
+                  startCheckout();
                 } else {
                   setShowCreateModal(true);
                 }
@@ -135,12 +138,13 @@ export default function AlertsPage() {
             <p className="mt-2 text-sm text-amber-700">
               Hazte PRO para crear alertas de plazos legales y recibir avisos por email antes de que venzan.
             </p>
-            <Link
-              href="/account"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700"
+            <button
+              onClick={startCheckout}
+              disabled={checkoutLoading}
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
             >
               ★ Hazte PRO — 9,99 €/mes
-            </Link>
+            </button>
           </div>
         )}
         {/* Stats strip */}
