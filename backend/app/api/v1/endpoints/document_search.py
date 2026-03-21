@@ -2,6 +2,8 @@
 Endpoints para búsqueda avanzada de documentos por entidades legales.
 """
 
+import logging
+import re
 from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
@@ -9,8 +11,25 @@ from pydantic import BaseModel
 from app.core.auth import require_auth
 from app.core.supabase_client import get_supabase_client
 
-
+logger = logging.getLogger(__name__)
 router = APIRouter()
+
+# Whitelist of allowed entity types (prevents injection and limits surface area)
+_ALLOWED_ENTITY_TYPES = frozenset({
+    "fecha", "importe", "dni", "nie", "nif", "cif",
+    "factura", "referencia", "iban", "plazo", "direccion",
+    "nombre", "empresa", "contrato", "matricula",
+})
+
+def _validate_entity_type(entity_type: str) -> str:
+    """Validates entity_type against whitelist. Returns the value or raises 400."""
+    cleaned = entity_type.strip().lower()
+    if cleaned not in _ALLOWED_ENTITY_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Tipo de entidad no válido. Valores admitidos: {', '.join(sorted(_ALLOWED_ENTITY_TYPES))}",
+        )
+    return cleaned
 
 
 class DocumentSearchResult(BaseModel):
@@ -33,32 +52,24 @@ class EntityStatsResult(BaseModel):
 @router.get("/search/by-entity", response_model=List[DocumentSearchResult])
 async def search_documents_by_entity(
     entity_type: str = Query(..., description="Tipo de entidad a buscar (fecha, importe, dni, etc.)"),
-    min_confidence: float = Query(0.5, description="Confianza mínima (0-1)"),
-    limit: int = Query(20, description="Número máximo de resultados"),
+    min_confidence: float = Query(0.5, ge=0.0, le=1.0, description="Confianza mínima (0-1)"),
+    limit: int = Query(20, ge=1, le=100, description="Número máximo de resultados"),
     user_id: str = Depends(require_auth)
 ):
     """
     Busca documentos que contengan un tipo específico de entidad legal.
-    
-    Ejemplos de entity_type:
-    - "fecha" - busca fechas
-    - "importe" - busca importes monetarios  
-    - "dni" - busca DNIs
-    - "factura" - busca números de factura
+
+    Valores válidos para entity_type: fecha, importe, dni, nie, nif, cif,
+    factura, referencia, iban, plazo, direccion, nombre, empresa, contrato, matricula.
     """
+    validated_type = _validate_entity_type(entity_type)
     try:
         supabase = get_supabase_client()
-        
-        # Usar la función SQL personalizada para búsqueda eficiente
         result = supabase.rpc(
             "search_documents_by_entity_type",
-            {
-                "p_user_id": user_id,
-                "p_entity_type": entity_type
-            }
+            {"p_user_id": user_id, "p_entity_type": validated_type}
         ).limit(limit).execute()
-        
-        # Filtrar por confianza mínima y formatear resultados
+
         filtered_results = []
         for row in result.data or []:
             if row.get("confidence", 0) >= min_confidence:
@@ -68,16 +79,16 @@ async def search_documents_by_entity(
                     entity_value=row["entity_value"],
                     confidence=row["confidence"],
                     created_at=row["created_at"],
-                    entity_type=entity_type
+                    entity_type=validated_type,
                 ))
-        
+
         return filtered_results
-        
+
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error buscando documentos por entidad: {str(e)}"
-        )
+        logger.error("Error searching documents by entity type: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error buscando documentos. Inténtalo de nuevo.")
 
 
 @router.get("/search/entity-stats", response_model=List[EntityStatsResult])
@@ -107,10 +118,8 @@ async def get_user_entity_statistics(
         ]
         
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error obteniendo estadísticas de entidades: {str(e)}"
-        )
+        logger.error("Error getting entity stats: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error obteniendo estadísticas. Inténtalo de nuevo.")
 
 
 @router.get("/search/similar-documents")
@@ -196,23 +205,22 @@ async def find_similar_documents(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error buscando documentos similares: {str(e)}"
-        )
+        logger.error("Error finding similar documents: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error buscando documentos similares. Inténtalo de nuevo.")
 
 
 @router.get("/search/entity-timeline")
 async def get_entity_timeline(
     entity_type: str = Query(..., description="Tipo de entidad (fecha, importe, etc.)"),
-    start_date: Optional[str] = Query(None, description="Fecha inicio (YYYY-MM-DD)"),
-    end_date: Optional[str] = Query(None, description="Fecha fin (YYYY-MM-DD)"),
+    start_date: Optional[str] = Query(None, description="Fecha inicio (YYYY-MM-DD)", pattern=r"^\d{4}-\d{2}-\d{2}$"),
+    end_date: Optional[str] = Query(None, description="Fecha fin (YYYY-MM-DD)", pattern=r"^\d{4}-\d{2}-\d{2}$"),
     user_id: str = Depends(require_auth)
 ):
     """
     Obtiene una línea temporal de entidades específicas.
     Útil para ver evolución de importes, fechas de vencimiento, etc.
     """
+    validated_type = _validate_entity_type(entity_type)
     try:
         supabase = get_supabase_client()
         
@@ -238,7 +246,7 @@ async def get_entity_timeline(
             # Buscar entidades del tipo solicitado
             matching_entities = []
             for entity in doc_entities.get("entities", []):
-                if entity_type.lower() in entity.get("type", "").lower():
+                if validated_type in entity.get("type", "").lower():
                     matching_entities.append({
                         "value": entity.get("value"),
                         "confidence": entity.get("confidence"),
@@ -254,7 +262,7 @@ async def get_entity_timeline(
                 })
         
         return {
-            "entity_type": entity_type,
+            "entity_type": validated_type,
             "timeline": timeline_data,
             "total_documents": len(timeline_data),
             "date_range": {
@@ -264,7 +272,5 @@ async def get_entity_timeline(
         }
         
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error generando línea temporal: {str(e)}"
-        )
+        logger.error("Error generating entity timeline: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error generando la línea temporal. Inténtalo de nuevo.")

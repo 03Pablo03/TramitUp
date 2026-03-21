@@ -2,10 +2,13 @@
 Endpoint para análisis de cláusulas contractuales.
 POST /contract-analysis  — recibe un archivo, devuelve JSON con cláusulas problemáticas.
 """
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+import logging
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
 from app.core.auth import require_auth
 from app.services.contract_analysis_service import analyze_contract
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -50,6 +53,7 @@ async def contract_analysis(
             filename=file.filename or "contrato",
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error analizando el contrato: {str(e)}")
+        logger.error("Contract analysis error: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error analizando el contrato. Inténtalo de nuevo.")
 
     return result
