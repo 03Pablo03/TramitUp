@@ -210,11 +210,17 @@ export default function CalculadoraPage() {
   const [resultado, setResultado] = useState<ResultadoCalculo | null>(null);
   const [errores, setErrores] = useState<Record<string, string>>({});
 
+  // Parsea "28.000" o "28,000" o "28000" → 28000
+  const parseSalario = (raw: string): number =>
+    parseFloat(raw.replace(/\./g, "").replace(",", "."));
+
   const validarPaso2 = (): boolean => {
     const e: Record<string, string> = {};
-    const s = parseFloat(salario.replace(",", "."));
+    const s = parseSalario(salario);
     if (!salario || isNaN(s) || s <= 0)
       e.salario = "Introduce un salario bruto anual válido";
+    else if (s < 500)
+      e.salario = "El salario parece muy bajo. Introdúcelo en euros anuales (ej: 28000)";
     if (!fechaInicio) e.fechaInicio = "Introduce la fecha de inicio del contrato";
     if (!fechaFin) e.fechaFin = "Introduce la fecha del despido o fin de contrato";
     if (fechaInicio && fechaFin && new Date(fechaFin) <= new Date(fechaInicio))
@@ -227,7 +233,7 @@ export default function CalculadoraPage() {
     if (!validarPaso2()) return;
     const res = calcular(
       tipo,
-      parseFloat(salario.replace(",", ".")),
+      parseSalario(salario),
       new Date(fechaInicio),
       new Date(fechaFin)
     );
@@ -357,7 +363,8 @@ export default function CalculadoraPage() {
                     Salario bruto anual (€)
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     placeholder="Ej: 28000"
                     value={salario}
                     onChange={(e) => setSalario(e.target.value)}
