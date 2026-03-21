@@ -104,14 +104,11 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
 
       {/* Hints and disclaimer */}
       <div className="mt-3 flex flex-col items-center gap-1">
-        <span className="text-xs text-slate-500">
-          ↵ Enter para enviar · Shift+Enter nueva línea
-          {attachments.length > 0 && (
-            <span className="ml-2 font-medium text-[var(--primary)]">
-              · {attachments.length} archivo{attachments.length > 1 ? 's' : ''} adjunto{attachments.length > 1 ? 's' : ''}
-            </span>
-          )}
-        </span>
+        {attachments.length > 0 && (
+          <span className="text-xs font-medium text-[var(--primary)]">
+            {attachments.length} archivo{attachments.length > 1 ? 's' : ''} adjunto{attachments.length > 1 ? 's' : ''}
+          </span>
+        )}
         <LegalDisclaimer />
       </div>
     </div>
