@@ -2,9 +2,12 @@
 
 import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LandingNav } from "../landing/components/LandingNav";
 import { Footer } from "../landing/components/Footer";
 import { ContractAnalysisResult } from "@/components/ContractAnalysisResult";
+import { ProGate } from "@/components/ProGate";
+import { useAuth } from "@/context/AuthContext";
 
 const ACCEPTED_TYPES = [
   "application/pdf",
@@ -32,7 +35,11 @@ interface AnalysisResult {
   recomendacion_general: string;
 }
 
+const PRO_PLANS = new Set(["pro", "premium", "document"]);
+
 export default function ContratoPage() {
+  const { user, profile, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -108,11 +115,34 @@ export default function ContratoPage() {
     if (inputRef.current) inputRef.current.value = "";
   };
 
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F9FAFB]">
+        <div className="text-slate-500">Cargando...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    router.push("/login");
+    return null;
+  }
+
+  const isPro = PRO_PLANS.has(profile?.plan ?? "free");
+
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
       <LandingNav />
 
-      <main className="mx-auto max-w-2xl px-4 py-12">
+      {!isPro && (
+        <ProGate
+          icon="📄"
+          feature="Análisis de contratos"
+          description="Detecta cláusulas abusivas e ilegales en tus contratos de alquiler o laborales. Disponible en el plan PRO."
+        />
+      )}
+
+      {isPro && <main className="mx-auto max-w-2xl px-4 py-12">
         {/* Cabecera */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-blue-600 text-3xl text-white shadow-lg">
@@ -259,6 +289,7 @@ export default function ContratoPage() {
         )}
       </main>
 
+      {isPro && </main>}
       <Footer />
     </div>
   );

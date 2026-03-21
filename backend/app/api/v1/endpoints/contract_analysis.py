@@ -7,8 +7,11 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
 from app.core.auth import require_auth
 from app.services.contract_analysis_service import analyze_contract
+from app.services.subscription_service import get_user_plan
 
 logger = logging.getLogger(__name__)
+
+PRO_PLANS = {"pro", "premium", "document"}
 
 router = APIRouter()
 
@@ -26,12 +29,19 @@ MAX_SIZE = 10 * 1024 * 1024  # 10 MB
 @router.post("")
 async def contract_analysis(
     file: UploadFile = File(...),
-    _user_id: str = Depends(require_auth),
+    user_id: str = Depends(require_auth),
 ):
     """
     Analiza un contrato (PDF/DOCX/imagen) e identifica cláusulas problemáticas según derecho español.
-    Requiere autenticación.
+    Requiere plan PRO.
     """
+    plan = get_user_plan(user_id)
+    if plan not in PRO_PLANS:
+        raise HTTPException(
+            status_code=403,
+            detail="El análisis de contratos es una función exclusiva del plan PRO.",
+        )
+
     content_type = file.content_type or ""
     if content_type not in ALLOWED_TYPES:
         raise HTTPException(

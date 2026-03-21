@@ -70,6 +70,7 @@ export function ChatLayout({
               className="inline-flex items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700 transition-all hover:bg-violet-100 hover:border-violet-300"
             >
               📄 Analizar contrato
+              <span className="rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">PRO</span>
             </Link>
 
             {/* Separador */}
@@ -89,9 +90,10 @@ export function ChatLayout({
             </Link>
             <Link
               href="/casos"
-              className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
             >
               Expedientes
+              <span className="rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-white leading-none">PRO</span>
             </Link>
             <Link
               href="/documents"
