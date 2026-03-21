@@ -3,10 +3,9 @@
 import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LandingNav } from "../landing/components/LandingNav";
-import { Footer } from "../landing/components/Footer";
 import { ContractAnalysisResult } from "@/components/ContractAnalysisResult";
 import { ProGate } from "@/components/ProGate";
+import { ToolHeader } from "@/components/ToolHeader";
 import { useAuth } from "@/context/AuthContext";
 
 const ACCEPTED_TYPES = [
@@ -132,7 +131,7 @@ export default function ContratoPage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      <LandingNav />
+      <ToolHeader title="Analizar contrato" />
 
       {!isPro && (
         <ProGate
@@ -290,7 +289,6 @@ export default function ContratoPage() {
       </main>
 
       {isPro && </main>}
-      <Footer />
     </div>
   );
 }

@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LandingNav } from "../landing/components/LandingNav";
-import { Footer } from "../landing/components/Footer";
+import { ToolHeader } from "@/components/ToolHeader";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -254,7 +253,7 @@ export default function CalculadoraPage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      <LandingNav />
+      <ToolHeader title="Calculadora de indemnizaciones" />
 
       <main className="mx-auto max-w-2xl px-4 py-12">
         {/* Cabecera */}
@@ -524,7 +523,6 @@ export default function CalculadoraPage() {
         </p>
       </main>
 
-      <Footer />
     </div>
   );
 }
