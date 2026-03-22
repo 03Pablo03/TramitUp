@@ -351,6 +351,23 @@ Responde en español, sé preciso y enfócate en información útil para reclama
             print(f"Error getting conversation attachments: {e}")
             return []
     
+    def get_attachment_texts(self, attachment_ids: List[str], user_id: str) -> List[str]:
+        """Devuelve el texto extraído de cada adjunto (solo los que tienen texto)."""
+        if not attachment_ids:
+            return []
+        try:
+            supabase = get_supabase_client()
+            result = supabase.table("conversation_attachments").select(
+                "extracted_text"
+            ).in_("id", attachment_ids).eq("user_id", user_id).execute()
+            return [
+                row["extracted_text"]
+                for row in (result.data or [])
+                if row.get("extracted_text") and row["extracted_text"].strip()
+            ]
+        except Exception:
+            return []
+
     def get_enhanced_document_context(self, attachment_ids: List[str], user_id: str) -> str:
         """
         NUEVA FUNCIONALIDAD: Obtiene contexto enriquecido de documentos con entidades legales.

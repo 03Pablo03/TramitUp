@@ -52,6 +52,54 @@ def _extract_json(text: str) -> Dict[str, Any]:
     raise ValueError("No se encontró JSON válido en la respuesta del modelo")
 
 
+def analyze_contract_from_text(texto: str) -> Dict[str, Any] | None:
+    """
+    Analiza texto ya extraído de un documento para detectar si es un contrato
+    de alquiler o laboral y devuelve cláusulas problemáticas.
+
+    Returns None si no es un contrato alquiler/laboral reconocible.
+    Solo para contratos con prompts especializados (no genérico).
+    """
+    if not texto or len(texto.strip()) < 100:
+        return None
+
+    texto_truncado = texto[:_MAX_CONTRACT_CHARS]
+    llm = get_llm(temperature=0.1, max_output_tokens=4096)
+
+    # Detectar tipo de contrato
+    tipo_prompt = DETECT_CONTRACT_TYPE_PROMPT.format(texto=texto_truncado[:1500])
+    tipo_response = llm.invoke(tipo_prompt)
+    tipo_raw = (tipo_response.content if hasattr(tipo_response, "content") else str(tipo_response)).strip().lower()
+
+    tipo_contrato = None
+    for key in _PROMPT_MAP:
+        if key in tipo_raw:
+            tipo_contrato = key
+            break
+
+    # Solo analizar contratos con prompt especializado (alquiler o laboral)
+    if not tipo_contrato:
+        return None
+
+    # Analizar con prompt especializado
+    full_prompt = _PROMPT_MAP[tipo_contrato].format(texto=texto_truncado)
+    analysis_response = llm.invoke(full_prompt)
+    analysis_text = (
+        analysis_response.content if hasattr(analysis_response, "content") else str(analysis_response)
+    )
+
+    try:
+        result = _extract_json(analysis_text)
+    except ValueError:
+        return None
+
+    result.setdefault("tipo_contrato", tipo_contrato)
+    result.setdefault("resumen", "")
+    result.setdefault("clausulas", [])
+    result.setdefault("recomendacion_general", "")
+    return result
+
+
 async def analyze_contract(
     file_content: bytes,
     content_type: str,

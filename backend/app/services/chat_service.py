@@ -6,6 +6,8 @@ from app.services.personalization_service import personalization_service
 from app.services.document_analysis_service import document_analysis_service
 from app.ai.llm_client import get_llm
 
+_PRO_PLANS = {"pro", "premium", "document"}
+
 
 def create_conversation(
     user_id: str,
@@ -69,6 +71,59 @@ def get_or_create_conversation(
     )
 
 
+def _format_contract_analysis_for_chat(analysis: dict) -> str:
+    """Formatea el análisis de contrato como contexto de texto para el LLM."""
+    tipo = analysis.get("tipo_contrato", "contrato")
+    resumen = analysis.get("resumen", "")
+    clausulas = analysis.get("clausulas", [])
+    recomendacion = analysis.get("recomendacion_general", "")
+
+    lines = [
+        "=== ANÁLISIS JURÍDICO DEL CONTRATO ADJUNTO ===",
+        f"Tipo: {tipo.upper()}",
+    ]
+    if resumen:
+        lines.append(f"Resumen: {resumen}")
+    if clausulas:
+        lines.append("\nCLÁUSULAS PROBLEMÁTICAS DETECTADAS:")
+        risk_icons = {"alto": "🔴", "medio": "🟡", "bajo": "🔵"}
+        for c in clausulas:
+            icon = risk_icons.get(c.get("riesgo", ""), "⚠️")
+            lines.append(f"\n{icon} [{c.get('riesgo', '').upper()}] {c.get('titulo', '')}")
+            if c.get("fragmento"):
+                lines.append(f'   Cláusula: "{c["fragmento"][:200]}"')
+            if c.get("problema"):
+                lines.append(f"   Problema: {c['problema']}")
+            if c.get("base_legal"):
+                lines.append(f"   Base legal: {c['base_legal']}")
+            if c.get("accion"):
+                lines.append(f"   Acción recomendada: {c['accion']}")
+    if recomendacion:
+        lines.append(f"\nRecomendación general: {recomendacion}")
+    lines.append("=== FIN ANÁLISIS DE CONTRATO ===")
+    return "\n".join(lines)
+
+
+def _get_contract_analysis_context(attachment_ids: list[str], user_id: str) -> str:
+    """
+    Si los adjuntos contienen contratos de alquiler/laboral, devuelve análisis jurídico
+    estructurado para incluir en el contexto del LLM.
+    """
+    try:
+        from app.services.contract_analysis_service import analyze_contract_from_text
+        texts = document_analysis_service.get_attachment_texts(attachment_ids, user_id)
+        if not texts:
+            return ""
+        results = []
+        for texto in texts:
+            analysis = analyze_contract_from_text(texto)
+            if analysis:
+                results.append(_format_contract_analysis_for_chat(analysis))
+        return "\n\n".join(results)
+    except Exception:
+        return ""
+
+
 def run_chat(user_id: str, message: str, conversation_id: str | None = None, attachment_ids: list[str] | None = None) -> tuple[str, dict, object]:
     """
     Run chat pipeline: classify, RAG, stream with personalization.
@@ -82,12 +137,21 @@ def run_chat(user_id: str, message: str, conversation_id: str | None = None, att
     attachment_context = ""
     if attachment_ids:
         attachment_context = document_analysis_service.get_enhanced_document_context(attachment_ids, user_id)
-    
+
+    # Análisis especializado de contratos (alquiler/laboral) para usuarios PRO
+    contract_analysis_context = ""
+    if attachment_ids:
+        from app.services.subscription_service import get_user_plan
+        if get_user_plan(user_id) in _PRO_PLANS:
+            contract_analysis_context = _get_contract_analysis_context(attachment_ids, user_id)
+
     # Combinar mensaje con contexto de documentos para clasificación
     full_message = message
     if attachment_context:
         full_message = f"{message}\n\n{attachment_context}"
-    
+    if contract_analysis_context:
+        full_message = f"{full_message}\n\n{contract_analysis_context}"
+
     try:
         classification = classify_tramite(full_message)
     except Exception:
@@ -96,14 +160,17 @@ def run_chat(user_id: str, message: str, conversation_id: str | None = None, att
             "urgency": "media", "keywords": [],
             "needs_more_info": False, "titulo_resumen": message[:60],
         }
-    
+
     # RAG contextual basado en intereses del usuario (incluye contexto de documentos)
     rag_context_chunks = retrieve_context_personalized(full_message, user_context)
     rag_context = "\n\n---\n\n".join(c["content"] for c in rag_context_chunks)
-    
+
     # Añadir contexto de documentos adjuntos al RAG
     if attachment_context:
         rag_context = f"{rag_context}\n\n{attachment_context}"
+    # Añadir análisis de contrato al RAG (con máxima prioridad para el LLM)
+    if contract_analysis_context:
+        rag_context = f"{contract_analysis_context}\n\n{rag_context}"
     
     conv_id = get_or_create_conversation(user_id, conversation_id, message, classification)
     history = get_conversation_messages(conv_id) if conv_id else []
