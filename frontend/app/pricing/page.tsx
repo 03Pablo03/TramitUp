@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LandingNav } from "../landing/components/LandingNav";
 import { Footer } from "../landing/components/Footer";
@@ -31,15 +32,28 @@ const plans = [
 ];
 
 export default function PricingPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const { startCheckout, loading } = useStripeCheckout();
+  const searchParams = new URLSearchParams(
+    typeof window !== "undefined" ? window.location.search : ""
+  );
+  const autoCheckout = searchParams.get("checkout") === "pro";
+  const [checkoutTriggered, setCheckoutTriggered] = useState(false);
+
+  // Auto-trigger checkout when user arrives logged in with ?checkout=pro
+  useEffect(() => {
+    if (autoCheckout && user && !authLoading && !checkoutTriggered) {
+      setCheckoutTriggered(true);
+      startCheckout();
+    }
+  }, [autoCheckout, user, authLoading, checkoutTriggered, startCheckout]);
 
   const handleProClick = () => {
     if (user) {
       startCheckout();
     } else {
-      router.push("/login");
+      router.push("/login?redirect=" + encodeURIComponent("/pricing?checkout=pro"));
     }
   };
 

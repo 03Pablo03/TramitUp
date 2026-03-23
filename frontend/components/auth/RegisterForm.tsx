@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 type RegisterFormProps = {
@@ -15,14 +15,23 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const { signInWithGoogle, signUpWithEmail } = useAuth();
+  const { signUpWithEmail } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/chat";
 
   const handleGoogleSignUp = async () => {
     setError({});
     setLoading(true);
     try {
-      await signInWithGoogle();
+      const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`;
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: callbackUrl },
+      });
+      if (oauthError) throw oauthError;
     } catch (err) {
       setError({ form: err instanceof Error ? err.message : "Error al registrarse" });
     } finally {

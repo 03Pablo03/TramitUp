@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
@@ -17,6 +17,8 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const [connectionOk, setConnectionOk] = useState<boolean | null>(null);
   const { signInWithGoogle, signInWithEmail, signInWithMagicLink } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/chat";
 
   // Verificar conectividad con Supabase al montar
   useEffect(() => {
@@ -44,13 +46,15 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     setError({});
     setLoading(true);
     try {
-      const timeoutMs = 15000;
-      await Promise.race([
-        signInWithGoogle(),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("La conexión tardó demasiado. Comprueba tu internet.")), timeoutMs)
-        ),
-      ]);
+      // Pass redirect as `next` param to the OAuth callback
+      const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`;
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: callbackUrl },
+      });
+      if (oauthError) throw oauthError;
     } catch (err) {
       setError({ form: err instanceof Error ? err.message : "Error al iniciar sesión" });
       if (process.env.NODE_ENV === "development") console.error("[Login Google]", err);
@@ -75,7 +79,7 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
           setTimeout(() => reject(new Error("La conexión tardó demasiado. Comprueba tu internet o que el proyecto Supabase esté activo.")), timeoutMs)
         ),
       ]);
-      router.push("/chat");
+      router.push(redirectTo);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error al iniciar sesión";
       setError({ password: msg });

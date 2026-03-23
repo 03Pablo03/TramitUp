@@ -46,7 +46,7 @@ export function PricingSection() {
     if (user) {
       startCheckout();
     } else {
-      router.push("/login");
+      router.push("/login?redirect=" + encodeURIComponent("/pricing?checkout=pro"));
     }
   };
 
