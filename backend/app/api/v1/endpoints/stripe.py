@@ -1,10 +1,17 @@
 from fastapi import APIRouter, Depends, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from app.core.auth import require_auth
 from app.core.config import get_settings
 from app.services.subscription_service import ensure_profile
-from app.services.stripe_service import create_checkout_session, handle_webhook
+from app.services.stripe_service import (
+    create_checkout_session,
+    handle_webhook,
+    get_subscription_info,
+    cancel_subscription,
+    reactivate_subscription,
+)
 
 router = APIRouter()
 
@@ -34,10 +41,38 @@ def stripe_checkout(
     return {"url": url}
 
 
+@router.get("/subscription")
+def get_subscription(user_id: str = Depends(require_auth)):
+    """Devuelve info de la suscripción activa del usuario."""
+    info = get_subscription_info(user_id)
+    if not info:
+        return {"subscription": None}
+    return {"subscription": info}
+
+
+@router.post("/subscription/cancel")
+def cancel_sub(user_id: str = Depends(require_auth)):
+    """Cancela la suscripción al final del periodo actual."""
+    try:
+        result = cancel_subscription(user_id)
+        return {"ok": True, "subscription": result}
+    except ValueError as e:
+        return JSONResponse(status_code=400, content={"detail": str(e)})
+
+
+@router.post("/subscription/reactivate")
+def reactivate_sub(user_id: str = Depends(require_auth)):
+    """Reactiva una suscripción programada para cancelarse."""
+    try:
+        result = reactivate_subscription(user_id)
+        return {"ok": True, "subscription": result}
+    except ValueError as e:
+        return JSONResponse(status_code=400, content={"detail": str(e)})
+
+
 @router.post("/webhook")
 async def stripe_webhook(req: Request):
     """Webhook de Stripe - no requiere auth."""
-    from fastapi.responses import JSONResponse
     payload = await req.body()
     sig = req.headers.get("stripe-signature", "")
     if handle_webhook(payload, sig):
