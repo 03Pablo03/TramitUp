@@ -5,10 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { CaseCard, CaseData } from "@/components/CaseCard";
-import { ProGate } from "@/components/ProGate";
 import { ToolHeader } from "@/components/ToolHeader";
-
-const PRO_PLANS = new Set(["pro", "premium", "document"]);
 
 const CATEGORIES = [
   { value: "laboral", label: "💼 Laboral" },
@@ -96,19 +93,6 @@ export default function CasosPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#F9FAFB]">
         <div className="text-slate-500">Cargando...</div>
-      </div>
-    );
-  }
-
-  const isPro = PRO_PLANS.has(profile?.plan ?? "free");
-  if (!isPro) {
-    return (
-      <div className="min-h-screen bg-[#F9FAFB]">
-        <ProGate
-          icon="📁"
-          feature="Expedientes legales"
-          description="Organiza todas tus reclamaciones en carpetas: agrupa conversaciones, documentos y alertas de plazo en un mismo expediente. Disponible en el plan PRO."
-        />
       </div>
     );
   }

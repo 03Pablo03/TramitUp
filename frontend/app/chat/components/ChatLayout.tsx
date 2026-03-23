@@ -91,10 +91,9 @@ export function ChatLayout({
             </Link>
             <Link
               href="/casos"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+              className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
             >
               Expedientes
-              <ProBadge />
             </Link>
             <Link
               href="/documents"

@@ -20,12 +20,9 @@ from app.services.case_service import (
     VALID_CATEGORIES,
     VALID_STATUSES,
 )
-from app.services.subscription_service import get_user_plan
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
-
-PRO_PLANS = {"pro", "premium", "document"}
 
 
 # ─── Schemas ──────────────────────────────────────────────────────────────────
@@ -69,23 +66,12 @@ def _validate_status(status: Optional[str]) -> Optional[str]:
 
 # ─── Endpoints ────────────────────────────────────────────────────────────────
 
-def _require_pro(user_id: str) -> None:
-    """Lanza 403 si el usuario no tiene plan PRO."""
-    plan = get_user_plan(user_id)
-    if plan not in PRO_PLANS:
-        raise HTTPException(
-            status_code=403,
-            detail="Los expedientes son una función exclusiva del plan PRO.",
-        )
-
-
 @router.post("")
 def api_create_case(
     request: CreateCaseRequest,
     user_id: str = Depends(require_auth),
 ):
-    """Crea un nuevo expediente. Requiere plan PRO."""
-    _require_pro(user_id)
+    """Crea un nuevo expediente."""
     _validate_category(request.category)
 
     try:
@@ -104,8 +90,7 @@ def api_create_case(
 
 @router.get("")
 def api_list_cases(user_id: str = Depends(require_auth)):
-    """Lista todos los expedientes del usuario. Requiere plan PRO."""
-    _require_pro(user_id)
+    """Lista todos los expedientes del usuario."""
     try:
         return {"cases": list_cases(user_id)}
     except Exception as e:
@@ -115,8 +100,7 @@ def api_list_cases(user_id: str = Depends(require_auth)):
 
 @router.get("/{case_id}")
 def api_get_case(case_id: str, user_id: str = Depends(require_auth)):
-    """Devuelve el detalle de un expediente. Requiere plan PRO."""
-    _require_pro(user_id)
+    """Devuelve el detalle de un expediente."""
     try:
         case = get_case(user_id, case_id)
     except Exception as e:
@@ -134,8 +118,7 @@ def api_update_case(
     request: UpdateCaseRequest,
     user_id: str = Depends(require_auth),
 ):
-    """Actualiza un expediente. Requiere plan PRO."""
-    _require_pro(user_id)
+    """Actualiza un expediente."""
     _validate_category(request.category)
     _validate_status(request.status)
 
@@ -152,8 +135,7 @@ def api_update_case(
 
 @router.delete("/{case_id}")
 def api_delete_case(case_id: str, user_id: str = Depends(require_auth)):
-    """Elimina un expediente. Requiere plan PRO."""
-    _require_pro(user_id)
+    """Elimina un expediente."""
     try:
         ok = delete_case(user_id, case_id)
     except Exception as e:
@@ -171,8 +153,7 @@ def api_link_conversation(
     conversation_id: str,
     user_id: str = Depends(require_auth),
 ):
-    """Vincula una conversación al expediente. Requiere plan PRO."""
-    _require_pro(user_id)
+    """Vincula una conversación al expediente."""
     try:
         ok = link_conversation(user_id, case_id, conversation_id)
     except Exception as e:
@@ -190,8 +171,7 @@ def api_unlink_conversation(
     conversation_id: str,
     user_id: str = Depends(require_auth),
 ):
-    """Desvincula una conversación del expediente. Requiere plan PRO."""
-    _require_pro(user_id)
+    """Desvincula una conversación del expediente."""
     try:
         ok = unlink_conversation(user_id, case_id, conversation_id)
     except Exception as e:
