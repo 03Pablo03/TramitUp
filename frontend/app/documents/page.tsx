@@ -7,6 +7,8 @@ import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { DocumentDownloadCard } from "@/components/DocumentDownloadCard";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { ToolHeader } from "@/components/ToolHeader";
+import { ProButton } from "@/components/ProBadge";
 
 type DocumentItem = {
   document_id: string;
@@ -75,30 +77,14 @@ export default function DocumentsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white px-6 py-4">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <div className="flex items-center gap-6">
-            <span className="font-display text-lg font-bold tracking-tight text-[var(--primary)]">
-              TramitUp
-            </span>
-            <span className="text-sm text-slate-500">Mis modelos de escritos</span>
-          </div>
-          <div className="flex items-center gap-4">
-            {userPlan !== "pro" && userPlan !== "document" && (
-              <button
-                onClick={startCheckout}
-                disabled={checkoutLoading}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
-              >
-                ★ Hazte PRO
-              </button>
-            )}
-            <Link href="/chat" className="text-slate-600 hover:text-slate-800">
-              Chat
-            </Link>
-          </div>
-        </div>
-      </header>
+      <ToolHeader
+        title="Mis modelos de escritos"
+        actions={
+          userPlan !== "pro" && userPlan !== "document" ? (
+            <ProButton onClick={startCheckout} disabled={checkoutLoading} size="sm" />
+          ) : undefined
+        }
+      />
       <main className="mx-auto max-w-4xl p-6">
         <p className="mb-4 text-sm text-slate-500">
           Modelos orientativos generados por Tramitup. Revisa y adapta antes de presentarlos. No
@@ -109,13 +95,11 @@ export default function DocumentsPage() {
             {userPlan !== "pro" && userPlan !== "document" ? (
               <>
                 <p className="mb-4 text-slate-600">Los modelos de escritos son exclusivos del plan PRO.</p>
-                <button
+                <ProButton
                   onClick={startCheckout}
                   disabled={checkoutLoading}
-                  className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
-                >
-                  ★ Hazte PRO para generar modelos
-                </button>
+                  label="Probar 3 días gratis"
+                />
               </>
             ) : (
               <>

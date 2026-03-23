@@ -22,6 +22,7 @@ def create_checkout_session(
     email: str | None,
     success_url: str,
     cancel_url: str,
+    trial_days: int | None = None,
 ) -> str:
     """Create Stripe Checkout session. Returns session URL."""
     settings = get_settings()
@@ -29,7 +30,7 @@ def create_checkout_session(
     price_id = settings.stripe_price_id_document if price_type == "document" else settings.stripe_price_id_pro
     customer_id = get_stripe_customer_id(user_id, email)
     mode = "payment" if price_type == "document" else "subscription"
-    kwargs = {
+    kwargs: dict = {
         "mode": mode,
         "line_items": [{"price": price_id, "quantity": 1}],
         "success_url": success_url,
@@ -40,6 +41,11 @@ def create_checkout_session(
         kwargs["customer"] = customer_id
     elif email:
         kwargs["customer_email"] = email
+    # Add free trial for subscriptions — requires card upfront,
+    # auto-charges after trial_days if not canceled.
+    if mode == "subscription" and trial_days and trial_days > 0:
+        kwargs["subscription_data"] = {"trial_period_days": trial_days}
+        kwargs["payment_method_collection"] = "always"
     session = stripe.checkout.Session.create(**kwargs)
     return session.url
 
@@ -59,8 +65,19 @@ def handle_webhook(payload: bytes, sig: str) -> bool:
         if not user_id:
             return True
         supabase = get_supabase_client()
+        # Activate plan immediately (including during trial — user gets access right away)
         if price_type == "pro":
             supabase.table("profiles").update({"plan": "pro"}).eq("id", user_id).execute()
         else:
             supabase.table("profiles").update({"plan": "document"}).eq("id", user_id).execute()
+    elif event["type"] == "customer.subscription.deleted":
+        # Subscription canceled or trial ended without payment
+        subscription = event["data"]["object"]
+        customer_id = subscription.get("customer")
+        if customer_id:
+            supabase = get_supabase_client()
+            result = supabase.table("profiles").select("id").eq("stripe_customer_id", customer_id).execute()
+            if result.data:
+                user_id = result.data[0]["id"]
+                supabase.table("profiles").update({"plan": "free"}).eq("id", user_id).execute()
     return True

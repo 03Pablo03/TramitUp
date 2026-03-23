@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { CaseCard, CaseData } from "@/components/CaseCard";
 import { ProGate } from "@/components/ProGate";
+import { ToolHeader } from "@/components/ToolHeader";
 
 const PRO_PLANS = new Set(["pro", "premium", "document"]);
 
@@ -117,27 +118,17 @@ export default function CasosPage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Header */}
-      <header className="border-b border-slate-200 bg-white px-6 py-4 shadow-sm">
-        <div className="mx-auto flex max-w-3xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push("/chat")}
-              className="text-sm text-slate-500 hover:text-slate-800"
-            >
-              ← Chat
-            </button>
-            <span className="text-slate-300">|</span>
-            <h1 className="text-lg font-bold text-slate-900">Mis expedientes</h1>
-          </div>
+      <ToolHeader
+        title="Mis expedientes"
+        actions={
           <button
             onClick={() => { setShowForm(true); setCreateError(""); }}
             className="rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
           >
             + Nuevo expediente
           </button>
-        </div>
-      </header>
+        }
+      />
 
       <main className="mx-auto max-w-3xl px-4 py-8">
 

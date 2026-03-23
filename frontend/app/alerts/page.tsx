@@ -7,6 +7,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useAlerts } from "@/hooks/useAlerts";
 import { apiFetch } from "@/lib/api";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { ToolHeader } from "@/components/ToolHeader";
+import { ProButton } from "@/components/ProBadge";
 import { AlertCard } from "@/components/alerts/AlertCard";
 import { AlertCalendar } from "@/components/alerts/AlertCalendar";
 import { ManualCreateAlertModal } from "@/components/alerts/ManualCreateAlertModal";
@@ -71,25 +73,13 @@ export default function AlertsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white px-6 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <div className="flex items-center gap-6">
-            <span className="font-display text-lg font-bold tracking-tight text-[var(--primary)]">
-              TramitUp
-            </span>
-            <span className="text-sm text-slate-500">Mis alertas de plazos</span>
-          </div>
-          <div className="flex items-center gap-4">
+      <ToolHeader
+        title="Mis alertas de plazos"
+        actions={
+          <div className="flex items-center gap-2">
             {userPlan !== "pro" && userPlan !== "document" && (
-              <button
-                onClick={startCheckout}
-                disabled={checkoutLoading}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
-              >
-                ★ Hazte PRO
-              </button>
+              <ProButton onClick={startCheckout} disabled={checkoutLoading} size="sm" />
             )}
-            {/* View toggle */}
             <div className="flex items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
               <button
                 onClick={() => setView("calendar")}
@@ -124,12 +114,9 @@ export default function AlertsPage() {
             >
               + Nueva Alerta
             </button>
-            <Link href="/chat" className="text-sm text-slate-600 hover:text-slate-800">
-              ← Chat
-            </Link>
           </div>
-        </div>
-      </header>
+        }
+      />
 
       <main className="mx-auto max-w-5xl p-6">
         {userPlan !== "pro" && userPlan !== "document" && (
@@ -138,13 +125,11 @@ export default function AlertsPage() {
             <p className="mt-2 text-sm text-amber-700">
               Hazte PRO para crear alertas de plazos legales y recibir avisos por email antes de que venzan.
             </p>
-            <button
+            <ProButton
               onClick={startCheckout}
               disabled={checkoutLoading}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 disabled:opacity-70"
-            >
-              ★ Hazte PRO — 9,99 €/mes
-            </button>
+              label="Probar 3 días gratis"
+            />
           </div>
         )}
         {/* Stats strip */}

@@ -16,7 +16,10 @@ export function useStripeCheckout() {
       const res = await apiFetch("/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ price_type: "pro" }),
+        body: JSON.stringify({
+          price_type: "pro",
+          trial_days: 3,
+        }),
       });
       const data = await res.json();
       if (data.url) {

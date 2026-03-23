@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { ProGate } from "@/components/ProGate";
+import { ToolHeader } from "@/components/ToolHeader";
 
 const PRO_PLANS = new Set(["pro", "premium", "document"]);
 
@@ -187,21 +188,19 @@ export default function CaseDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Header */}
-      <header className="border-b border-slate-200 bg-white px-6 py-4 shadow-sm">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
-          <button onClick={() => router.push("/casos")} className="shrink-0 text-sm text-slate-500 hover:text-slate-800">
-            ← Expedientes
-          </button>
-          <div className="flex flex-1 items-center gap-2 min-w-0">
-            <span className="text-xl">{icon}</span>
+      <ToolHeader
+        title={`${icon} ${data.title}`}
+        backHref="/casos"
+        backLabel="Expedientes"
+        actions={
+          <div className="flex items-center gap-2">
             {editingTitle ? (
-              <div className="flex flex-1 items-center gap-2">
+              <div className="flex items-center gap-2">
                 <input
                   value={titleInput}
                   onChange={(e) => setTitleInput(e.target.value)}
                   maxLength={120}
-                  className="flex-1 rounded-lg border border-[var(--primary)] px-2 py-1 text-sm focus:outline-none"
+                  className="rounded-lg border border-[var(--primary)] px-2 py-1 text-sm focus:outline-none"
                   autoFocus
                   onKeyDown={(e) => { if (e.key === "Enter") handleTitleSave(); if (e.key === "Escape") setEditingTitle(false); }}
                 />
@@ -211,14 +210,12 @@ export default function CaseDetailPage() {
             ) : (
               <button
                 onClick={() => setEditingTitle(true)}
-                className="min-w-0 truncate text-left text-base font-semibold text-slate-900 hover:text-[var(--primary)] transition-colors"
-                title="Haz clic para editar el título"
+                className="text-xs text-slate-500 hover:text-[var(--primary)] transition-colors"
+                title="Editar título"
               >
-                {data.title}
+                Editar
               </button>
             )}
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
               data.status === "open" ? "bg-green-100 text-green-700" :
               data.status === "resolved" ? "bg-blue-100 text-blue-700" :
@@ -227,8 +224,8 @@ export default function CaseDetailPage() {
               {STATUS_LABELS[data.status]}
             </span>
           </div>
-        </div>
-      </header>
+        }
+      />
 
       <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
 
