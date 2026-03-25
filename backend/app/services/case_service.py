@@ -89,36 +89,49 @@ def list_cases(user_id: str) -> List[Dict[str, Any]]:
     supabase = get_supabase_client()
     result = (
         supabase.table("cases")
-        .select("*")
+        .select("id, title, category, subcategory, status, summary, progress_pct, next_action, created_at, updated_at")
         .eq("user_id", user_id)
         .order("created_at", desc=True)
         .execute()
     )
     cases = result.data or []
+    if not cases:
+        return []
+
+    # Fetch conversation and alert counts in 2 bulk queries instead of 2*N
+    case_ids = [c["id"] for c in cases]
+
+    try:
+        conv_res = (
+            supabase.table("conversations")
+            .select("case_id")
+            .in_("case_id", case_ids)
+            .execute()
+        )
+        conv_counts: dict[str, int] = {}
+        for row in (conv_res.data or []):
+            cid = row["case_id"]
+            conv_counts[cid] = conv_counts.get(cid, 0) + 1
+    except Exception:
+        conv_counts = {}
+
+    try:
+        alert_res = (
+            supabase.table("alerts")
+            .select("case_id")
+            .in_("case_id", case_ids)
+            .execute()
+        )
+        alert_counts: dict[str, int] = {}
+        for row in (alert_res.data or []):
+            cid = row["case_id"]
+            alert_counts[cid] = alert_counts.get(cid, 0) + 1
+    except Exception:
+        alert_counts = {}
 
     for case in cases:
-        case_id = case["id"]
-        try:
-            conv_res = (
-                supabase.table("conversations")
-                .select("id", count="exact")
-                .eq("case_id", case_id)
-                .execute()
-            )
-            case["conversation_count"] = conv_res.count or 0
-        except Exception:
-            case["conversation_count"] = 0
-
-        try:
-            alert_res = (
-                supabase.table("alerts")
-                .select("id", count="exact")
-                .eq("case_id", case_id)
-                .execute()
-            )
-            case["alert_count"] = alert_res.count or 0
-        except Exception:
-            case["alert_count"] = 0
+        case["conversation_count"] = conv_counts.get(case["id"], 0)
+        case["alert_count"] = alert_counts.get(case["id"], 0)
 
     return cases
 
@@ -331,7 +344,6 @@ def update_step_status(
 
     # Determine next action
     next_action = None
-    next_deadline = None
     for s in steps:
         if s["status"] in ("pending", "in_progress"):
             next_action = s.get("title", "")

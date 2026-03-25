@@ -2,27 +2,41 @@
 Cron job diario: envía emails de alerta para plazos que vencen en X días.
 Ejecutar: python -m app.jobs.send_alerts
 """
+import logging
 from datetime import date, datetime
 from app.core.supabase_client import get_supabase_client
 from app.services.email_service import send_deadline_alert
 
+logger = logging.getLogger(__name__)
 
-def run_send_alerts():
-    """Sincrónico para Railway cron."""
+
+def run_send_alerts() -> int:
+    """Sincrónico para Railway cron. Returns count of sent notifications."""
+    try:
+        return _run_send_alerts_inner()
+    except Exception as e:
+        logger.error("Fatal error in send_alerts job: %s", e, exc_info=True)
+        return 0
+
+
+def _run_send_alerts_inner() -> int:
     today = date.today()
     supabase = get_supabase_client()
 
-    expired = (
-        supabase.table("alerts")
-        .select("id")
-        .eq("status", "active")
-        .lt("deadline_date", today.isoformat())
-        .execute()
-    )
-    for row in (expired.data or []):
-        supabase.table("alerts").update({"status": "expired"}).eq(
-            "id", row["id"]
-        ).execute()
+    try:
+        expired = (
+            supabase.table("alerts")
+            .select("id")
+            .eq("status", "active")
+            .lt("deadline_date", today.isoformat())
+            .execute()
+        )
+        for row in (expired.data or []):
+            supabase.table("alerts").update({"status": "expired"}).eq(
+                "id", row["id"]
+            ).execute()
+    except Exception as e:
+        logger.warning("Error marking expired alerts: %s", e)
 
     alerts = (
         supabase.table("alerts")
@@ -66,15 +80,19 @@ def run_send_alerts():
             continue
         user_name = prof.get("name")
 
-        email_id = send_deadline_alert(
-            to_email=email,
-            user_name=user_name,
-            description=row["description"],
-            deadline_date=dd,
-            days_remaining=days_remaining,
-            law_reference=row.get("law_reference") or "",
-            alert_id=row["id"],
-        )
+        try:
+            email_id = send_deadline_alert(
+                to_email=email,
+                user_name=user_name,
+                description=row["description"],
+                deadline_date=dd,
+                days_remaining=days_remaining,
+                law_reference=row.get("law_reference") or "",
+                alert_id=row["id"],
+            )
+        except Exception as e:
+            logger.error("Failed to send alert email for alert %s: %s", row["id"], e)
+            continue
         if email_id:
             supabase.table("alert_notifications").insert({
                 "alert_id": row["id"],
@@ -83,9 +101,11 @@ def run_send_alerts():
             }).execute()
             sent_count += 1
 
+    logger.info("send_alerts job completed: %d notifications sent", sent_count)
     return sent_count
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     n = run_send_alerts()
-    print(f"Enviadas {n} notificaciones de alerta")
+    logger.info("Enviadas %d notificaciones de alerta", n)

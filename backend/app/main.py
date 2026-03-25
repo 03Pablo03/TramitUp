@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging, LoggingMiddleware
@@ -19,21 +20,22 @@ from app.api.v1.endpoints.monitoring import router as monitoring_router
 def create_app() -> FastAPI:
     # Configure logging first
     configure_logging()
-    
+
+    settings = get_settings()
+
     app = FastAPI(
         title="TramitUp API",
         description="API de información jurídica - Entiende tus derechos y cómo ejercerlos",
         version="1.0.0",
-        docs_url="/docs",
-        redoc_url="/redoc",
+        docs_url=None if settings.is_production else "/docs",
+        redoc_url=None if settings.is_production else "/redoc",
     )
 
     # Add exception handlers
     app.add_exception_handler(TramitUpException, tramitup_exception_handler)
+    app.add_exception_handler(StarletteHTTPException, http_exception_handler)
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(Exception, generic_exception_handler)
-
-    settings = get_settings()
 
     # CORS: en producción solo el dominio configurado; en desarrollo también localhost
     allowed_origins = [settings.frontend_url] if settings.frontend_url else []

@@ -70,8 +70,8 @@ export default function AccountPage() {
     apiFetch("/me")
       .then((r) => r.json())
       .then(setApiProfile)
-      .catch((error) => {
-        console.warn("Error loading user profile:", error);
+      .catch(() => {
+        // Profile will be empty — user can still edit from form defaults
       });
   }, [user?.id]);
 

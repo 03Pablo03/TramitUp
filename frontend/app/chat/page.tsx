@@ -86,8 +86,8 @@ export default function ChatPage() {
           }));
           setMessages(msgs);
         })
-        .catch((error) => {
-          console.warn("Error loading conversation messages:", error);
+        .catch(() => {
+          // Silently ignore — user will just start a fresh conversation
         });
     }
   }, [convParam, user]);
@@ -97,18 +97,14 @@ export default function ChatPage() {
     apiFetch("/history")
       .then((r) => r.json())
       .then((data) => setConversations(data.conversations || []))
-      .catch((error) => {
-        console.warn("Error loading conversations:", error);
-        setConversations([]);
-      });
+      .catch(() => setConversations([]));
     apiFetch("/me")
       .then((r) => r.json())
       .then((data) => {
         setRemainingChats(data.remaining_chats_today ?? null);
         setUserPlan(data.plan || "free");
       })
-      .catch((error) => {
-        console.warn("Error loading user profile:", error);
+      .catch(() => {
         setRemainingChats(null);
         setUserPlan("free");
       });
@@ -150,12 +146,9 @@ export default function ChatPage() {
           if (uploadRes.ok) {
             const uploadData = await uploadRes.json();
             attachmentIds.push(uploadData.attachment_id);
-          } else {
-            console.error('Error uploading file:', attachment.name);
           }
         }
-      } catch (error) {
-        console.error('Error uploading attachments:', error);
+      } catch {
         setError("Error subiendo archivos adjuntos. Inténtalo de nuevo.");
         setSending(false);
         return;
@@ -242,32 +235,20 @@ export default function ChatPage() {
                       return next;
                     });
                   }
-                  if (item.type === "portal_info" && item.portal_key) {
-                    // Fetch full portal information
-                    apiFetch(`/api/v1/portals/${item.portal_key}`)
-                      .then(response => response.json())
-                      .then(portalData => {
-                        setMessages((prev) => {
-                          const next = [...prev];
-                          if (next[idx]) {
-                            next[idx] = { 
-                              ...next[idx], 
-                              portalInfo: {
-                                portal_key: item.portal_key,
-                                name: portalData.name,
-                                url: portalData.url,
-                                needs_digital_cert: portalData.needs_digital_cert,
-                                also_by_post: portalData.also_by_post,
-                                notes: portalData.notes
-                              }
-                            };
-                          }
-                          return next;
-                        });
-                      })
-                      .catch(error => {
-                        console.warn("Error loading portal info:", error);
-                      });
+                  if (item.type === "portal_info" && item.portal_key && item.portal_summary) {
+                    setMessages((prev) => {
+                      const next = [...prev];
+                      if (next[idx]) {
+                        next[idx] = {
+                          ...next[idx],
+                          portalInfo: {
+                            portal_key: item.portal_key,
+                            ...item.portal_summary,
+                          },
+                        };
+                      }
+                      return next;
+                    });
                   }
                   if (item.type === "compensation_estimate" && item.compensation) {
                     setMessages((prev) => {
@@ -360,8 +341,8 @@ export default function ChatPage() {
           )
         );
       }
-    } catch (error) {
-      console.error('Error renaming conversation:', error);
+    } catch {
+      // Silently ignore rename errors — conversation is still usable
     }
   };
 
@@ -378,8 +359,8 @@ export default function ChatPage() {
           setMessages([]);
         }
       }
-    } catch (error) {
-      console.error('Error deleting conversation:', error);
+    } catch {
+      // Silently ignore — conversation list will be stale until refresh
     }
   };
 

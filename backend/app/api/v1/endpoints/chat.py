@@ -50,10 +50,13 @@ def extract_compensation_info(text: str) -> CompensationEstimate | None:
     if amount_match:
         amount = int(amount_match.group(1))
     
-    # Extract reason
-    reason_match = re.search(r'reason="([^"]*)"', comp_str)
+    # Extract reason — accept single or double quotes, and unquoted text
+    reason_match = re.search(r'reason=["\']([^"\']+)["\']', comp_str)
+    if not reason_match:
+        # Fallback: unquoted reason after last comma
+        reason_match = re.search(r'reason=([^,\]]+)', comp_str)
     if reason_match:
-        reason = reason_match.group(1)
+        reason = reason_match.group(1).strip().strip("\"'")
     
     return CompensationEstimate(
         amount_eur=amount,
@@ -168,7 +171,7 @@ async def generate_sse(user_id: str, request: ChatRequest):
             
             # Clean the text for storage (remove markers, strip solo en texto final)
             clean_text = clean_response_text(full_text, final=True)
-            save_message(conv_id, "assistant", clean_text)
+            save_message(conv_id, "assistant", clean_text, user_id=user_id)
             
             # Send additional information
             deadlines = extract_deadlines_from_response(clean_text)

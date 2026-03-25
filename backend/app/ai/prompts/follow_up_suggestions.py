@@ -27,6 +27,7 @@ sugerencia 2
 sugerencia 3"""
 
 # Sugerencias por defecto por categoría (fallback si la IA no responde)
+# Las claves deben coincidir exactamente con los valores que genera classify_tramite()
 DEFAULT_SUGGESTIONS: dict[str, list[str]] = {
     "laboral": [
         "¿Cuánto me corresponde de indemnización?",
@@ -38,6 +39,13 @@ DEFAULT_SUGGESTIONS: dict[str, list[str]] = {
         "¿Cómo reclamo la fianza?",
         "¿Qué plazos tengo?",
     ],
+    # "reclamaciones" es la categoría que genera el clasificador para consumo
+    "reclamaciones": [
+        "¿Cuánto me deben compensar?",
+        "¿Dónde presento la reclamación?",
+        "Genera una carta de reclamación",
+    ],
+    # Alias para compatibilidad si el clasificador genera "consumo"
     "consumo": [
         "¿Cuánto me deben compensar?",
         "¿Dónde presento la reclamación?",
@@ -58,9 +66,15 @@ DEFAULT_SUGGESTIONS: dict[str, list[str]] = {
         "¿Cuáles son mis derechos?",
         "¿Qué plazos hay?",
     ],
+    # "burocracia_general" y "administrativo" son categorías equivalentes
     "administrativo": [
         "¿Cómo presento un recurso?",
         "¿Qué plazo tengo?",
+        "¿Necesito certificado digital?",
+    ],
+    "burocracia_general": [
+        "¿Cómo presento un recurso administrativo?",
+        "¿Qué plazo tengo para recurrir?",
         "¿Necesito certificado digital?",
     ],
     "penal": [

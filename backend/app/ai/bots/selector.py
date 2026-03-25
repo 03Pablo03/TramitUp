@@ -26,11 +26,13 @@ _BOTS: dict[str, BaseBot] = {
 _CATEGORY_BOT_MAP: dict[str, str] = {
     "consumo": "claims",
     "reclamaciones": "claims",
+    "laboral": "calculator",
 }
 
 # Subcategory → bot mapping (takes priority over category)
 _SUBCATEGORY_BOT_MAP: dict[str, str] = {
     "aerolinea": "claims",
+    "aerolínea": "claims",
     "banco": "claims",
     "telecom": "claims",
     "factura": "claims",
@@ -39,21 +41,45 @@ _SUBCATEGORY_BOT_MAP: dict[str, str] = {
     "alquiler": "contract",
     "hipoteca": "contract",
     "contrato": "contract",
+    "contrato_laboral": "contract",
     "despido": "calculator",
     "finiquito": "calculator",
     "indemnizacion": "calculator",
+    "indemnización": "calculator",
     "pension": "calculator",
+    "paro": "deadline",
     "multa": "deadline",
+    "nomina": "claims",
+    "nómina": "claims",
+    "baja": "claims",
+    "laboral": "calculator",
 }
 
 # Keywords in the user message → bot override
+# ORDER MATTERS: first match wins — more specific rules first, generic last
 _KEYWORD_BOT_MAP: list[tuple[list[str], str]] = [
-    (["contrato", "cláusula", "firmar", "condiciones generales"], "contract"),
+    (["contrato de alquiler", "cláusula del contrato", "firmar el contrato", "condiciones generales"], "contract"),
     (["calcular", "indemnización", "cuánto me corresponde", "cuánto dinero", "importe"], "calculator"),
-    (["plazo", "plazos", "prescripción", "días hábiles", "fecha límite", "vencimiento"], "deadline"),
-    (["carta", "escrito", "burofax", "reclamación formal", "alegaciones", "recurso", "papeleta"], "document"),
-    (["reclamar", "reclamación", "cobro indebido", "devolver dinero"], "claims"),
+    (["plazo", "plazos", "prescripción", "días hábiles", "fecha límite", "vencimiento", "cuánto tiempo tengo", "cuándo vence", "cuándo tengo que"], "deadline"),
+    (["reclamar", "reclamación", "cobro indebido", "devolver dinero", "compensación de vuelo", "compensar"], "claims"),
+    # document_bot LAST — keywords like "carta" and "recurso" are too generic
+    (["reclamación formal", "burofax", "papeleta de conciliación", "escrito de alegaciones"], "document"),
 ]
+
+
+def _normalize_subcategory(subcategory: str) -> str:
+    """Normalize subcategory for consistent lookup (lowercase, strip accents for ASCII keys)."""
+    import unicodedata
+    s = subcategory.lower().strip()
+    # Try exact match first
+    if s in _SUBCATEGORY_BOT_MAP:
+        return s
+    # Strip accents for fallback
+    normalized = "".join(
+        c for c in unicodedata.normalize("NFD", s)
+        if unicodedata.category(c) != "Mn"
+    )
+    return normalized
 
 
 def select_bot(classification: dict, user_message: str) -> Optional[BaseBot]:
@@ -73,9 +99,10 @@ def select_bot(classification: dict, user_message: str) -> Optional[BaseBot]:
                 logger.debug("Bot selected by keyword match: %s", bot_name)
                 return bot
 
-    # 2. Check subcategory mapping
+    # 2. Check subcategory mapping (with normalization)
     if subcategory:
-        bot_name = _SUBCATEGORY_BOT_MAP.get(subcategory)
+        norm_sub = _normalize_subcategory(subcategory)
+        bot_name = _SUBCATEGORY_BOT_MAP.get(norm_sub) or _SUBCATEGORY_BOT_MAP.get(subcategory.lower())
         if bot_name:
             bot = _BOTS.get(bot_name)
             if bot:

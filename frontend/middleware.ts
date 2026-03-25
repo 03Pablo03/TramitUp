@@ -49,31 +49,22 @@ export async function middleware(request: NextRequest) {
   // Usuario autenticado - comprobar onboarding
   const { data: profile } = await supabase
     .from("profiles")
-    .select("onboarding_completed, plan")
+    .select("onboarding_completed")
     .eq("id", user.id)
     .single();
 
   const onboardingCompleted = profile?.onboarding_completed ?? false;
-  const isPremium = profile?.plan === "pro";
 
   // Permitir /pricing incluso si no ha completado onboarding (para "Ver plan PRO")
   if (path === "/pricing") return response;
 
   if (!onboardingCompleted && !isOnboarding) {
-    if (path === "/login") {
-      return NextResponse.redirect(new URL(ONBOARDING_ROUTE, request.url));
-    }
     return NextResponse.redirect(new URL(ONBOARDING_ROUTE, request.url));
   }
 
   if (onboardingCompleted && (path === "/login" || path === "/")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
-
-  // TODO: reactivar restricción PRO antes de producción
-  // if (path === "/alerts" && !isPremium) {
-  //   return NextResponse.redirect(new URL("/account", request.url));
-  // }
 
   return response;
 }

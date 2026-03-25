@@ -115,7 +115,7 @@ ASPECTOS A REVISAR:
    - Periodo excesivo → RIESGO ALTO
 
 2. SALARIO (ET art.26-29)
-   - Debe respetar el SMI vigente (actualmente 1134 €/mes en 14 pagas)
+   - Debe respetar el SMI vigente (actualmente 1.184 €/mes en 14 pagas, SMI 2025 según RD 1007/2024)
    - Si hay convenio colectivo aplicable: respetar tablas salariales
    - Salario inferior al legal → RIESGO ALTO
    - Conceptos salariales confusos o que puedan ser ilegales → RIESGO MEDIO

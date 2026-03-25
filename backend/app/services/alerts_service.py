@@ -1,7 +1,7 @@
 """
 Servicio de alertas de plazos legales.
 """
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Optional
 
 from app.core.supabase_client import get_supabase_client
@@ -73,9 +73,23 @@ def list_alerts(user_id: str, status_filter: Optional[str] = None) -> list[dict]
     if status_filter:
         q = q.eq("status", status_filter)
     r = q.execute()
+    alerts = r.data or []
+    if not alerts:
+        return []
+
+    # Fetch ALL notifications in one query to avoid N+1
+    alert_ids = [a["id"] for a in alerts]
+    notif_r = supabase.table("alert_notifications").select("alert_id, sent_at").in_(
+        "alert_id", alert_ids
+    ).execute()
+    notif_by_alert: dict[str, list[str]] = {}
+    for n in (notif_r.data or []):
+        aid = n["alert_id"]
+        notif_by_alert.setdefault(aid, []).append(str(n.get("sent_at", ""))[:10])
+
     today = date.today()
     result = []
-    for row in (r.data or []):
+    for row in alerts:
         dd = row.get("deadline_date")
         if isinstance(dd, str):
             try:
@@ -86,7 +100,6 @@ def list_alerts(user_id: str, status_filter: Optional[str] = None) -> list[dict]
             d = dd if hasattr(dd, "year") else today
         days_remaining = (d - today).days
         urgency = "high" if days_remaining <= 3 else "medium" if days_remaining <= 7 else "low"
-        notif_sent = _get_notifications_sent(supabase, row["id"])
         result.append({
             "alert_id": row["id"],
             "conversation_id": row.get("conversation_id"),
@@ -96,17 +109,10 @@ def list_alerts(user_id: str, status_filter: Optional[str] = None) -> list[dict]
             "days_remaining": max(0, days_remaining),
             "urgency": urgency,
             "status": row.get("status", "active"),
-            "notifications_sent": notif_sent,
+            "notifications_sent": notif_by_alert.get(row["id"], []),
             "created_at": row.get("created_at"),
         })
     return result
-
-
-def _get_notifications_sent(supabase, alert_id: str) -> list[str]:
-    r = supabase.table("alert_notifications").select("sent_at").eq(
-        "alert_id", alert_id
-    ).execute()
-    return [str(n.get("sent_at", ""))[:10] for n in (r.data or [])]
 
 
 def update_alert(alert_id: str, user_id: str, status: Optional[str] = None, deadline_date: Optional[date] = None) -> dict:
@@ -115,7 +121,7 @@ def update_alert(alert_id: str, user_id: str, status: Optional[str] = None, dead
     existing = supabase.table("alerts").select("*").eq("id", alert_id).eq("user_id", user_id).execute()
     if not existing.data:
         raise ValueError("Alerta no encontrada")
-    updates = {"updated_at": datetime.utcnow().isoformat() + "Z"}
+    updates = {"updated_at": datetime.now(timezone.utc).isoformat()}
     if status is not None:
         updates["status"] = status
     if deadline_date is not None:

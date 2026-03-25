@@ -70,6 +70,32 @@ def _validate_status(status: Optional[str]) -> Optional[str]:
 
 # ─── Endpoints ────────────────────────────────────────────────────────────────
 
+# NOTE: /from-conversation must be registered BEFORE /{case_id} to avoid
+# FastAPI routing /{case_id} capturing the literal "from-conversation" string.
+@router.post("/from-conversation")
+def api_create_from_conversation(
+    request: CreateFromConversationRequest,
+    user_id: str = Depends(require_auth),
+):
+    """Crea un expediente desde una conversación, auto-vinculando y aplicando workflow."""
+    _validate_category(request.category)
+    try:
+        case = create_case_from_conversation(
+            user_id=user_id,
+            conversation_id=request.conversation_id,
+            title=request.title.strip(),
+            category=request.category,
+            subcategory=request.subcategory,
+        )
+    except Exception as e:
+        logger.error("Error creating case from conversation: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error creando el expediente.")
+
+    if not case:
+        raise HTTPException(status_code=404, detail="Conversación no encontrada.")
+    return case
+
+
 @router.post("")
 def api_create_case(
     request: CreateCaseRequest,
@@ -246,27 +272,3 @@ def api_update_doc_check(
     if result is None:
         raise HTTPException(status_code=404, detail="Expediente no encontrado.")
     return {"ok": True}
-
-
-@router.post("/from-conversation")
-def api_create_from_conversation(
-    request: CreateFromConversationRequest,
-    user_id: str = Depends(require_auth),
-):
-    """Crea un expediente desde una conversación, auto-vinculando y aplicando workflow."""
-    _validate_category(request.category)
-    try:
-        case = create_case_from_conversation(
-            user_id=user_id,
-            conversation_id=request.conversation_id,
-            title=request.title.strip(),
-            category=request.category,
-            subcategory=request.subcategory,
-        )
-    except Exception as e:
-        logger.error("Error creating case from conversation: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail="Error creando el expediente.")
-
-    if not case:
-        raise HTTPException(status_code=404, detail="Conversación no encontrada.")
-    return case

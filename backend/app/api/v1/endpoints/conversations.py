@@ -1,7 +1,14 @@
-from fastapi import APIRouter, Body, Depends, HTTPException
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, Field
 
 from app.core.auth import require_auth
 from app.core.supabase_client import get_supabase_client
+
+
+class UpdateConversationRequest(BaseModel):
+    title: Optional[str] = Field(None, max_length=120)
 
 router = APIRouter()
 
@@ -15,7 +22,7 @@ def get_messages(conversation_id: str, user_id: str = Depends(require_auth)):
         raise HTTPException(404, "Conversación no encontrada")
     result = supabase.table("messages").select("role, content, created_at").eq(
         "conversation_id", conversation_id
-    ).order("created_at", desc=False).execute()
+    ).order("created_at", desc=False).limit(200).execute()
     return {"messages": result.data or []}
 
 
@@ -34,7 +41,7 @@ def delete_conversation(conversation_id: str, user_id: str = Depends(require_aut
 @router.patch("/{conversation_id}")
 def update_conversation(
     conversation_id: str,
-    body: dict = Body(default={}),
+    body: UpdateConversationRequest,
     user_id: str = Depends(require_auth),
 ):
     """Actualiza una conversación (ej. título)."""
@@ -43,8 +50,8 @@ def update_conversation(
     if not conv.data:
         raise HTTPException(404, "Conversación no encontrada")
     updates = {}
-    if "title" in body:
-        updates["title"] = str(body["title"])[:120]
+    if body.title is not None:
+        updates["title"] = body.title.strip()[:120]
     if not updates:
         return {"ok": True}
     supabase.table("conversations").update(updates).eq("id", conversation_id).eq("user_id", user_id).execute()

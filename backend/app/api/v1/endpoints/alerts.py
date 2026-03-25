@@ -47,7 +47,6 @@ def api_create_alert(
             deadline_date=dd,
             law_reference=request.law_reference,
             notify_days_before=request.notify_days_before,
-            manual_priority=request.manual_priority,
         )
         return CreateAlertResponse(
             alert_id=result["id"],

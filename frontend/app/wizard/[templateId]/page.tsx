@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 import { ToolHeader } from "@/components/ToolHeader";
 import { WizardProgress } from "@/components/wizard/WizardProgress";
 import { WizardStepForm } from "@/components/wizard/WizardStepForm";
@@ -50,6 +51,12 @@ export default function WizardPage() {
   const params = useParams();
   const router = useRouter();
   const templateId = params.templateId as string;
+  const { user, loading: authLoading } = useAuth();
+
+  // Auth guard — redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) router.push("/login");
+  }, [user, authLoading, router]);
 
   const [template, setTemplate] = useState<Template | null>(null);
   const [wizardId, setWizardId] = useState<string | null>(null);
@@ -61,8 +68,9 @@ export default function WizardPage() {
   const [error, setError] = useState<string | null>(null);
   const [wizardComplete, setWizardComplete] = useState(false);
 
-  // Initialize: fetch template and start wizard
+  // Initialize: fetch template and start wizard (only when authenticated)
   useEffect(() => {
+    if (!user || authLoading) return;
     let cancelled = false;
 
     async function init() {
@@ -103,7 +111,7 @@ export default function WizardPage() {
 
     init();
     return () => { cancelled = true; };
-  }, [templateId]);
+  }, [templateId, user, authLoading]);
 
   const submitStep = useCallback(
     async (stepId: string, data: Record<string, unknown> = {}) => {

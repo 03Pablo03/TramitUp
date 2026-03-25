@@ -58,7 +58,8 @@ def extract_deadlines_from_response(response_text: str) -> list[dict]:
     llm = get_llm(temperature=0, max_output_tokens=1024)
     prompt = PromptTemplate.from_template(PROMPT)
     chain = prompt | llm
-    result = chain.invoke({"text": response_text[:4000]})
+    # Truncate from the END: deadlines/plazos are typically mentioned at the end of responses
+    result = chain.invoke({"text": response_text[-4000:]})
     content = result.content if hasattr(result, "content") else str(result)
     data = _parse_json(content)
     deadlines = data.get("detected_deadlines", [])

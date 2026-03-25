@@ -298,19 +298,16 @@ export default function AlertsPage() {
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onCreateAlert={async (alertData) => {
-          try {
-            await fetch('/api/backend/alerts/create', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify(alertData)
-            });
-            refresh();
-            setShowCreateModal(false);
-          } catch (error) {
-            console.error('Error creating alert:', error);
-            throw error;
+          const res = await apiFetch("/alerts/create", {
+            method: "POST",
+            body: JSON.stringify(alertData),
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data?.detail || "Error creando la alerta");
           }
+          refresh();
+          setShowCreateModal(false);
         }}
       />
     </div>

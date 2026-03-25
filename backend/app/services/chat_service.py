@@ -27,18 +27,31 @@ def create_conversation(
     return result.data[0]["id"]
 
 
-def get_conversation_messages(conversation_id: str, limit: int = 20) -> list[dict]:
-    """Get recent messages for a conversation."""
+def get_conversation_messages(conversation_id: str, user_id: str, limit: int = 20) -> list[dict]:
+    """Get recent messages for a conversation. Verifies ownership via conversation."""
     supabase = get_supabase_client()
+    # Verify ownership before fetching messages
+    conv = supabase.table("conversations").select("id").eq(
+        "id", conversation_id
+    ).eq("user_id", user_id).execute()
+    if not conv.data:
+        return []
     result = supabase.table("messages").select("role, content").eq(
         "conversation_id", conversation_id
     ).order("created_at", desc=False).limit(limit).execute()
     return [{"role": r["role"], "content": r["content"]} for r in (result.data or [])]
 
 
-def save_message(conversation_id: str, role: str, content: str) -> None:
+def save_message(conversation_id: str, role: str, content: str, user_id: str | None = None) -> None:
     """Save a message to the conversation."""
     supabase = get_supabase_client()
+    # Verify ownership if user_id provided
+    if user_id:
+        conv = supabase.table("conversations").select("id").eq(
+            "id", conversation_id
+        ).eq("user_id", user_id).execute()
+        if not conv.data:
+            return
     supabase.table("messages").insert({
         "conversation_id": conversation_id,
         "role": role,
@@ -46,11 +59,12 @@ def save_message(conversation_id: str, role: str, content: str) -> None:
     }).execute()
 
 
-def update_conversation_title(conversation_id: str, title: str) -> None:
+def update_conversation_title(conversation_id: str, title: str, user_id: str | None = None) -> None:
     supabase = get_supabase_client()
-    supabase.table("conversations").update({"title": title}).eq(
-        "id", conversation_id
-    ).execute()
+    query = supabase.table("conversations").update({"title": title}).eq("id", conversation_id)
+    if user_id:
+        query = query.eq("user_id", user_id)
+    query.execute()
 
 
 def get_or_create_conversation(
@@ -61,7 +75,14 @@ def get_or_create_conversation(
 ) -> str:
     """Get existing conversation or create new one. Update title, category, subcategory if new."""
     if conversation_id:
-        return conversation_id
+        # Verify ownership — never trust a caller-supplied conversation_id
+        supabase = get_supabase_client()
+        conv = supabase.table("conversations").select("id").eq(
+            "id", conversation_id
+        ).eq("user_id", user_id).execute()
+        if conv.data:
+            return conversation_id
+        # If not owned by user, create a new one instead
     c = classification or {}
     title = c.get("titulo_resumen", first_message[:60] or "Nueva conversación")[:80]
     return create_conversation(
@@ -174,8 +195,8 @@ def run_chat(user_id: str, message: str, conversation_id: str | None = None, att
         rag_context = f"{contract_analysis_context}\n\n{rag_context}"
     
     conv_id = get_or_create_conversation(user_id, conversation_id, message, classification)
-    history = get_conversation_messages(conv_id) if conv_id else []
-    save_message(conv_id, "user", message)
+    history = get_conversation_messages(conv_id, user_id) if conv_id else []
+    save_message(conv_id, "user", message, user_id=user_id)
 
     # Si hay documentos adjuntos, incluir su contenido en el mensaje al LLM
     message_for_ai = full_message if attachment_context else message

@@ -91,6 +91,7 @@ export default function CaseDetailPage() {
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) router.push("/login");
@@ -136,11 +137,13 @@ export default function CaseDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm("¿Seguro que quieres eliminar este expediente?")) return;
     setDeleting(true);
     const res = await apiFetch(`/cases/${caseId}`, { method: "DELETE" });
     if (res.ok) router.push("/casos");
-    else setDeleting(false);
+    else {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
   };
 
   const handleStepUpdate = async (stepIndex: number, newStatus: string) => {
@@ -461,7 +464,7 @@ export default function CaseDetailPage() {
                 </button>
               ))}
               <button
-                onClick={handleDelete}
+                onClick={() => setShowDeleteConfirm(true)}
                 disabled={deleting}
                 className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
               >
@@ -552,6 +555,33 @@ export default function CaseDetailPage() {
           </section>
         )}
       </main>
+
+      {/* Delete confirmation modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="mb-2 font-semibold text-slate-900">Eliminar expediente</h3>
+            <p className="mb-5 text-sm text-slate-600">
+              ¿Seguro que quieres eliminar este expediente? Esta acción no se puede deshacer.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {deleting ? "Eliminando..." : "Sí, eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Link conversation modal */}
       {showLinkModal && (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { LandingNav } from "../landing/components/LandingNav";
 import { Footer } from "../landing/components/Footer";
 import { useAuth } from "@/context/AuthContext";
@@ -35,9 +35,7 @@ export default function PricingPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const { startCheckout, loading } = useStripeCheckout();
-  const searchParams = new URLSearchParams(
-    typeof window !== "undefined" ? window.location.search : ""
-  );
+  const searchParams = useSearchParams();
   const autoCheckout = searchParams.get("checkout") === "pro";
   const [checkoutTriggered, setCheckoutTriggered] = useState(false);
 
