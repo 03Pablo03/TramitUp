@@ -43,7 +43,7 @@ export default function WizardGalleryPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const categories = [...new Set(templates.map((t) => t.category))];
+  const categories = Array.from(new Set(templates.map((t) => t.category)));
   const filtered = filter ? templates.filter((t) => t.category === filter) : templates;
 
   return (
