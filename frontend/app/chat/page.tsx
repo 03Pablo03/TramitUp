@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
@@ -51,7 +51,7 @@ type Message = {
 
 type Conversation = { id: string; title: string; category?: string; created_at: string };
 
-export default function ChatPage() {
+function ChatPageContent() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -471,5 +471,13 @@ export default function ChatPage() {
         </div>
       )}
     </>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#FAFAF9]"><div className="text-slate-500">Cargando...</div></div>}>
+      <ChatPageContent />
+    </Suspense>
   );
 }

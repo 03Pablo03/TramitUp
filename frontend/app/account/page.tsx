@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
@@ -44,7 +44,7 @@ function daysUntil(ts: number): number {
   return Math.max(0, Math.ceil((ts * 1000 - Date.now()) / (1000 * 60 * 60 * 24)));
 }
 
-export default function AccountPage() {
+function AccountPageContent() {
   const { user, profile, signOut, refreshProfile } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -472,5 +472,13 @@ export default function AccountPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#F9FAFB]"><div className="text-slate-500">Cargando...</div></div>}>
+      <AccountPageContent />
+    </Suspense>
   );
 }
