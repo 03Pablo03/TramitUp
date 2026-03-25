@@ -37,7 +37,7 @@ export default function OnboardingPage() {
       general: [],
     };
     const suggested = scenarioCategories[s] || [];
-    setCategories((prev) => [...new Set([...prev, ...suggested])]);
+    setCategories((prev) => Array.from(new Set([...prev, ...suggested])));
     setStep(2);
   };
 

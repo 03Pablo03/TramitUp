@@ -72,6 +72,8 @@ type ChatWindowProps = {
   hasAlertAccess?: boolean;
   onProRequired?: () => void;
   error?: string;
+  feedbackMap?: Record<number, "positive" | "negative">;
+  onFeedback?: (messageIndex: number, rating: "positive" | "negative") => void;
 };
 
 export function ChatWindow({
@@ -86,6 +88,8 @@ export function ChatWindow({
   hasAlertAccess = false,
   onProRequired,
   error,
+  feedbackMap = {},
+  onFeedback,
 }: ChatWindowProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -170,6 +174,9 @@ export function ChatWindow({
                   !!conversationId
                 }
                 conversationId={conversationId}
+                messageIndex={i}
+                feedbackRating={m.role === "assistant" ? feedbackMap[i] || null : null}
+                onFeedback={m.role === "assistant" ? onFeedback : undefined}
                 hasDocumentAccess={hasDocumentAccess}
                 hasAlertAccess={hasAlertAccess}
                 onProRequired={onProRequired}

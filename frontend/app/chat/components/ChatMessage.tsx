@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import Link from "next/link";
 import { CategoryBadge } from "./CategoryBadge";
 import { DocumentGenerator } from "@/components/DocumentGenerator";
+import { DocumentPreview } from "@/components/DocumentPreview";
 import { AlertBanner } from "@/components/alerts/AlertBanner";
 import { FileText, Image } from "lucide-react";
 
@@ -36,6 +37,9 @@ type ChatMessageProps = {
   onCopy?: () => void;
   showGenerateDoc?: boolean;
   conversationId?: string | null;
+  messageIndex?: number;
+  feedbackRating?: "positive" | "negative" | null;
+  onFeedback?: (messageIndex: number, rating: "positive" | "negative") => void;
   hasDocumentAccess?: boolean;
   hasAlertAccess?: boolean;
   onProRequired?: () => void;
@@ -58,6 +62,9 @@ export function ChatMessage({
   onCopy,
   showGenerateDoc,
   conversationId,
+  messageIndex,
+  feedbackRating,
+  onFeedback,
   hasDocumentAccess,
   hasAlertAccess = false,
   onProRequired,
@@ -103,7 +110,7 @@ export function ChatMessage({
         </div>
         {!isUser && content && (
           <div className="mt-2 flex flex-col gap-2">
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               {onCopy && (
                 <button
                   onClick={onCopy}
@@ -111,6 +118,36 @@ export function ChatMessage({
                 >
                   Copiar respuesta
                 </button>
+              )}
+              {onFeedback && messageIndex !== undefined && (
+                <div className="flex items-center gap-1 ml-1">
+                  <button
+                    onClick={() => onFeedback(messageIndex, "positive")}
+                    className={`rounded-md p-1 transition-all ${
+                      feedbackRating === "positive"
+                        ? "bg-green-100 text-green-600"
+                        : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                    }`}
+                    title="Respuesta útil"
+                  >
+                    <svg className="h-3.5 w-3.5" fill={feedbackRating === "positive" ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V2.75a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0H20.25a2.25 2.25 0 012.25 2.25v1.372c0 .516-.125.977-.348 1.384a4.5 4.5 0 01-1.27 1.59c-.422.335-.703.813-.703 1.327a4.5 4.5 0 01-1.265 3.13A2.25 2.25 0 0116.5 21H8.68a4.5 4.5 0 01-3.394-1.542l-.547-.605A2.25 2.25 0 014.25 17.34V10.5a2.25 2.25 0 012.25-2.25h.133z" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => onFeedback(messageIndex, "negative")}
+                    className={`rounded-md p-1 transition-all ${
+                      feedbackRating === "negative"
+                        ? "bg-red-100 text-red-600"
+                        : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                    }`}
+                    title="Respuesta mejorable"
+                  >
+                    <svg className="h-3.5 w-3.5" fill={feedbackRating === "negative" ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.498 15.25H4.372c-1.026 0-1.945-.694-2.054-1.715a12.137 12.137 0 01-.068-1.285c0-2.848.992-5.464 2.649-7.521C5.287 4.247 5.886 4 6.504 4h4.016a4.5 4.5 0 011.423.23l3.114 1.04a4.5 4.5 0 001.423.23h.327M7.498 15.25c.618 0 .991.724.725 1.282A7.471 7.471 0 007.5 19.75 2.25 2.25 0 009.75 22a.75.75 0 00.75-.75v-.633c0-.573.11-1.14.322-1.672.304-.76.93-1.33 1.653-1.715a9.04 9.04 0 002.86-2.4c.498-.634 1.226-1.08 2.032-1.08h.384" />
+                    </svg>
+                  </button>
+                </div>
               )}
             </div>
             {detectedDeadlines?.length ? (
@@ -122,11 +159,19 @@ export function ChatMessage({
               />
             ) : null}
             {showGenerateDoc && conversationId && (
-              <DocumentGenerator
-                conversationId={conversationId}
-                hasAccess={hasDocumentAccess ?? false}
-                onAccessRequired={onProRequired}
-              />
+              <div className="space-y-2">
+                <DocumentPreview
+                  conversationId={conversationId}
+                  hasAccess={hasDocumentAccess ?? false}
+                  onAccessRequired={onProRequired}
+                  onGenerate={() => {}}
+                />
+                <DocumentGenerator
+                  conversationId={conversationId}
+                  hasAccess={hasDocumentAccess ?? false}
+                  onAccessRequired={onProRequired}
+                />
+              </div>
             )}
             {/* Action cards: wizard link based on category */}
             {showGenerateDoc && category && CATEGORY_WIZARD_MAP[category] && (

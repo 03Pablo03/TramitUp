@@ -55,6 +55,19 @@ type Reminder = {
   action_label: string;
 };
 
+type Recommendation = {
+  type: string;
+  priority: string;
+  title: string;
+  reason: string;
+  template_id?: string;
+  template_title?: string;
+  template_icon?: string;
+  template_description?: string;
+  action_url: string;
+  action_label: string;
+};
+
 type DashboardData = {
   urgent_alerts: Alert[];
   upcoming_deadlines: Alert[];
@@ -63,6 +76,7 @@ type DashboardData = {
   stats: { total_cases: number; total_alerts_active: number; total_conversations: number };
   legal_calendar: LegalEvent[];
   reminders?: Reminder[];
+  recommendations?: Recommendation[];
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -435,6 +449,40 @@ export default function DashboardPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── Recomendaciones personalizadas ─────────────────────────── */}
+          {data?.recommendations && data.recommendations.length > 0 && (
+            <section className="mt-6">
+              <h2 className="mb-3 text-sm font-semibold text-slate-700">Recomendado para ti</h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {data.recommendations.slice(0, 4).map((rec, i) => (
+                  <Link
+                    key={i}
+                    href={rec.action_url}
+                    className="group flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 transition-all hover:border-[var(--primary)] hover:shadow-md"
+                  >
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-xl shrink-0 group-hover:bg-blue-100 transition-colors">
+                      {rec.template_icon || "💡"}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-slate-800 group-hover:text-[var(--primary)] transition-colors">
+                        {rec.template_title || rec.title}
+                      </p>
+                      <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">
+                        {rec.reason}
+                      </p>
+                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[var(--primary)]">
+                        {rec.action_label}
+                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      </span>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </section>
           )}

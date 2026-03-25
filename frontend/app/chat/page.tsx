@@ -66,6 +66,7 @@ export default function ChatPage() {
   const [currentSubcategory, setCurrentSubcategory] = useState<string>("");
   const [userPlan, setUserPlan] = useState<string>("free");
   const [showCalculatorBanner, setShowCalculatorBanner] = useState(false);
+  const [feedbackMap, setFeedbackMap] = useState<Record<number, "positive" | "negative">>({});
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -321,11 +322,13 @@ export default function ChatPage() {
     setMessages([]);
     setConversationId(null);
     setShowCalculatorBanner(false);
+    setFeedbackMap({});
   };
 
   const handleSelectConversation = async (id: string) => {
     setConversationId(id);
     setMessages([]);
+    setFeedbackMap({});
     try {
       const res = await apiFetch(`/conversations/${id}/messages`);
       const data = await res.json();
@@ -413,6 +416,23 @@ export default function ChatPage() {
           hasAlertAccess={userPlan === "pro" || userPlan === "document"}
           onProRequired={() => setShowProModal(true)}
           error={error}
+          feedbackMap={feedbackMap}
+          onFeedback={async (messageIndex, rating) => {
+            setFeedbackMap((prev) => ({ ...prev, [messageIndex]: rating }));
+            if (conversationId) {
+              try {
+                await apiFetch("/feedback", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    conversation_id: conversationId,
+                    message_index: messageIndex,
+                    rating,
+                  }),
+                });
+              } catch { /* silent */ }
+            }
+          }}
         />
       </ChatLayout>
       <RateLimitModal

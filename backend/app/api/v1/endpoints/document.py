@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from pydantic import BaseModel, Field
+
 from app.core.auth import require_auth
 from app.services.subscription_service import get_user_plan, has_document_access
 from app.services.document_pipeline_service import (
     run_document_pipeline,
+    preview_document_content,
     get_document_download_urls,
     get_document_history,
 )
@@ -15,6 +18,10 @@ from app.schemas.document import (
 )
 
 router = APIRouter()
+
+
+class DocumentPreviewRequest(BaseModel):
+    conversation_id: str = Field(..., min_length=1)
 
 
 @router.post("/generate", response_model=DocumentGenerateV2Response)
@@ -38,6 +45,27 @@ def api_generate_document(
             format_request=request.format,
         )
         return DocumentGenerateV2Response(**result)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/preview")
+def api_preview_document(
+    request: DocumentPreviewRequest,
+    user_id: str = Depends(require_auth),
+):
+    """
+    Genera una preview del documento sin renderizar a PDF/DOCX.
+    Retorna el contenido estructurado para visualizar y editar antes de generar.
+    """
+    if not has_document_access(user_id, request.conversation_id):
+        raise HTTPException(
+            status_code=403,
+            detail="Necesitas plan PRO o desbloquear el documento",
+        )
+    try:
+        content = preview_document_content(user_id, request.conversation_id)
+        return {"success": True, "data": content}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 

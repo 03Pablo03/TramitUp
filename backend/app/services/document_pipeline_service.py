@@ -140,6 +140,63 @@ def _render_docx(doc: dict) -> bytes:
     return buffer.getvalue()
 
 
+def preview_document_content(user_id: str, conversation_id: str) -> dict:
+    """
+    Genera preview del documento sin renderizar a PDF/DOCX.
+    Retorna el contenido estructurado para visualizar en el frontend.
+    """
+    supabase = get_supabase_client()
+    result = supabase.table("messages").select("role, content").eq(
+        "conversation_id", conversation_id
+    ).order("created_at", desc=False).execute()
+    messages = [{"role": r["role"], "content": r["content"]} for r in (result.data or [])]
+    if not messages:
+        raise ValueError("Conversación vacía o no encontrada")
+    conv = supabase.table("conversations").select("user_id").eq(
+        "id", conversation_id
+    ).eq("user_id", user_id).execute()
+    if not conv.data:
+        raise ValueError("Conversación no encontrada o no autorizada")
+
+    extracted = extract_document_data(messages)
+    doc_content = generate_document_content(extracted)
+
+    # Build a plain text preview from the structured content
+    enc = doc_content.get("encabezado", {})
+    cuerpo = doc_content.get("cuerpo", {})
+    sections = []
+
+    if enc.get("remitente_bloque"):
+        sections.append({"type": "header", "label": "Remitente", "content": enc["remitente_bloque"]})
+    if enc.get("destinatario_bloque"):
+        sections.append({"type": "header", "label": "Destinatario", "content": enc["destinatario_bloque"]})
+    if enc.get("lugar_fecha"):
+        sections.append({"type": "header", "label": "Lugar y fecha", "content": enc["lugar_fecha"]})
+    if enc.get("asunto"):
+        sections.append({"type": "subject", "label": "Asunto", "content": enc["asunto"]})
+    if cuerpo.get("saludo"):
+        sections.append({"type": "body", "label": "Saludo", "content": cuerpo["saludo"]})
+    for i, p in enumerate(cuerpo.get("parrafos_hechos", [])):
+        if p:
+            sections.append({"type": "body", "label": f"Hechos ({i + 1})", "content": p})
+    for i, p in enumerate(cuerpo.get("parrafos_fundamentos", [])):
+        if p:
+            sections.append({"type": "body", "label": f"Fundamentos ({i + 1})", "content": p})
+    if cuerpo.get("parrafo_solicitud"):
+        sections.append({"type": "body", "label": "Solicitud", "content": cuerpo["parrafo_solicitud"]})
+    if cuerpo.get("cierre"):
+        sections.append({"type": "body", "label": "Cierre", "content": cuerpo["cierre"]})
+    if doc_content.get("firma_bloque"):
+        sections.append({"type": "signature", "label": "Firma", "content": doc_content["firma_bloque"]})
+
+    return {
+        "title": doc_content.get("titulo", "Modelo de escrito"),
+        "document_type": extracted.get("document_type", "solicitud"),
+        "sections": sections,
+        "disclaimer": doc_content.get("nota_disclaimer", ""),
+    }
+
+
 def run_document_pipeline(
     user_id: str,
     conversation_id: str,
