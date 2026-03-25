@@ -46,6 +46,7 @@ type Message = {
   portalInfo?: PortalInfo;
   compensationEstimate?: CompensationEstimate;
   attachments?: { name: string; type: string }[];
+  followUpSuggestions?: string[];
 };
 
 type Conversation = { id: string; title: string; category?: string; created_at: string };
@@ -271,6 +272,13 @@ export default function ChatPage() {
                     setMessages((prev) => {
                       const next = [...prev];
                       if (next[idx]) next[idx] = { ...next[idx], compensationEstimate: item.compensation };
+                      return next;
+                    });
+                  }
+                  if (item.type === "follow_up_suggestions" && item.suggestions?.length) {
+                    setMessages((prev) => {
+                      const next = [...prev];
+                      if (next[idx]) next[idx] = { ...next[idx], followUpSuggestions: item.suggestions };
                       return next;
                     });
                   }

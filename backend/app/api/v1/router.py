@@ -1,9 +1,10 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import me, classify, chat, history, document, alerts, stripe, conversations, auth, document_search, intelligent_templates, proactive_suggestions, attachments, calculator, contract_analysis, cases
+from app.api.v1.endpoints import me, classify, chat, history, document, alerts, stripe, conversations, auth, document_search, intelligent_templates, proactive_suggestions, attachments, calculator, contract_analysis, cases, dashboard, tramite_wizard
 
 api_router = APIRouter()
 
 # Include endpoint modules
+api_router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(me.router, prefix="/me", tags=["me"])
 api_router.include_router(classify.router, prefix="/classify", tags=["classify"])
@@ -20,3 +21,4 @@ api_router.include_router(attachments.router, prefix="/attachments", tags=["atta
 api_router.include_router(calculator.router, prefix="/calculator", tags=["calculator"])
 api_router.include_router(contract_analysis.router, prefix="/contract-analysis", tags=["contract-analysis"])
 api_router.include_router(cases.router, prefix="/cases", tags=["cases"])
+api_router.include_router(tramite_wizard.router, prefix="/wizard", tags=["wizard"])

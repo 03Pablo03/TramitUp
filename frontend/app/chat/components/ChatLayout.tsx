@@ -73,11 +73,23 @@ export function ChatLayout({
               📄 Analizar contrato
               <ProBadge />
             </Link>
+            <Link
+              href="/wizard"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition-all hover:bg-amber-100 hover:border-amber-300"
+            >
+              📋 Trámite guiado
+            </Link>
 
             {/* Separador */}
             <span className="mx-1 h-5 w-px bg-slate-200" />
 
             {/* Navegación secundaria */}
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+            >
+              Panel
+            </Link>
             <Link
               href="/alerts"
               className="relative flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"

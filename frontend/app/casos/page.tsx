@@ -202,18 +202,44 @@ export default function CasosPage() {
         )}
 
         {cases.length === 0 && !showForm && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-            <div className="text-5xl">📁</div>
-            <h2 className="mt-4 text-lg font-semibold text-slate-800">Sin expedientes aún</h2>
-            <p className="mt-2 text-sm text-slate-500">
-              Crea un expediente para agrupar conversaciones, documentos y alertas de un mismo problema legal.
-            </p>
-            <button
-              onClick={() => setShowForm(true)}
-              className="mt-6 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
-            >
-              + Crear primer expediente
-            </button>
+          <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="text-center">
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl shadow-lg shadow-blue-500/20">
+                📁
+              </div>
+              <h2 className="mt-5 text-xl font-bold text-slate-800">Organiza tus trámites como un profesional</h2>
+              <p className="mt-2 mx-auto max-w-md text-sm text-slate-500">
+                Un expediente agrupa todo lo que necesitas en un solo sitio: consultas al asistente, documentos generados, plazos importantes y pasos a seguir.
+              </p>
+            </div>
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
+                <span className="text-lg">💬</span>
+                <p className="mt-1 text-xs font-medium text-slate-700">Consultas vinculadas</p>
+                <p className="text-[11px] text-slate-400">Todo el contexto junto</p>
+              </div>
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
+                <span className="text-lg">📄</span>
+                <p className="mt-1 text-xs font-medium text-slate-700">Documentos generados</p>
+                <p className="text-[11px] text-slate-400">Cartas y modelos listos</p>
+              </div>
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
+                <span className="text-lg">🔔</span>
+                <p className="mt-1 text-xs font-medium text-slate-700">Alertas de plazos</p>
+                <p className="text-[11px] text-slate-400">Nunca pierdas una fecha</p>
+              </div>
+            </div>
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setShowForm(true)}
+                className="rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
+              >
+                + Crear mi primer expediente
+              </button>
+              <p className="mt-3 text-xs text-slate-400">
+                Puedes también crear expedientes desde el chat cuando el asistente te ayude con un problema
+              </p>
+            </div>
           </div>
         )}
 

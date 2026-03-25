@@ -66,8 +66,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(ONBOARDING_ROUTE, request.url));
   }
 
-  if (onboardingCompleted && path === "/login") {
-    return NextResponse.redirect(new URL("/chat", request.url));
+  if (onboardingCompleted && (path === "/login" || path === "/")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // TODO: reactivar restricción PRO antes de producción

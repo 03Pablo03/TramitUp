@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 from fastapi import APIRouter, Depends, HTTPException
 from sse_starlette.sse import EventSourceResponse
@@ -9,6 +10,11 @@ from app.services.chat_service import run_chat, save_message
 from app.ai.chains.deadline_extract_chain import extract_deadlines_from_response
 from app.schemas.chat import ChatRequest, CompensationEstimate
 from app.config.portals import get_portal, get_portal_summary
+from app.ai.prompts.follow_up_suggestions import (
+    FOLLOW_UP_PROMPT, DEFAULT_SUGGESTIONS, GENERIC_SUGGESTIONS,
+)
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -67,6 +73,48 @@ def clean_response_text(text: str, final: bool = False) -> str:
     if final:
         return text.strip()
     return text
+
+
+def _generate_follow_up_suggestions(
+    classification: dict | None,
+    user_message: str,
+    assistant_text: str,
+) -> list[str]:
+    """Generate follow-up suggestions using LLM, with fallback to defaults."""
+    category = (classification or {}).get("category", "")
+    subcategory = (classification or {}).get("subcategory", "")
+
+    try:
+        from app.ai.llm_client import get_llm
+        llm = get_llm(temperature=0.4, max_output_tokens=256, streaming=False)
+        prompt = FOLLOW_UP_PROMPT.format(
+            category=category or "general",
+            subcategory=subcategory or "general",
+            user_message=user_message[:300],
+            assistant_summary=assistant_text[-500:] if len(assistant_text) > 500 else assistant_text,
+        )
+        response = llm.invoke(prompt)
+        content = getattr(response, "content", str(response))
+        lines = [line.strip() for line in content.strip().split("\n") if line.strip()]
+        # Filtrar líneas demasiado largas o vacías
+        suggestions = [l for l in lines if 5 <= len(l) <= 80][:3]
+        if len(suggestions) >= 2:
+            return suggestions
+    except Exception as e:
+        logger.debug("Follow-up suggestion generation failed: %s", e)
+
+    # Fallback: try bot-specific suggestions first, then defaults
+    try:
+        from app.ai.bots.selector import select_bot
+        bot = select_bot(classification or {}, user_message)
+        if bot:
+            bot_suggestions = bot.get_follow_up_suggestions(classification or {}, user_message)
+            if bot_suggestions:
+                return bot_suggestions[:3]
+    except Exception:
+        pass
+
+    return DEFAULT_SUGGESTIONS.get(category, GENERIC_SUGGESTIONS)
 
 
 async def generate_sse(user_id: str, request: ChatRequest):
@@ -138,6 +186,19 @@ async def generate_sse(user_id: str, request: ChatRequest):
                     "applies": compensation.applies,
                     "reason": compensation.reason
                 }}])}
+
+            # Generate follow-up suggestions
+            try:
+                suggestions = _generate_follow_up_suggestions(
+                    classification, request.message, clean_text,
+                )
+                if suggestions:
+                    yield {"data": json.dumps([{
+                        "type": "follow_up_suggestions",
+                        "suggestions": suggestions,
+                    }])}
+            except Exception as e:
+                logger.debug("Failed to yield follow-up suggestions: %s", e)
 
 
 @router.post("")

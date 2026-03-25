@@ -215,18 +215,67 @@ export default function AlertsPage() {
             </div>
 
             {filtered.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center">
-                <p className="mb-2 text-4xl">⏰</p>
-                <p className="mb-4 text-slate-600">No tienes alertas {tab === "active" ? "activas" : tab === "expired" ? "vencidas" : "descartadas"}.</p>
-                <p className="mb-6 text-sm text-slate-500">
-                  Cuando el asistente detecte plazos en tu conversación, se añadirán aquí automáticamente.
-                </p>
-                <Link
-                  href="/chat"
-                  className="inline-flex items-center gap-2 rounded-lg bg-[#1A56DB] px-4 py-2 text-sm font-medium text-white hover:bg-[#1545a8]"
-                >
-                  Ir al chat →
-                </Link>
+              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+                <div className="text-center">
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-3xl shadow-lg shadow-amber-500/20">
+                    🔔
+                  </div>
+                  <h3 className="mt-5 text-lg font-bold text-slate-800">
+                    {tab === "active"
+                      ? "Nunca más pierdas un plazo legal"
+                      : tab === "expired"
+                      ? "Sin plazos vencidos"
+                      : "Sin alertas descartadas"}
+                  </h3>
+                  {tab === "active" && (
+                    <>
+                      <p className="mt-2 mx-auto max-w-md text-sm text-slate-500">
+                        TramitUp detecta plazos automáticamente en tus consultas y te avisa por email antes de que venzan. También puedes crear alertas manualmente.
+                      </p>
+                      <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
+                        <Link
+                          href="/chat"
+                          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
+                        >
+                          💬 Consultar al asistente
+                        </Link>
+                        <button
+                          onClick={() => {
+                            if (userPlan === "pro" || userPlan === "document") {
+                              setShowCreateModal(true);
+                            } else {
+                              startCheckout();
+                            }
+                          }}
+                          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all"
+                        >
+                          + Crear alerta manual
+                        </button>
+                      </div>
+                      <div className="mt-6 grid grid-cols-3 gap-3 text-center max-w-sm mx-auto">
+                        <div>
+                          <p className="text-lg">7 días</p>
+                          <p className="text-[11px] text-slate-400">Primer aviso</p>
+                        </div>
+                        <div>
+                          <p className="text-lg">3 días</p>
+                          <p className="text-[11px] text-slate-400">Recordatorio</p>
+                        </div>
+                        <div>
+                          <p className="text-lg">1 día</p>
+                          <p className="text-[11px] text-slate-400">Aviso urgente</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {tab !== "active" && (
+                    <p className="mt-2 text-sm text-slate-500">
+                      {tab === "expired"
+                        ? "Los plazos vencidos aparecerán aquí para tu referencia."
+                        : "Las alertas que descartes aparecerán aquí."}
+                    </p>
+                  )}
+                </div>
               </div>
             ) : (
               <ul className="space-y-4">

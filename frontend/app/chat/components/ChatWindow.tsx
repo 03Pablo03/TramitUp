@@ -15,6 +15,13 @@ const QUICK_SUGGESTIONS = [
   { text: "Tengo un problema con mi arrendador", icon: "🏠", accent: "from-emerald-500 to-teal-500", bg: "bg-emerald-50", border: "border-emerald-200/60", hover: "hover:border-emerald-400/50 hover:bg-emerald-50/90" },
 ];
 
+const TRENDING_TOPICS = [
+  "Reclamar fianza del alquiler",
+  "Recurrir multa de tráfico",
+  "Comisiones bancarias abusivas",
+  "Reclamación al seguro",
+];
+
 type DetectedDeadline = {
   description: string;
   days: number;
@@ -50,6 +57,7 @@ type Message = {
   portalInfo?: PortalInfo;
   compensationEstimate?: CompensationEstimate;
   attachments?: { name: string; type: string }[];
+  followUpSuggestions?: string[];
 };
 
 type ChatWindowProps = {
@@ -117,6 +125,24 @@ export function ChatWindow({
                 </button>
               ))}
             </div>
+
+            {/* Trending topics */}
+            <div className="max-w-2xl mx-auto">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3 text-center">
+                Lo que otros usuarios están consultando
+              </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {TRENDING_TOPICS.map((topic) => (
+                  <button
+                    key={topic}
+                    onClick={() => onSend(topic)}
+                    className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-600 transition-all hover:border-[var(--primary)] hover:text-[var(--primary)] hover:bg-blue-50"
+                  >
+                    {topic}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
         <div className="mx-auto max-w-3xl space-y-6">
@@ -133,6 +159,8 @@ export function ChatWindow({
                 subcategory={m.subcategory}
                 detectedDeadlines={m.detectedDeadlines}
                 attachments={m.attachments}
+                followUpSuggestions={m.followUpSuggestions}
+                onFollowUpClick={(text) => onSend(text)}
                 onCopy={m.role === "assistant" ? () => onCopy(m.content) : undefined}
                 showGenerateDoc={
                   m.role === "assistant" &&

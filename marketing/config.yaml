@@ -1,0 +1,198 @@
+# ═══════════════════════════════════════════════════════════════════
+# TramitUp Marketing Automation — Configuración Central
+# ═══════════════════════════════════════════════════════════════════
+
+brand:
+  name: "TramitUp"
+  tagline: "Tu asistente legal de bolsillo"
+  url: "https://tramitup.es"
+  app_url: "http://localhost:5000"
+  social:
+    tiktok: "@tramitup"
+    facebook: "TramitUp"
+    instagram: "@tramitup.es"
+    twitter: "@tramitup_es"
+    youtube: "TramitUp"
+
+# Colores extraídos de la app (globals.css)
+brand_colors:
+  primary: "#1a56db"
+  primary_dark: "#1340a8"
+  primary_light: "#eff6ff"
+  accent: "#10b981"
+  warning: "#f59e0b"
+  pro_gradient: ["#f59e0b", "#ea580c"]
+  text_dark: "#111827"
+  text_body: "#374151"
+  text_muted: "#6b7280"
+  surface: "#f9fafb"
+  white: "#ffffff"
+  border: "#e5e7eb"
+
+fonts:
+  display: "Playfair Display"
+  body: "DM Sans"
+  video_overlay: "Inter"
+
+voice:
+  tone: "cercano, directo, educativo"
+  persona: "Un amigo que sabe de leyes y te lo explica fácil"
+  prohibido:
+    - "jerga legal innecesaria"
+    - "tono condescendiente"
+    - "vender directamente la app"
+    - "prometer resultados legales concretos"
+  siempre:
+    - "dar valor primero"
+    - "usar ejemplos reales y cotidianos"
+    - "incluir dato concreto (cifra, plazo, ley)"
+    - "CTA sutil al final"
+
+audience:
+  age: "25-55"
+  country: "España"
+  pain_points:
+    - "multas de tráfico"
+    - "problemas con caseros/alquileres"
+    - "herencias y sucesiones"
+    - "reclamaciones a empresas"
+    - "trámites burocráticos"
+    - "facturas incorrectas"
+    - "despidos y derechos laborales"
+    - "vuelos cancelados/retrasados"
+    - "devoluciones de compras"
+    - "seguridad social y prestaciones"
+
+funnel:
+  steps:
+    - "Vídeo viral / post útil"
+    - "Perfil de TramitUp"
+    - "Link en bio"
+    - "Registro con trial gratuito 3 días"
+    - "Conversión a Pro"
+  trial_days: 3
+  price: "9,99 €/mes"
+
+# Categorías de contenido
+categories:
+  - id: multas
+    label: "Multas de tráfico"
+    icon: "🚗"
+    keywords: ["multa", "DGT", "tráfico", "radar", "puntos"]
+  - id: alquiler
+    label: "Alquiler y vivienda"
+    icon: "🏠"
+    keywords: ["alquiler", "casero", "inquilino", "fianza", "desahucio"]
+  - id: laboral
+    label: "Derechos laborales"
+    icon: "💼"
+    keywords: ["despido", "trabajo", "vacaciones", "finiquito", "ERE"]
+  - id: consumo
+    label: "Consumo y reclamaciones"
+    icon: "🛒"
+    keywords: ["devolución", "reclamación", "garantía", "factura"]
+  - id: herencias
+    label: "Herencias y sucesiones"
+    icon: "🏛️"
+    keywords: ["herencia", "testamento", "sucesiones", "plusvalía"]
+  - id: vuelos
+    label: "Vuelos y transporte"
+    icon: "✈️"
+    keywords: ["vuelo", "cancelación", "retraso", "aerolínea"]
+  - id: tramites
+    label: "Trámites y burocracia"
+    icon: "📝"
+    keywords: ["trámite", "burocracia", "Hacienda", "Seguridad Social"]
+  - id: autonomos
+    label: "Autónomos"
+    icon: "🧑‍💻"
+    keywords: ["autónomo", "cuota", "IVA", "factura"]
+  - id: familia
+    label: "Familia"
+    icon: "👨‍👩‍👧"
+    keywords: ["divorcio", "custodia", "pensión", "violencia"]
+
+# Horarios óptimos de publicación
+schedule:
+  tiktok:
+    frequency: "3-4 videos/semana"
+    best_hours: ["12:00-14:00", "19:00-21:00"]
+    best_days: ["martes", "jueves", "sábado"]
+  facebook:
+    frequency: "3-4 posts/semana"
+    best_hours: ["10:00-12:00", "18:00-20:00"]
+    best_days: ["lunes", "miércoles", "viernes"]
+  instagram:
+    frequency: "3-4 posts/semana + stories diarias"
+    best_hours: ["11:00-13:00", "19:00-21:00"]
+    best_days: ["martes", "jueves", "sábado"]
+  twitter:
+    frequency: "1-2 hilos/semana + tweets diarios"
+    best_hours: ["09:00-10:00", "13:00-14:00"]
+    best_days: ["lunes", "miércoles"]
+
+# KPIs objetivo
+kpis:
+  month_1:
+    tiktok_followers: [500, 1000]
+    tiktok_views_per_video: [1000, 5000]
+    facebook_followers: [200, 500]
+    app_registrations: [50, 100]
+    trial_conversion: [0.05, 0.10]
+  month_3:
+    tiktok_followers: [3000, 5000]
+    tiktok_views_per_video: [5000, 20000]
+    facebook_followers: [1000, 2000]
+    app_registrations: [200, 500]
+    trial_conversion: [0.10, 0.15]
+
+# APIs (las claves se leen de variables de entorno)
+apis:
+  anthropic:
+    model: "claude-sonnet-4-20250514"
+    env_key: "ANTHROPIC_API_KEY"
+  google_tts:
+    voices:
+      male: "es-ES-Standard-B"
+      female: "es-ES-Standard-A"
+    speaking_rate: 1.0
+    env_key: "GOOGLE_API_KEY"
+  unsplash:
+    env_key: "UNSPLASH_ACCESS_KEY"
+  pexels:
+    env_key: "PEXELS_API_KEY"
+  facebook:
+    env_key: "FACEBOOK_PAGE_TOKEN"
+    page_id_env: "FACEBOOK_PAGE_ID"
+
+# Video settings
+video:
+  viewport:
+    vertical: {width: 1080, height: 1920}
+    square: {width: 1080, height: 1080}
+    horizontal: {width: 1920, height: 1080}
+  encoding:
+    codec: "libx264"
+    preset: "medium"
+    crf: 23
+    pixel_format: "yuv420p"
+    fps: 30
+  text_style:
+    font: "Inter"
+    color: "#ffffff"
+    shadow_color: "#000000"
+    shadow_width: 3
+  subtitle_style:
+    bg_color: "rgba(0,0,0,0.6)"
+    font_size: 48
+    position: "bottom"
+
+# Database
+database:
+  path: "marketing/data/marketing.db"
+
+# Logging
+logging:
+  level: "INFO"
+  file: "marketing/data/marketing.log"
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"

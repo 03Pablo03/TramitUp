@@ -17,6 +17,9 @@ from app.services.case_service import (
     delete_case,
     link_conversation,
     unlink_conversation,
+    update_step_status,
+    update_document_check,
+    create_case_from_conversation,
     VALID_CATEGORIES,
     VALID_STATUSES,
 )
@@ -30,6 +33,7 @@ router = APIRouter()
 class CreateCaseRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=120)
     category: Optional[str] = Field(None)
+    subcategory: Optional[str] = Field(None, max_length=50)
     summary: Optional[str] = Field(None, max_length=1000)
 
 
@@ -80,6 +84,7 @@ def api_create_case(
             title=request.title.strip(),
             category=request.category,
             summary=request.summary,
+            subcategory=request.subcategory,
         )
     except Exception as e:
         logger.error("Error creating case for user %s: %s", user_id, e, exc_info=True)
@@ -181,3 +186,87 @@ def api_unlink_conversation(
     if not ok:
         raise HTTPException(status_code=404, detail="Expediente no encontrado.")
     return {"ok": True}
+
+
+# ─── Workflow endpoints ──────────────────────────────────────────────────────
+
+
+class UpdateStepRequest(BaseModel):
+    status: str = Field(..., description="pending | in_progress | completed | skipped")
+
+
+class UpdateDocCheckRequest(BaseModel):
+    checked: bool
+
+
+class CreateFromConversationRequest(BaseModel):
+    conversation_id: str
+    title: str = Field(..., min_length=1, max_length=120)
+    category: Optional[str] = None
+    subcategory: Optional[str] = None
+
+
+@router.patch("/{case_id}/steps/{step_index}")
+def api_update_step(
+    case_id: str,
+    step_index: int,
+    request: UpdateStepRequest,
+    user_id: str = Depends(require_auth),
+):
+    """Actualiza el estado de un paso del workflow."""
+    try:
+        result = update_step_status(user_id, case_id, step_index, request.status)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error("Error updating step %d for case %s: %s", step_index, case_id, e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error actualizando el paso.")
+
+    if result is None:
+        raise HTTPException(status_code=404, detail="Expediente no encontrado.")
+    return result
+
+
+@router.patch("/{case_id}/documents/{doc_index}")
+def api_update_doc_check(
+    case_id: str,
+    doc_index: int,
+    request: UpdateDocCheckRequest,
+    user_id: str = Depends(require_auth),
+):
+    """Marca o desmarca un documento de la checklist."""
+    try:
+        result = update_document_check(user_id, case_id, doc_index, request.checked)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error("Error updating doc %d for case %s: %s", doc_index, case_id, e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error actualizando el documento.")
+
+    if result is None:
+        raise HTTPException(status_code=404, detail="Expediente no encontrado.")
+    return {"ok": True}
+
+
+@router.post("/from-conversation")
+def api_create_from_conversation(
+    request: CreateFromConversationRequest,
+    user_id: str = Depends(require_auth),
+):
+    """Crea un expediente desde una conversación, auto-vinculando y aplicando workflow."""
+    _validate_category(request.category)
+    try:
+        case = create_case_from_conversation(
+            user_id=user_id,
+            conversation_id=request.conversation_id,
+            title=request.title.strip(),
+            category=request.category,
+            subcategory=request.subcategory,
+        )
+    except Exception as e:
+        logger.error("Error creating case from conversation: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Error creando el expediente.")
+
+    if not case:
+        raise HTTPException(status_code=404, detail="Conversación no encontrada.")
+    return case

@@ -13,6 +13,8 @@ export async function POST(request: Request) {
     const categories_interest = Array.isArray(body.categories_interest)
       ? body.categories_interest
       : [];
+    const situation_type = typeof body.situation_type === "string" ? body.situation_type : null;
+    const first_scenario = typeof body.first_scenario === "string" ? body.first_scenario : null;
 
     const supabase = await createServerSupabaseClient();
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -23,12 +25,16 @@ export async function POST(request: Request) {
       );
     }
 
+    const updateData: Record<string, unknown> = {
+      categories_interest,
+      onboarding_completed: true,
+    };
+    if (situation_type) updateData.situation_type = situation_type;
+    if (first_scenario) updateData.first_scenario = first_scenario;
+
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({
-        categories_interest,
-        onboarding_completed: true,
-      })
+      .update(updateData)
       .eq("id", user.id);
 
     if (updateError) {

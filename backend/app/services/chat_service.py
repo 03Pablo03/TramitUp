@@ -1,6 +1,7 @@
 from app.ai.chains.classify_chain import classify_tramite
 from app.ai.chains.chat_chain import stream_chat_response, build_chat_prompt
 from app.ai.rag.retriever import retrieve_context
+from app.ai.bots.selector import select_bot
 from app.core.supabase_client import get_supabase_client
 from app.services.personalization_service import personalization_service
 from app.services.document_analysis_service import document_analysis_service
@@ -214,46 +215,55 @@ def retrieve_context_personalized(message: str, user_context: dict) -> list[dict
     return base_chunks
 
 
-def stream_chat_response_personalized(message: str, rag_context: str, classification: dict, 
+def stream_chat_response_personalized(message: str, rag_context: str, classification: dict,
                                     history: list[dict], user_context: dict):
     """
     Genera respuesta de chat con personalización basada en el contexto del usuario.
+    Selecciona un bot especializado si la clasificación lo requiere.
     """
     from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-    
+
     # Construir prompt personalizado
     personalized_additions = personalization_service.get_contextual_prompt_additions(user_context)
     base_prompt = build_chat_prompt(rag_context, classification)
     personalized_prompt = base_prompt + personalized_additions
-    
+
+    # Select specialized bot and extend prompt
+    bot = select_bot(classification, message)
+    if bot:
+        bot_extension = bot.get_prompt_extension(classification, message)
+        personalized_prompt = personalized_prompt + "\n" + bot_extension
+
     # Preparar mensajes con contexto personalizado
     messages = [SystemMessage(content=personalized_prompt)]
-    
+
     # Añadir historial (limitado según experiencia del usuario)
     is_experienced = user_context.get("profile", {}).get("is_experienced_user", False)
     history_limit = 10 if is_experienced else 5  # Usuarios experimentados ven más contexto
-    
+
     for m in history[-history_limit:]:
         if m["role"] == "user":
             messages.append(HumanMessage(content=m["content"]))
         else:
             messages.append(AIMessage(content=m["content"]))
-    
+
     # Añadir mensaje actual
     messages.append(HumanMessage(content=message))
-    
-    # Configurar LLM según tipo de usuario
-    user_type = user_context.get("usage_patterns", {}).get("user_type", "casual_user")
-    
-    if user_type == "power_user":
-        # Usuarios avanzados: respuestas más detalladas
-        llm = get_llm(temperature=0.2, max_output_tokens=6000, streaming=True)
-    elif user_type == "casual_user":
-        # Usuarios casuales: respuestas más concisas
-        llm = get_llm(temperature=0.4, max_output_tokens=3000, streaming=True)
+
+    # Configure LLM: bot settings take priority, then user type
+    if bot:
+        temperature = bot.get_temperature()
+        max_tokens = bot.get_max_tokens()
     else:
-        # Configuración estándar
-        llm = get_llm(temperature=0.3, max_output_tokens=4096, streaming=True)
-    
+        user_type = user_context.get("usage_patterns", {}).get("user_type", "casual_user")
+        if user_type == "power_user":
+            temperature, max_tokens = 0.2, 6000
+        elif user_type == "casual_user":
+            temperature, max_tokens = 0.4, 3000
+        else:
+            temperature, max_tokens = 0.3, 4096
+
+    llm = get_llm(temperature=temperature, max_output_tokens=max_tokens, streaming=True)
+
     # Generar respuesta streaming
     return llm.stream(messages)
