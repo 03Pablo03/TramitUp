@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { createClient } from "@/lib/supabase/client";
@@ -14,6 +15,41 @@ const CATEGORIES = [
   { id: "vivienda", label: "Vivienda", icon: "🏠" },
   { id: "tramites", label: "Trámites", icon: "🏛️" },
 ];
+
+const CATEGORY_ICONS: Record<string, string> = {
+  laboral: "💼", vivienda: "🏠", consumo: "🛒", familia: "👨‍👩‍👧",
+  trafico: "🚗", administrativo: "🏛️", fiscal: "💰", penal: "⚖️", otro: "📋",
+};
+
+type RecentConversation = { id: string; title: string; category?: string; updated_at: string };
+type ActiveCase = { id: string; title: string; category?: string; status: string; alert_count: number };
+type UpcomingAlert = { id: string; description: string; deadline_date: string; days_remaining: number };
+type LegalEvent = { title: string; description: string; icon: string; start_date: string; active: boolean; days_until_start: number };
+type AccountDashboard = {
+  recent_conversations: RecentConversation[];
+  active_cases: ActiveCase[];
+  upcoming_deadlines: UpcomingAlert[];
+  legal_calendar: LegalEvent[];
+};
+
+function timeAgo(dateStr: string): string {
+  try {
+    const diffMs = Date.now() - new Date(dateStr).getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 60) return `hace ${diffMins}m`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `hace ${diffHours}h`;
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) return `hace ${diffDays}d`;
+    return new Date(dateStr).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+  } catch { return ""; }
+}
+
+function fmtDate(dateStr: string): string {
+  try {
+    return new Date(dateStr + "T00:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+  } catch { return dateStr; }
+}
 
 type ApiProfile = {
   id: string;
@@ -60,6 +96,7 @@ function AccountPageContent() {
   const [reactivateLoading, setReactivateLoading] = useState(false);
   const [subError, setSubError] = useState("");
   const { startCheckout, loading: checkoutLoading } = useStripeCheckout();
+  const [dashboardData, setDashboardData] = useState<AccountDashboard | null>(null);
 
   useEffect(() => {
     if (!user && !isSigningOut) router.push("/login");
@@ -91,6 +128,14 @@ function AccountPageContent() {
       setCategories(profile.categories_interest);
     }
   }, [profile?.categories_interest]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    apiFetch("/dashboard")
+      .then((r) => r.json())
+      .then((res) => setDashboardData(res.data))
+      .catch(() => {});
+  }, [user?.id]);
 
   const toggleCategory = (id: string) => {
     const next = categories.includes(id)
@@ -345,6 +390,128 @@ function AccountPageContent() {
                 </svg>
                 {checkoutLoading ? "Redirigiendo..." : "Probar 3 dias gratis"}
               </button>
+            </div>
+          )}
+
+          {/* ── Resumen rápido ─────────────────────────────────────────── */}
+          {dashboardData && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+              <h2 className="font-semibold text-slate-800">Resumen</h2>
+
+              {/* Consultas recientes */}
+              {(dashboardData.recent_conversations?.length ?? 0) > 0 && (
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Consultas recientes</p>
+                    <Link href="/chat" className="text-xs font-medium text-[var(--primary)] hover:underline">Ver chat</Link>
+                  </div>
+                  <ul className="space-y-1.5">
+                    {dashboardData.recent_conversations.slice(0, 3).map((conv) => (
+                      <li key={conv.id}>
+                        <Link
+                          href={`/chat?conv=${conv.id}`}
+                          className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 transition-all hover:border-slate-200 hover:bg-white hover:shadow-sm"
+                        >
+                          <span className="text-base shrink-0">{CATEGORY_ICONS[conv.category || "otro"] || "💬"}</span>
+                          <span className="flex-1 min-w-0 truncate text-sm font-medium text-slate-700">
+                            {conv.title || "Consulta sin título"}
+                          </span>
+                          <span className="text-xs text-slate-400 shrink-0">{timeAgo(conv.updated_at)}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Expedientes activos */}
+              {(dashboardData.active_cases?.length ?? 0) > 0 && (
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Expedientes activos</p>
+                    <Link href="/casos" className="text-xs font-medium text-[var(--primary)] hover:underline">Ver todos</Link>
+                  </div>
+                  <ul className="space-y-1.5">
+                    {dashboardData.active_cases.slice(0, 3).map((c) => (
+                      <li key={c.id}>
+                        <Link
+                          href={`/casos/${c.id}`}
+                          className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 transition-all hover:border-slate-200 hover:bg-white hover:shadow-sm"
+                        >
+                          <span className="text-base shrink-0">{CATEGORY_ICONS[c.category || "otro"] || "📁"}</span>
+                          <span className="flex-1 min-w-0 truncate text-sm font-medium text-slate-700">{c.title}</span>
+                          {c.alert_count > 0 && (
+                            <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                              {c.alert_count} alerta{c.alert_count > 1 ? "s" : ""}
+                            </span>
+                          )}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Próximas alertas */}
+              {(dashboardData.upcoming_deadlines?.length ?? 0) > 0 && (
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Próximos plazos</p>
+                    <Link href="/alerts" className="text-xs font-medium text-[var(--primary)] hover:underline">Ver alertas</Link>
+                  </div>
+                  <ul className="space-y-1.5">
+                    {dashboardData.upcoming_deadlines.slice(0, 3).map((alert) => (
+                      <li key={alert.id}>
+                        <Link
+                          href="/alerts"
+                          className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 transition-all hover:border-slate-200 hover:bg-white hover:shadow-sm"
+                        >
+                          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white ${
+                            alert.days_remaining <= 1 ? "bg-red-500" : alert.days_remaining <= 3 ? "bg-amber-500" : "bg-blue-500"
+                          }`}>
+                            {alert.days_remaining}
+                          </span>
+                          <span className="flex-1 min-w-0 truncate text-sm font-medium text-slate-700">{alert.description}</span>
+                          <span className="text-xs text-slate-400 shrink-0">{fmtDate(alert.deadline_date)}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── Calendario legal ───────────────────────────────────────── */}
+          {(dashboardData?.legal_calendar?.length ?? 0) > 0 && (
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 font-semibold text-slate-800">Calendario legal</h2>
+              <ul className="space-y-2">
+                {dashboardData!.legal_calendar.slice(0, 3).map((event, i) => (
+                  <li
+                    key={i}
+                    className={`flex items-start gap-3 rounded-xl border p-3 ${
+                      event.active ? "border-emerald-200 bg-emerald-50" : "border-slate-100 bg-slate-50"
+                    }`}
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-lg shadow-sm">
+                      {event.icon}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-slate-800">{event.title}</p>
+                        {event.active && (
+                          <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white">EN CURSO</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500">{event.description}</p>
+                      {!event.active && event.days_until_start > 0 && (
+                        <p className="text-xs text-slate-400">Comienza en {event.days_until_start} días ({fmtDate(event.start_date)})</p>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 

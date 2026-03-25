@@ -7,14 +7,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  LayoutDashboard,
   Calculator,
   FileSearch,
   ClipboardList,
   FolderOpen,
   Files,
   Bell,
-  Star,
   type LucideIcon,
 } from "lucide-react";
 import { ConversationMenu } from "@/components/chat/ConversationMenu";
@@ -78,7 +76,6 @@ export function ChatSidebar({
   const isPro = userPlan === "pro" || userPlan === "document";
 
   const NAV_ITEMS: NavItem[] = [
-    { href: "/dashboard", label: "Panel", icon: LayoutDashboard },
     { href: "/calculadora", label: "Calculadora", icon: Calculator },
     { href: "/contrato", label: "Analizar contrato", icon: FileSearch, pro: true },
     { href: "/wizard", label: "Trámite guiado", icon: ClipboardList },
@@ -96,9 +93,12 @@ export function ChatSidebar({
       {/* Header */}
       <div className="flex h-14 items-center justify-between gap-2 border-b border-slate-200/60 px-3">
         {!collapsed && (
-          <span className="font-display text-sm font-bold tracking-tight text-[var(--primary)] pl-1">
+          <Link
+            href="/chat"
+            className="font-display text-sm font-bold tracking-tight text-[var(--primary)] pl-1 hover:opacity-80 transition-opacity"
+          >
             TramitUp
-          </span>
+          </Link>
         )}
         {onToggleCollapse && (
           <button
@@ -165,20 +165,6 @@ export function ChatSidebar({
             })}
           </ul>
         </nav>
-
-        {/* PRO upgrade banner — only for free users, only when expanded */}
-        {!collapsed && !isPro && (
-          <div className="mx-2 mb-3">
-            <Link
-              href="/pricing"
-              className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-700 transition-all duration-200 hover:bg-amber-100 hover:border-amber-300"
-            >
-              <Star className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.5} />
-              <span className="flex-1">Actualizar a PRO</span>
-              <span className="text-amber-500">→</span>
-            </Link>
-          </div>
-        )}
 
         {/* Divider */}
         <div className="mx-3 border-t border-slate-200/60" />
