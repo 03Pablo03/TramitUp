@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Loader2, Paperclip } from "lucide-react";
+import { Send, Loader2, Paperclip, Lock } from "lucide-react";
 import { FileUpload, AttachedFile } from "@/components/chat/FileUpload";
 import { LegalDisclaimer } from "./LegalDisclaimer";
 
@@ -119,7 +119,7 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
             placeholder={showRotatingPlaceholder ? "" : "Describe tu situación..."}
             disabled={disabled || loading}
             rows={1}
-            className={`w-full resize-none overflow-hidden rounded-xl border bg-white pl-12 pr-4 py-3.5 text-slate-800 placeholder-slate-400 transition-all duration-200 ease-out focus:outline-none disabled:opacity-50 ${
+            className={`w-full resize-none overflow-hidden rounded-xl border bg-white pl-12 pr-10 py-3.5 text-slate-800 placeholder-slate-400 transition-all duration-200 ease-out focus:outline-none disabled:opacity-50 ${
               isFocused ? "border-blue-400" : "border-slate-200"
             }`}
             style={{ minHeight: "52px" }}
@@ -138,6 +138,12 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
           >
             <Paperclip className="w-5 h-5" strokeWidth={1.5} />
           </button>
+
+          <Lock
+            className="absolute right-3.5 top-4 text-slate-300 pointer-events-none"
+            size={14}
+            strokeWidth={1.5}
+          />
         </div>
 
         <button
