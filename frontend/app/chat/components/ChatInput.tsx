@@ -95,10 +95,8 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
       {/* Input container with focus glow */}
       <div className="flex items-end gap-3">
         <div
-          className={`flex-1 relative rounded-2xl transition-all duration-200 ease-out ${
-            isFocused
-              ? "ring-2 ring-blue-400/40"
-              : ""
+          className={`flex-1 relative rounded-xl transition-all duration-200 ease-out ${
+            isFocused ? "ring-2 ring-blue-500/20" : ""
           }`}
         >
           {/* Rotating placeholder overlay */}
@@ -121,10 +119,8 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
             placeholder={showRotatingPlaceholder ? "" : "Describe tu situación..."}
             disabled={disabled || loading}
             rows={1}
-            className={`w-full resize-none overflow-hidden rounded-2xl border-2 bg-white pl-12 pr-4 py-3.5 text-slate-800 placeholder-slate-400 shadow-sm transition-all duration-200 ease-out focus:outline-none disabled:opacity-50 ${
-              isFocused
-                ? "border-blue-400"
-                : "border-slate-200 focus:border-blue-400"
+            className={`w-full resize-none overflow-hidden rounded-xl border bg-white pl-12 pr-4 py-3.5 text-slate-800 placeholder-slate-400 transition-all duration-200 ease-out focus:outline-none disabled:opacity-50 ${
+              isFocused ? "border-blue-400" : "border-slate-200"
             }`}
             style={{ minHeight: "52px" }}
           />
@@ -150,7 +146,7 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
           disabled={
             disabled || loading || (!message.trim() && attachments.length === 0)
           }
-          className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-blue-600 text-white shadow-md shadow-blue-500/25 transition-all duration-200 ease-out hover:bg-blue-700 hover:from-[var(--primary-dark)] hover:to-blue-700 hover:shadow-lg hover:shadow-blue-500/30 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+          className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white transition-all duration-200 ease-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed"
           title="Enviar"
         >
           {loading ? (

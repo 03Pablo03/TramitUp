@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ProBadge } from "@/components/ProBadge";
 import {
   MessageSquare,
   ChevronLeft,
@@ -47,13 +48,9 @@ function formatDate(dateStr: string): string {
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
     if (diffDays === 1) return "Ayer";
     if (diffDays <= 7) return `Hace ${diffDays} días`;
-    return date.toLocaleDateString("es-ES", {
-      day: "numeric",
-      month: "short",
-    });
+    return date.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
   } catch {
     return "";
   }
@@ -86,16 +83,16 @@ export function ChatSidebar({
 
   return (
     <aside
-      className={`flex flex-col border-r border-slate-200/60 bg-white transition-all duration-300 ease-out md:w-64 ${
+      className={`flex flex-col border-r border-slate-100 bg-white transition-all duration-300 ease-out md:w-64 ${
         collapsed ? "w-0 overflow-hidden md:w-14" : "w-full"
       }`}
     >
       {/* Header */}
-      <div className="flex h-14 items-center justify-between gap-2 border-b border-slate-200/60 px-3">
+      <div className="flex h-14 items-center justify-between gap-2 border-b border-slate-100 px-3">
         {!collapsed && (
           <Link
             href="/chat"
-            className="font-display text-sm font-bold tracking-tight text-[var(--primary)] pl-1 hover:opacity-80 transition-opacity"
+            className="pl-1 text-sm font-semibold text-slate-900 hover:opacity-70 transition-opacity"
           >
             TramitUp
           </Link>
@@ -103,7 +100,7 @@ export function ChatSidebar({
         {onToggleCollapse && (
           <button
             onClick={onToggleCollapse}
-            className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors duration-200 flex-shrink-0"
+            className="rounded-lg p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors duration-200 flex-shrink-0"
             aria-label={collapsed ? "Expandir" : "Colapsar"}
           >
             {collapsed ? (
@@ -135,14 +132,20 @@ export function ChatSidebar({
                   <Link
                     href={item.href}
                     title={collapsed ? item.label : undefined}
-                    className={`flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-200 ease-out ${
+                    className={`relative flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-200 ease-out ${
                       isActive
-                        ? "bg-blue-50 text-[var(--primary)]"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        ? "bg-blue-50 text-blue-700"
+                        : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                     } ${collapsed ? "justify-center" : ""}`}
                   >
+                    {isActive && !collapsed && (
+                      <span className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-blue-600" />
+                    )}
                     <div className="relative flex-shrink-0">
-                      <Icon className="w-4 h-4" strokeWidth={1.5} />
+                      <Icon
+                        className={`w-4 h-4 ${isActive ? "text-blue-600" : "text-slate-400"}`}
+                        strokeWidth={1.5}
+                      />
                       {hasBadge && (
                         <span className="absolute -right-1 -top-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white">
                           {(item.badge ?? 0) > 99 ? "99+" : item.badge}
@@ -152,11 +155,7 @@ export function ChatSidebar({
                     {!collapsed && (
                       <>
                         <span className="flex-1 truncate">{item.label}</span>
-                        {item.pro && !isPro && (
-                          <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
-                            PRO
-                          </span>
-                        )}
+                        {item.pro && !isPro && <ProBadge />}
                       </>
                     )}
                   </Link>
@@ -167,15 +166,14 @@ export function ChatSidebar({
         </nav>
 
         {/* Divider */}
-        <div className="mx-3 border-t border-slate-200/60" />
+        <div className="mx-3 border-t border-slate-100" />
 
         {/* Conversations section */}
         <div className="flex-1 px-2 pt-3 pb-3">
-          {/* Nueva conversación */}
           {collapsed ? (
             <button
               onClick={onNewChat}
-              className="mb-2 flex w-full items-center justify-center rounded-xl p-2.5 text-[var(--primary)] hover:bg-blue-50 transition-colors duration-200"
+              className="mb-2 flex w-full items-center justify-center rounded-lg p-2.5 text-slate-400 hover:bg-slate-50 hover:text-slate-700 transition-colors duration-200"
               aria-label="Nueva conversación"
             >
               <Plus className="w-4 h-4" strokeWidth={1.5} />
@@ -183,21 +181,19 @@ export function ChatSidebar({
           ) : (
             <button
               onClick={onNewChat}
-              className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:from-[var(--primary-dark)] hover:to-blue-700"
+              className="mb-3 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-700"
             >
               <Plus className="h-4 w-4" strokeWidth={1.5} />
               Nueva conversación
             </button>
           )}
 
-          {/* Remaining chats counter */}
           {!collapsed && remainingChats !== null && remainingChats !== -1 && (
             <p className="mb-2 px-2 text-xs text-slate-400">
               {remainingChats} consultas restantes hoy
             </p>
           )}
 
-          {/* Conversation list */}
           {conversations.length > 0 && !collapsed && (
             <>
               <p className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
@@ -207,10 +203,10 @@ export function ChatSidebar({
                 {conversations.map((conv) => (
                   <li key={conv.id}>
                     <div
-                      className={`group flex w-full items-center gap-2 rounded-xl p-2.5 transition-all duration-200 ${
+                      className={`group flex w-full items-center gap-2 rounded-lg px-2 py-2 transition-all duration-200 ${
                         currentId === conv.id
-                          ? "bg-blue-50 border border-blue-200/60"
-                          : "border border-transparent hover:bg-slate-50 hover:border-slate-200/60"
+                          ? "bg-slate-100 text-slate-900"
+                          : "hover:bg-slate-50"
                       }`}
                     >
                       <button

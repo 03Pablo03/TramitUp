@@ -1,11 +1,24 @@
 "use client";
 
+interface ProBadgeProps {
+  size?: "sm" | "md";
+}
+
 /**
- * Inline PRO badge — small pill used next to feature names in navigation.
+ * Inline PRO badge — used next to feature names and in navigation.
+ * sm (default): 10px pill — for sidebar/inline use
+ * md: 12px pill — for cards and larger contexts
  */
-export function ProBadge() {
+export function ProBadge({ size = "sm" }: ProBadgeProps = {}) {
+  if (size === "md") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-2.5 py-1 text-xs font-bold uppercase tracking-wide leading-none text-white">
+        PRO
+      </span>
+    );
+  }
   return (
-    <span className="inline-flex items-center gap-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-2 py-0.5 text-[10px] font-bold uppercase leading-none text-white shadow-sm">
+    <span className="inline-flex items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide leading-none text-white">
       PRO
     </span>
   );

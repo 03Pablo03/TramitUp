@@ -83,7 +83,7 @@ export function ChatWindow({
   }, [messages, sending]);
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-[#FAFAF9]">
+    <div className="h-full flex flex-col overflow-hidden bg-white">
       <div className="flex-1 overflow-y-auto">
         {messages.length === 0 && !sending && (
           <ChatEmptyState onSuggestionClick={onSend} />

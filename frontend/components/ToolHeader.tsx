@@ -11,8 +11,8 @@ interface ToolHeaderProps {
 
 export function ToolHeader({
   title,
-  backHref = "/dashboard",
-  backLabel = "Panel",
+  backHref = "/chat",
+  backLabel = "Chat",
   actions,
 }: ToolHeaderProps) {
   return (

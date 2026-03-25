@@ -76,7 +76,7 @@ export default function OnboardingPage() {
         return;
       }
 
-      window.location.href = "/dashboard";
+      window.location.href = "/chat";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado. Inténtalo de nuevo.");
       setLoading(false);
