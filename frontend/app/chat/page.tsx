@@ -14,8 +14,10 @@ import { AttachedFile } from "@/components/chat/FileUpload";
 type DetectedDeadline = {
   description: string;
   days: number;
+  business_days: boolean;
   reference_date: string | null;
   law_reference: string;
+  urgency: string;
 };
 
 type CompensationEstimate = {
