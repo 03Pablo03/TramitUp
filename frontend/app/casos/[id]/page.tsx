@@ -56,6 +56,7 @@ interface RequiredDoc {
 
 interface Conversation { id: string; title: string; created_at: string; }
 interface Alert { id: string; description: string; deadline_date: string; status: string; urgency_level?: string; }
+interface GeneratedDoc { document_id: string; conversation_id: string | null; document_type: string; created_at: string; has_pdf: boolean; has_docx: boolean; }
 
 interface CaseDetail {
   id: string;
@@ -87,6 +88,7 @@ export default function CaseDetailPage() {
   const [allConvs, setAllConvs] = useState<{ id: string; title: string }[]>([]);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linking, setLinking] = useState(false);
+  const [generatedDocs, setGeneratedDocs] = useState<GeneratedDoc[]>([]);
 
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState("");
@@ -107,6 +109,11 @@ export default function CaseDetailPage() {
       .then((d) => {
         setData(d);
         setTitleInput(d.title);
+        // Cargar documentos generados vinculados al expediente
+        apiFetch(`/cases/${caseId}/generated-documents`)
+          .then((r) => r.json())
+          .then((dd) => setGeneratedDocs(dd.documents || []))
+          .catch(() => {});
       })
       .catch(() => setError("Expediente no encontrado."))
       .finally(() => setLoading(false));
@@ -551,6 +558,47 @@ export default function CaseDetailPage() {
                   </div>
                 );
               })}
+            </div>
+          </section>
+        )}
+
+        {/* ── Generated Documents ──────────────────────────────────────── */}
+        {generatedDocs.length > 0 && (
+          <section>
+            <h2 className="mb-3 text-sm font-semibold text-slate-700">
+              Documentos generados ({generatedDocs.length})
+            </h2>
+            <div className="space-y-2">
+              {generatedDocs.map((doc) => (
+                <div
+                  key={doc.document_id}
+                  className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-base">
+                      📄
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-slate-800">
+                        {doc.document_type}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        {new Date(doc.created_at).toLocaleDateString("es-ES", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={`/documents?doc=${doc.document_id}`}
+                    className="ml-3 shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                  >
+                    Ver
+                  </a>
+                </div>
+              ))}
             </div>
           </section>
         )}

@@ -25,10 +25,15 @@ export function AlertBanner({
   if (!deadlines?.length) return null;
 
   const first = deadlines[0];
+  // Calculate urgency locally from days (internal, not shown to user)
+  const calcUrgency = (days: number) => 
+    days < 10 ? "high" : days <= 30 ? "medium" : "low";
+  const firstUrgency = calcUrgency(first.days);
+  
   const urgencyClass =
-    first.urgency === "high"
+    firstUrgency === "high"
       ? "border-l-amber-500 bg-amber-50"
-      : first.urgency === "medium"
+      : firstUrgency === "medium"
         ? "border-l-amber-400 bg-amber-50/50"
         : "border-l-blue-400 bg-blue-50/50";
 

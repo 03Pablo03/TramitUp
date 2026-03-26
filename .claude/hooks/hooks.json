@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[TramitUp] Editando: ' && echo $CLAUDE_TOOL_INPUT | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('file_path',''))\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(echo $CLAUDE_TOOL_INPUT | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('file_path',''))\" 2>/dev/null); if [[ \"$FILE\" == *.ts || \"$FILE\" == *.tsx ]]; then cd /c/Users/Ruben/Desktop/TramitUp/frontend && npx tsc --noEmit --skipLibCheck 2>&1 | head -20 || true; fi"
+          },
+          {
+            "type": "command",
+            "command": "FILE=$(echo $CLAUDE_TOOL_INPUT | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('file_path',''))\" 2>/dev/null); if [[ \"$FILE\" == *.py ]]; then cd /c/Users/Ruben/Desktop/TramitUp/backend && python3 -m py_compile \"$FILE\" 2>&1 && echo '[OK] Python syntax OK' || echo '[ERROR] Python syntax error'; fi"
+          },
+          {
+            "type": "command",
+            "command": "FILE=$(echo $CLAUDE_TOOL_INPUT | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('file_path',''))\" 2>/dev/null); if [[ \"$FILE\" == *.ts || \"$FILE\" == *.tsx ]]; then grep -n 'console\\.log' \"$FILE\" 2>/dev/null | head -5 | while read line; do echo \"[WARN] console.log encontrado: $line\"; done; fi"
+          },
+          {
+            "type": "command",
+            "command": "FILE=$(echo $CLAUDE_TOOL_INPUT | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('file_path',''))\" 2>/dev/null); if [[ \"$FILE\" == *.py ]]; then python3 -c \"import ast, sys; code=open('$FILE').read(); tree=ast.parse(code); imports=[n.names[0].name if isinstance(n,ast.Import) else n.module for n in ast.walk(tree) if isinstance(n,(ast.Import,ast.ImportFrom))]; print('[OK] Imports verificados:', len([i for i in imports if i]))\" 2>/dev/null || true; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

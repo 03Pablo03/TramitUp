@@ -28,11 +28,17 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
+  const isDemoChat =
+    process.env.NODE_ENV === "development" &&
+    path === "/chat" &&
+    request.nextUrl.searchParams.get("demo") === "1";
   const isPublic = PUBLIC_ROUTES.some((r) => r === path || path.startsWith(r + "/"));
   const isOnboarding = path === ONBOARDING_ROUTE;
   const isApiRoute = path.startsWith("/api/");
 
   if (!user) {
+    // Permitir vista demo del chat en local sin autenticación
+    if (isDemoChat) return response;
     if (!isPublic) {
       // API routes: no redirect, la ruta devuelve 401 si necesita auth
       if (isApiRoute) return response;

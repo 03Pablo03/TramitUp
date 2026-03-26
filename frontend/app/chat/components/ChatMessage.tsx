@@ -19,10 +19,8 @@ const CATEGORY_WIZARD_MAP: Record<string, { id: string; label: string }> = {
 type DetectedDeadline = {
   description: string;
   days: number;
-  business_days: boolean;
   reference_date: string | null;
   law_reference: string;
-  urgency: string;
 };
 
 type ChatMessageProps = {

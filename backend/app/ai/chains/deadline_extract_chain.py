@@ -2,9 +2,12 @@
 Extrae plazos legales mencionados en la respuesta del asistente.
 """
 import json
+import logging
 from langchain_core.prompts import PromptTemplate
 
 from app.ai.llm_client import get_llm
+
+logger = logging.getLogger(__name__)
 
 PROMPT = """
 Analiza el siguiente texto de una respuesta del asistente Tramitup.
@@ -16,10 +19,8 @@ Devuelve ÚNICAMENTE un JSON válido con esta estructura (sin markdown, sin text
     {{
       "description": "descripción breve del plazo",
       "days": número_entero,
-      "business_days": true si son días hábiles, false si son naturales,
       "reference_date": "YYYY-MM-DD" si el usuario mencionó una fecha concreta de inicio, o null,
-      "law_reference": "Art. X Ley Y" o referencia normativa,
-      "urgency": "high" si < 10 días, "medium" si 10-30 días, "low" si > 30 días
+      "law_reference": "Art. X Ley Y" o referencia normativa
     }}
   ]
 }}
@@ -65,4 +66,17 @@ def extract_deadlines_from_response(response_text: str) -> list[dict]:
     deadlines = data.get("detected_deadlines", [])
     if not isinstance(deadlines, list):
         return []
+    
+    # Log urgency internally (internal metric, not sent to user)
+    for deadline in deadlines:
+        days = deadline.get("days", 0)
+        urgency = "high" if days < 10 else "medium" if days <= 30 else "low"
+        logger.debug(
+            "Deadline extracted: description=%s days=%d urgency=%s law=%s",
+            deadline.get("description", "")[:50],
+            days,
+            urgency,
+            deadline.get("law_reference", "")[:30]
+        )
+    
     return deadlines

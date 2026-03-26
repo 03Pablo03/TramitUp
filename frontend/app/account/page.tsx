@@ -393,10 +393,42 @@ function AccountPageContent() {
             </div>
           )}
 
-          {/* ── Resumen rápido ─────────────────────────────────────────── */}
+          {/* ── Tu actividad ─────────────────────────────────────────── */}
           {dashboardData && (
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
-              <h2 className="font-semibold text-slate-800">Resumen</h2>
+              <div>
+                <h2 className="font-semibold text-slate-800 mb-4">Tu actividad</h2>
+                
+                {/* Estadísticas rápidas */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-2xl font-bold text-[var(--primary)]">
+                        {apiProfile?.remaining_chats_today !== null && apiProfile?.remaining_chats_today !== -1
+                          ? `${30 - (apiProfile?.remaining_chats_today || 0)}`
+                          : "∞"}
+                      </p>
+                      <p className="text-xs text-slate-500">consultas este mes</p>
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-2xl font-bold text-emerald-600">
+                        {dashboardData.active_cases?.length ?? 0}
+                      </p>
+                      <p className="text-xs text-slate-500">expedientes activos</p>
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-2xl font-bold text-amber-600">
+                        {dashboardData.upcoming_deadlines?.length ?? 0}
+                      </p>
+                      <p className="text-xs text-slate-500">próximos plazos</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               {/* Consultas recientes */}
               {(dashboardData.recent_conversations?.length ?? 0) > 0 && (

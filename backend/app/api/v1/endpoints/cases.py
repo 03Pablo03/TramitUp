@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from app.core.auth import require_auth
+from app.core.supabase_client import get_supabase_client
 from app.services.case_service import (
     create_case,
     list_cases,
@@ -251,6 +252,54 @@ def api_update_step(
     if result is None:
         raise HTTPException(status_code=404, detail="Expediente no encontrado.")
     return result
+
+
+@router.get("/{case_id}/generated-documents")
+def api_get_case_generated_documents(
+    case_id: str,
+    user_id: str = Depends(require_auth),
+):
+    """Devuelve los documentos generados (modelos de escritos) vinculados a las conversaciones del expediente."""
+    try:
+        supabase = get_supabase_client()
+        # Verificar que el expediente pertenece al usuario
+        case = get_case(user_id, case_id)
+        if not case:
+            raise HTTPException(status_code=404, detail="Expediente no encontrado.")
+
+        # Obtener IDs de conversaciones vinculadas al expediente
+        conv_links = supabase.table("case_conversations").select("conversation_id").eq(
+            "case_id", case_id
+        ).execute()
+        conversation_ids = [row["conversation_id"] for row in (conv_links.data or [])]
+
+        if not conversation_ids:
+            return {"documents": []}
+
+        # Obtener documentos generados de esas conversaciones
+        docs_result = supabase.table("generated_documents").select(
+            "id, conversation_id, document_type, pdf_path, docx_path, created_at"
+        ).eq("user_id", user_id).in_("conversation_id", conversation_ids).order(
+            "created_at", desc=True
+        ).execute()
+
+        def _to_item(d: dict) -> dict:
+            ca = d.get("created_at")
+            return {
+                "document_id": d["id"],
+                "conversation_id": d.get("conversation_id"),
+                "document_type": d.get("document_type", "Modelo de escrito"),
+                "created_at": ca.isoformat() if hasattr(ca, "isoformat") else str(ca) if ca else "",
+                "has_pdf": bool(d.get("pdf_path")),
+                "has_docx": bool(d.get("docx_path")),
+            }
+
+        return {"documents": [_to_item(d) for d in (docs_result.data or [])]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("Error fetching generated docs for case %s: %s", case_id, e, exc_info=True)
+        return {"documents": []}
 
 
 @router.patch("/{case_id}/documents/{doc_index}")

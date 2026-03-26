@@ -103,13 +103,13 @@ export default function CasosPage() {
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
       <ToolHeader
-        title="Mis expedientes"
+        title="Expedientes"
         actions={
           <button
             onClick={() => { setShowForm(true); setCreateError(""); }}
             className="rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
           >
-            + Nuevo expediente
+            + Nuevo
           </button>
         }
       />

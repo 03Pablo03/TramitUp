@@ -5,10 +5,8 @@ import { useState } from "react";
 export type DetectedDeadline = {
   description: string;
   days: number;
-  business_days: boolean;
   reference_date: string | null;
   law_reference: string;
-  urgency: string;
 };
 
 export type CreateAlertModalProps = {

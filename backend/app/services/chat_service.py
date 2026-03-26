@@ -1,3 +1,5 @@
+import logging
+
 from app.ai.chains.classify_chain import classify_tramite
 from app.ai.chains.chat_chain import stream_chat_response, build_chat_prompt
 from app.ai.rag.retriever import retrieve_context
@@ -7,6 +9,7 @@ from app.services.personalization_service import personalization_service
 from app.services.document_analysis_service import document_analysis_service
 from app.ai.llm_client import get_llm
 
+logger = logging.getLogger(__name__)
 _PRO_PLANS = {"pro", "premium", "document"}
 
 
@@ -252,8 +255,11 @@ def stream_chat_response_personalized(message: str, rag_context: str, classifica
     # Select specialized bot and extend prompt
     bot = select_bot(classification, message)
     if bot:
+        logger.debug("Bot selected: %s (%s)", bot.name, bot.description)
         bot_extension = bot.get_prompt_extension(classification, message)
         personalized_prompt = personalized_prompt + "\n" + bot_extension
+    else:
+        logger.debug("No specialized bot selected for category=%s", classification.get("category"))
 
     # Preparar mensajes con contexto personalizado
     messages = [SystemMessage(content=personalized_prompt)]
@@ -283,6 +289,7 @@ def stream_chat_response_personalized(message: str, rag_context: str, classifica
             temperature, max_tokens = 0.4, 3000
         else:
             temperature, max_tokens = 0.3, 4096
+    logger.debug("LLM config: temperature=%.1f max_tokens=%d", temperature, max_tokens)
 
     llm = get_llm(temperature=temperature, max_output_tokens=max_tokens, streaming=True)
 

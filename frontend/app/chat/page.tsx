@@ -14,10 +14,8 @@ import { AttachedFile } from "@/components/chat/FileUpload";
 type DetectedDeadline = {
   description: string;
   days: number;
-  business_days: boolean;
   reference_date: string | null;
   law_reference: string;
-  urgency: string;
 };
 
 type CompensationEstimate = {
@@ -68,10 +66,13 @@ function ChatPageContent() {
   const [showCalculatorBanner, setShowCalculatorBanner] = useState(false);
   const [feedbackMap, setFeedbackMap] = useState<Record<number, "positive" | "negative">>({});
   const searchParams = useSearchParams();
+  const isDemoMode =
+    process.env.NODE_ENV === "development" &&
+    (process.env.NEXT_PUBLIC_CHAT_DEMO === "true" || searchParams.get("demo") === "1");
 
   useEffect(() => {
-    if (!authLoading && !user) router.push("/login");
-  }, [user, authLoading, router]);
+    if (!authLoading && !user && !isDemoMode) router.push("/login");
+  }, [user, authLoading, isDemoMode, router]);
 
   const convParam = searchParams.get("conv");
   useEffect(() => {
@@ -93,6 +94,39 @@ function ChatPageContent() {
   }, [convParam, user]);
 
   useEffect(() => {
+    if (isDemoMode) {
+      setUserPlan("pro");
+      setRemainingChats(-1);
+      setConversations([
+        {
+          id: "demo-conv-1",
+          title: "Consulta demo: despido improcedente",
+          category: "laboral",
+          created_at: new Date().toISOString(),
+        },
+      ]);
+      if (!conversationId) {
+        setConversationId("demo-conv-1");
+      }
+      if (messages.length === 0) {
+        setMessages([
+          {
+            role: "assistant",
+            content:
+              "Modo demo activo. Puedes probar el nuevo diseño del chat sin backend. Escribe una consulta y verás una respuesta simulada.",
+            category: "laboral",
+            subcategory: "despido",
+            followUpSuggestions: [
+              "¿Qué plazo tengo para reclamar?",
+              "¿Qué documentos necesito?",
+              "¿Puedes resumir los pasos a seguir?",
+            ],
+          },
+        ]);
+      }
+      return;
+    }
+
     if (!user || authLoading) return;
     apiFetch("/history")
       .then((r) => r.json())
@@ -108,9 +142,41 @@ function ChatPageContent() {
         setRemainingChats(null);
         setUserPlan("free");
       });
-  }, [user?.id, authLoading]);
+  }, [user?.id, authLoading, isDemoMode, conversationId, messages.length]);
 
   const handleSend = async (text: string, attachments?: AttachedFile[]) => {
+    if (isDemoMode) {
+      setSending(true);
+      setError("");
+      setMessages((m) => [
+        ...m,
+        {
+          role: "user",
+          content: text,
+          attachments: attachments?.map((a) => ({ name: a.name, type: a.type })),
+        },
+      ]);
+      const simulated = `En modo demo no hay backend conectado, pero este es el formato final de respuesta que verás en producción.\n\nSegún la normativa laboral vigente, el primer paso habitual es revisar carta de despido, nóminas y contrato, y calcular plazos para impugnación.\n\nPasos sugeridos:\n1) Reunir documentación clave.\n2) Validar fecha de efectos del despido.\n3) Preparar papeleta de conciliación si procede.\n\nPara tu caso específico, consulta con un abogado o gestor si lo necesitas.`;
+      setTimeout(() => {
+        setMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            content: simulated,
+            category: "laboral",
+            subcategory: "despido",
+            followUpSuggestions: [
+              "¿Cómo se calcula la indemnización?",
+              "¿Qué pasa si se pasa el plazo?",
+              "¿Me haces un checklist de documentos?",
+            ],
+          },
+        ]);
+        setSending(false);
+      }, 450);
+      return;
+    }
+
     if (!user) return;
     
     // Validar longitud del mensaje
@@ -297,7 +363,7 @@ function ChatPageContent() {
   };
 
   const hasDocumentAccess = userPlan === "pro" || userPlan === "document";
-  const { urgentCount } = useAlerts(!!user && !authLoading && hasDocumentAccess);
+  const { urgentCount } = useAlerts(!isDemoMode && !!user && !authLoading && hasDocumentAccess);
 
   const handleNewChat = () => {
     setMessages([]);

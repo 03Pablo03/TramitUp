@@ -7,10 +7,8 @@ import { DocumentDownloadCard } from "./DocumentDownloadCard";
 type DetectedDeadline = {
   description: string;
   days: number;
-  business_days: boolean;
   reference_date: string | null;
   law_reference: string;
-  urgency: string;
 };
 
 export type DocumentGeneratorProps = {
