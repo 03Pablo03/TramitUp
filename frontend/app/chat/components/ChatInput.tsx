@@ -75,7 +75,7 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
     : "Describe tu situación...";
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto w-full">
       {/* File upload area */}
       {showFileUpload && (
         <div className="mb-4 p-4 bg-slate-50/90 rounded-2xl border border-slate-200/80 shadow-inner">
@@ -93,10 +93,14 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
       )}
 
       {/* Input container with focus glow */}
-      <div className="flex items-end gap-3">
+      <form onSubmit={handleSubmit} className="w-full">
         <div
-          className={`flex-1 relative rounded-xl transition-all duration-200 ease-out ${
-            isFocused ? "ring-2 ring-blue-500/20" : ""
+          className={`flex items-end w-full relative rounded-2xl transition-all duration-200 ease-out ${
+            isFocused 
+              ? "shadow-[0_10px_40px_rgba(59,130,246,0.15)] ring-2 ring-blue-400" 
+              : "shadow-[0_10px_40px_rgba(0,0,0,0.06)]"
+          } bg-white border ${
+            isFocused ? "border-blue-300" : "border-slate-200"
           }`}
         >
           {/* Rotating placeholder overlay */}
@@ -119,49 +123,40 @@ export function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
             placeholder={showRotatingPlaceholder ? "" : "Describe tu situación..."}
             disabled={disabled || loading}
             rows={1}
-            className={`w-full resize-none overflow-hidden rounded-xl border bg-white pl-12 pr-10 py-3.5 text-slate-800 placeholder-slate-400 transition-all duration-200 ease-out focus:outline-none disabled:opacity-50 ${
-              isFocused ? "border-blue-400" : "border-slate-200"
-            }`}
-            style={{ minHeight: "52px" }}
+            className="w-full resize-none overflow-hidden bg-transparent pl-12 pr-14 py-3.5 text-slate-800 placeholder-slate-400 transition-all duration-200 ease-out focus:outline-none disabled:opacity-50"
+            style={{ minHeight: "56px" }}
           />
 
           <button
             type="button"
             onClick={() => setShowFileUpload(!showFileUpload)}
             disabled={disabled || loading}
-            className={`absolute left-3.5 top-3.5 p-2 rounded-xl transition-all duration-200 ease-out ${
+            className={`absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-all duration-200 ease-out ${
               showFileUpload || attachments.length > 0
                 ? "text-[var(--primary)] bg-[var(--primary-light)]"
-                : "text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
             title="Adjuntar archivos"
           >
             <Paperclip className="w-5 h-5" strokeWidth={1.5} />
           </button>
 
-          <Lock
-            className="absolute right-3.5 top-4 text-slate-300 pointer-events-none"
-            size={14}
-            strokeWidth={1.5}
-          />
+          <button
+            type="submit"
+            disabled={
+              disabled || loading || (!message.trim() && attachments.length === 0)
+            }
+            className="absolute right-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 text-white transition-all duration-200 ease-out hover:shadow-lg hover:shadow-blue-500/25 hover:from-blue-500 hover:to-blue-600 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Enviar mensaje"
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" strokeWidth={1.5} />
+            ) : (
+              <Send className="w-5 h-5" strokeWidth={1.5} />
+            )}
+          </button>
         </div>
-
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={
-            disabled || loading || (!message.trim() && attachments.length === 0)
-          }
-          className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white transition-all duration-200 ease-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed"
-          title="Enviar"
-        >
-          {loading ? (
-            <Loader2 className="w-5 h-5 animate-spin" strokeWidth={1.5} />
-          ) : (
-            <Send className="w-5 h-5" strokeWidth={1.5} />
-          )}
-        </button>
-      </div>
+      </form>
 
       {/* Hints and disclaimer */}
       <div className="mt-3 flex flex-col items-center gap-1">

@@ -125,7 +125,7 @@ export function ChatWindow({
         </div>
         <div ref={bottomRef} />
       </div>
-      <div className="border-t border-slate-200/60 bg-white/90 backdrop-blur-md p-4 lg:p-6 shadow-[0_-8px_30px_-8px_rgba(15,23,42,0.08)]">
+      <div className="border-t border-slate-200/60 bg-white/90 backdrop-blur-md p-4 lg:p-8 pb-12 lg:pb-16 shadow-[0_-8px_30px_-8px_rgba(15,23,42,0.08)]">
         {error && <p className="mb-3 text-sm text-red-600 font-medium">{error}</p>}
         <ChatInput onSend={onSend} disabled={sending} loading={sending} />
       </div>

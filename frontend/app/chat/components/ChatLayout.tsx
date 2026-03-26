@@ -50,10 +50,11 @@ export function ChatLayout({
         remainingChats={remainingChats}
       />
       <div className="flex flex-1 flex-col min-w-0">
-        <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-6">
+        <header className="flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/95 backdrop-blur-sm px-6 shadow-sm">
           <Link
-            href="/chat"
-            className="text-lg font-bold text-blue-600 hover:opacity-80 transition-opacity"
+            href="/"
+            className="text-lg font-bold text-blue-600 hover:text-blue-700 transition-colors duration-200"
+            title="Volver a inicio"
           >
             TramitUp
           </Link>
