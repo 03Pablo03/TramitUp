@@ -233,13 +233,6 @@ class UpdateDocCheckRequest(BaseModel):
     checked: bool
 
 
-class CreateFromConversationRequest(BaseModel):
-    conversation_id: str
-    title: str = Field(..., min_length=1, max_length=120)
-    category: Optional[str] = None
-    subcategory: Optional[str] = None
-
-
 @router.patch("/{case_id}/steps/{step_index}")
 def api_update_step(
     case_id: str,

@@ -7,7 +7,6 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.core.auth import require_auth
 from app.core.supabase_client import get_supabase_client
-from app.services.subscription_service import get_user_subscription
 
 logger = logging.getLogger(__name__)
 
