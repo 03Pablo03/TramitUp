@@ -12,6 +12,7 @@ import { ProButton } from "@/components/ProBadge";
 import { AlertCard } from "@/components/alerts/AlertCard";
 import { AlertCalendar } from "@/components/alerts/AlertCalendar";
 import { ManualCreateAlertModal } from "@/components/alerts/ManualCreateAlertModal";
+import { Calendar, ClipboardList, Bell, MessageSquare, AlertTriangle } from "@/lib/icons";
 
 type Tab = "active" | "expired" | "dismissed";
 type View = "list" | "calendar";
@@ -83,23 +84,23 @@ export default function AlertsPage() {
             <div className="flex items-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
               <button
                 onClick={() => setView("calendar")}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
                   view === "calendar"
                     ? "bg-[#1A56DB] text-white"
                     : "text-slate-600 hover:bg-slate-100"
                 }`}
               >
-                📅 Calendario
+                <Calendar className="h-4 w-4" /> Calendario
               </button>
               <button
                 onClick={() => setView("list")}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${
                   view === "list"
                     ? "bg-[#1A56DB] text-white"
                     : "text-slate-600 hover:bg-slate-100"
                 }`}
               >
-                📋 Lista
+                <ClipboardList className="h-4 w-4" /> Lista
               </button>
             </div>
             <button
@@ -121,7 +122,7 @@ export default function AlertsPage() {
       <main className="mx-auto max-w-5xl p-6">
         {userPlan !== "pro" && userPlan !== "document" && (
           <div className="mb-6 rounded-xl border-2 border-amber-500 bg-amber-50 p-6">
-            <h3 className="text-lg font-semibold text-amber-800">⭐ Las alertas son exclusivas de PRO</h3>
+            <h3 className="flex items-center gap-2 text-lg font-semibold text-amber-800"><AlertTriangle className="h-5 w-5 text-amber-600" /> Las alertas son exclusivas de PRO</h3>
             <p className="mt-2 text-sm text-amber-700">
               Hazte PRO para crear alertas de plazos legales y recibir avisos por email antes de que venzan.
             </p>
@@ -217,8 +218,8 @@ export default function AlertsPage() {
             {filtered.length === 0 ? (
               <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
                 <div className="text-center">
-                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-3xl shadow-lg shadow-amber-500/20">
-                    🔔
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/20">
+                    <Bell className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="mt-5 text-lg font-bold text-slate-800">
                     {tab === "active"
@@ -237,7 +238,7 @@ export default function AlertsPage() {
                           href="/chat"
                           className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-md hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
                         >
-                          💬 Consultar al asistente
+                          <MessageSquare className="h-4 w-4" /> Consultar al asistente
                         </Link>
                         <button
                           onClick={() => {

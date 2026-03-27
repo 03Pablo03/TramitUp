@@ -1,5 +1,6 @@
 import React from 'react';
 import { Euro, CheckCircle, XCircle, Info } from 'lucide-react';
+import { Plane } from '@/lib/icons';
 
 interface CompensationCardProps {
   amountEur?: number;
@@ -30,7 +31,7 @@ export default function CompensationCard({
         <div className="flex-1 space-y-3">
           <div>
             <h3 className={`font-semibold text-sm mb-1 ${applies ? 'text-green-900' : 'text-red-900'}`}>
-              ✈️ Compensación por vuelo
+              <Plane className="inline h-4 w-4 mr-1" /> Compensación por vuelo
             </h3>
             
             <div className="flex items-center gap-2">

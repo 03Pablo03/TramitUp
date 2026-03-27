@@ -6,17 +6,11 @@ import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { CaseCard, CaseData } from "@/components/CaseCard";
 import { ToolHeader } from "@/components/ToolHeader";
+import { getCategoryDef, FolderOpen, MessageSquare, FileText, Bell } from "@/lib/icons";
 
 const CATEGORIES = [
-  { value: "laboral", label: "💼 Laboral" },
-  { value: "vivienda", label: "🏠 Vivienda" },
-  { value: "consumo", label: "🛒 Consumo" },
-  { value: "familia", label: "👨‍👩‍👧 Familia" },
-  { value: "trafico", label: "🚗 Tráfico" },
-  { value: "administrativo", label: "🏛️ Administrativo" },
-  { value: "fiscal", label: "💰 Fiscal" },
-  { value: "penal", label: "⚖️ Penal" },
-  { value: "otro", label: "📋 Otro" },
+  "laboral", "vivienda", "consumo", "familia", "trafico",
+  "administrativo", "fiscal", "penal", "otro",
 ];
 
 export default function CasosPage() {
@@ -144,8 +138,8 @@ export default function CasosPage() {
                   className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-[var(--primary)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                 >
                   <option value="">— Seleccionar —</option>
-                  {CATEGORIES.map((c) => (
-                    <option key={c.value} value={c.value}>{c.label}</option>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>{getCategoryDef(cat).label}</option>
                   ))}
                 </select>
               </div>
@@ -204,8 +198,8 @@ export default function CasosPage() {
         {cases.length === 0 && !showForm && (
           <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
             <div className="text-center">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl shadow-lg shadow-blue-500/20">
-                📁
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/20">
+                <FolderOpen className="h-8 w-8 text-white" />
               </div>
               <h2 className="mt-5 text-xl font-bold text-slate-800">Organiza tus trámites como un profesional</h2>
               <p className="mt-2 mx-auto max-w-md text-sm text-slate-500">
@@ -214,17 +208,17 @@ export default function CasosPage() {
             </div>
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
-                <span className="text-lg">💬</span>
+                <MessageSquare className="mx-auto h-5 w-5 text-blue-500" />
                 <p className="mt-1 text-xs font-medium text-slate-700">Consultas vinculadas</p>
                 <p className="text-[11px] text-slate-400">Todo el contexto junto</p>
               </div>
               <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
-                <span className="text-lg">📄</span>
+                <FileText className="mx-auto h-5 w-5 text-violet-500" />
                 <p className="mt-1 text-xs font-medium text-slate-700">Documentos generados</p>
                 <p className="text-[11px] text-slate-400">Cartas y modelos listos</p>
               </div>
               <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center">
-                <span className="text-lg">🔔</span>
+                <Bell className="mx-auto h-5 w-5 text-amber-500" />
                 <p className="mt-1 text-xs font-medium text-slate-700">Alertas de plazos</p>
                 <p className="text-[11px] text-slate-400">Nunca pierdas una fecha</p>
               </div>

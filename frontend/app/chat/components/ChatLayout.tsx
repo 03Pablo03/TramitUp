@@ -69,7 +69,7 @@ export function ChatLayout({
               </Link>
             ) : (
               <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-700">
-                ★ PRO
+                <Star className="h-3.5 w-3.5 fill-amber-600 text-amber-600" /> PRO
               </span>
             )}
             <Link

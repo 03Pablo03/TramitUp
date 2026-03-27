@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { ToolHeader } from "@/components/ToolHeader";
+import { getCategoryDef, CategoryIcon, MessageSquare, FileText, FolderOpen, Bell, ClipboardList, Calculator, Lightbulb, Calendar } from "@/lib/icons";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type Alert = {
@@ -80,17 +81,6 @@ type DashboardData = {
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-const CATEGORY_ICONS: Record<string, string> = {
-  laboral: "💼",
-  vivienda: "🏠",
-  consumo: "🛒",
-  familia: "👨‍👩‍👧",
-  trafico: "🚗",
-  administrativo: "🏛️",
-  fiscal: "💰",
-  penal: "⚖️",
-  otro: "📋",
-};
 
 function formatDeadline(dateStr: string): string {
   try {
@@ -289,28 +279,36 @@ export default function DashboardPage() {
                 href="/chat"
                 className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center transition-all hover:border-[var(--primary)] hover:shadow-md"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-xl">💬</span>
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
+                  <MessageSquare className="h-5 w-5 text-blue-600" />
+                </span>
                 <span className="text-xs font-semibold text-slate-700">Nueva consulta</span>
               </Link>
               <Link
                 href="/calculadora"
                 className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center transition-all hover:border-emerald-400 hover:shadow-md"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-xl">🧮</span>
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
+                  <Calculator className="h-5 w-5 text-emerald-600" />
+                </span>
                 <span className="text-xs font-semibold text-slate-700">Calculadora</span>
               </Link>
               <Link
                 href="/contrato"
                 className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center transition-all hover:border-violet-400 hover:shadow-md"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-xl">📄</span>
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50">
+                  <FileText className="h-5 w-5 text-violet-600" />
+                </span>
                 <span className="text-xs font-semibold text-slate-700">Analizar contrato</span>
               </Link>
               <Link
                 href="/wizard"
                 className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center transition-all hover:border-amber-400 hover:shadow-md"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-xl">📋</span>
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50">
+                  <ClipboardList className="h-5 w-5 text-amber-600" />
+                </span>
                 <span className="text-xs font-semibold text-slate-700">Trámite guiado</span>
               </Link>
             </div>
@@ -333,8 +331,8 @@ export default function DashboardPage() {
                       href={`/casos/${c.id}`}
                       className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-all hover:border-slate-300 hover:shadow-sm"
                     >
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 text-lg shrink-0">
-                        {CATEGORY_ICONS[c.category || "otro"] || "📋"}
+                      <span className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${getCategoryDef(c.category).bg}`}>
+                        <CategoryIcon category={c.category} className={`h-4 w-4 ${getCategoryDef(c.category).color}`} />
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium text-slate-800 truncate">{c.title}</p>
@@ -353,7 +351,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center">
-                  <p className="text-2xl mb-2">📁</p>
+                  <FolderOpen className="mx-auto h-8 w-8 text-slate-400 mb-2" />
                   <p className="text-sm font-medium text-slate-600">Sin expedientes abiertos</p>
                   <p className="mt-1 text-xs text-slate-400">
                     Crea un expediente para organizar tu trámite paso a paso
@@ -384,8 +382,12 @@ export default function DashboardPage() {
                       href={`/chat/${conv.id}`}
                       className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition-all hover:border-slate-300 hover:shadow-sm"
                     >
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-lg shrink-0">
-                        {CATEGORY_ICONS[conv.category || "otro"] || "💬"}
+                      <span className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${conv.category ? getCategoryDef(conv.category).bg : "bg-blue-50"}`}>
+                        {conv.category ? (
+                          <CategoryIcon category={conv.category} className={`h-4 w-4 ${getCategoryDef(conv.category).color}`} />
+                        ) : (
+                          <MessageSquare className="h-4 w-4 text-blue-600" />
+                        )}
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium text-slate-800 truncate">
@@ -401,7 +403,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center">
-                  <p className="text-2xl mb-2">💬</p>
+                  <MessageSquare className="mx-auto h-8 w-8 text-slate-400 mb-2" />
                   <p className="text-sm font-medium text-slate-600">Sin consultas todavía</p>
                   <p className="mt-1 text-xs text-slate-400">
                     Pregunta lo que necesites sobre tus trámites legales
@@ -464,8 +466,8 @@ export default function DashboardPage() {
                     href={rec.action_url}
                     className="group flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 transition-all hover:border-[var(--primary)] hover:shadow-md"
                   >
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-xl shrink-0 group-hover:bg-blue-100 transition-colors">
-                      {rec.template_icon || "💡"}
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 shrink-0 group-hover:bg-blue-100 transition-colors">
+                      <Lightbulb className="h-5 w-5 text-blue-600" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-slate-800 group-hover:text-[var(--primary)] transition-colors">
@@ -501,8 +503,8 @@ export default function DashboardPage() {
                         : "border-slate-200 bg-white"
                     }`}
                   >
-                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-lg shrink-0 shadow-sm">
-                      {event.icon}
+                    <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white shrink-0 shadow-sm">
+                      <Calendar className={`h-4 w-4 ${event.active ? "text-emerald-600" : "text-slate-500"}`} />
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">

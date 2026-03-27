@@ -7,7 +7,8 @@ import { CategoryBadge } from "./CategoryBadge";
 import { DocumentGenerator } from "@/components/DocumentGenerator";
 import { DocumentPreview } from "@/components/DocumentPreview";
 import { AlertBanner } from "@/components/alerts/AlertBanner";
-import { FileText, Image } from "lucide-react";
+import { ClipboardList, FileText } from "@/lib/icons";
+import { Image } from "lucide-react";
 
 const CATEGORY_WIZARD_MAP: Record<string, { id: string; label: string }> = {
   laboral: { id: "despido_improcedente", label: "Gestionar despido" },
@@ -179,7 +180,9 @@ export function ChatMessage({
                 href={`/wizard/${CATEGORY_WIZARD_MAP[category].id}`}
                 className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 transition-all hover:border-amber-300 hover:shadow-sm"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-base">📋</span>
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
+                  <ClipboardList className="h-4 w-4 text-amber-700" />
+                </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold text-amber-800">Trámite guiado disponible</p>
                   <p className="text-[11px] text-amber-600">{CATEGORY_WIZARD_MAP[category].label} paso a paso</p>

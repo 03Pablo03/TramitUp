@@ -8,18 +8,14 @@ import { apiFetch } from "@/lib/api";
 import { createClient } from "@/lib/supabase/client";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { ToolHeader } from "@/components/ToolHeader";
+import { getCategoryDef, CategoryIcon, Plane, Briefcase, Home, Landmark, MessageSquare, FolderOpen, AlertTriangle } from "@/lib/icons";
 
 const CATEGORIES = [
-  { id: "reclamaciones", label: "Reclamaciones", icon: "✈️" },
-  { id: "laboral", label: "Laboral", icon: "💼" },
-  { id: "vivienda", label: "Vivienda", icon: "🏠" },
-  { id: "tramites", label: "Trámites", icon: "🏛️" },
+  { id: "reclamaciones", label: "Reclamaciones", Icon: Plane },
+  { id: "laboral", label: "Laboral", Icon: Briefcase },
+  { id: "vivienda", label: "Vivienda", Icon: Home },
+  { id: "tramites", label: "Tramites", Icon: Landmark },
 ];
-
-const CATEGORY_ICONS: Record<string, string> = {
-  laboral: "💼", vivienda: "🏠", consumo: "🛒", familia: "👨‍👩‍👧",
-  trafico: "🚗", administrativo: "🏛️", fiscal: "💰", penal: "⚖️", otro: "📋",
-};
 
 type RecentConversation = { id: string; title: string; category?: string; updated_at: string };
 type ActiveCase = { id: string; title: string; category?: string; status: string; alert_count: number };
@@ -444,7 +440,7 @@ function AccountPageContent() {
                           href={`/chat?conv=${conv.id}`}
                           className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 transition-all hover:border-slate-200 hover:bg-white hover:shadow-sm"
                         >
-                          <span className="text-base shrink-0">{CATEGORY_ICONS[conv.category || "otro"] || "💬"}</span>
+                          <CategoryIcon category={conv.category || "otro"} className="h-5 w-5 shrink-0" />
                           <span className="flex-1 min-w-0 truncate text-sm font-medium text-slate-700">
                             {conv.title || "Consulta sin título"}
                           </span>
@@ -470,7 +466,7 @@ function AccountPageContent() {
                           href={`/casos/${c.id}`}
                           className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 transition-all hover:border-slate-200 hover:bg-white hover:shadow-sm"
                         >
-                          <span className="text-base shrink-0">{CATEGORY_ICONS[c.category || "otro"] || "📁"}</span>
+                          <CategoryIcon category={c.category || "otro"} className="h-5 w-5 shrink-0" />
                           <span className="flex-1 min-w-0 truncate text-sm font-medium text-slate-700">{c.title}</span>
                           {c.alert_count > 0 && (
                             <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
@@ -565,7 +561,7 @@ function AccountPageContent() {
                     onChange={() => toggleCategory(c.id)}
                     className="rounded border-slate-300"
                   />
-                  <span>{c.icon}</span>
+                  <c.Icon className="h-4 w-4 text-slate-500" />
                   <span>{c.label}</span>
                 </label>
               ))}
@@ -598,8 +594,8 @@ function AccountPageContent() {
       {showCancelConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl">
-              ⚠️
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
             </div>
             <h3 className="text-lg font-semibold text-slate-800">¿Cancelar suscripcion?</h3>
             <p className="mt-2 text-sm text-slate-600">

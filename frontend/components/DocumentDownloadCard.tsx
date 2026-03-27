@@ -1,5 +1,7 @@
 "use client";
 
+import { FileText } from "@/lib/icons";
+
 const DOCUMENT_TYPE_LABELS: Record<string, string> = {
   reclamacion_aerolinea: "Reclamación a aerolínea",
   reclamacion_banco: "Reclamación a banco",
@@ -75,7 +77,7 @@ export function DocumentDownloadCard({
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-            <span className="text-lg">📄</span>
+            <FileText className="h-5 w-5" />
           </div>
           <div>
             <h3 className="font-medium text-slate-800">{title}</h3>

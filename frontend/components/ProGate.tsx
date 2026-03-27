@@ -1,19 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { Lock } from "@/lib/icons";
+import type { ComponentType } from "react";
+import type { LucideProps } from "lucide-react";
 
 interface ProGateProps {
   feature: string;
   description: string;
-  icon?: string;
+  icon?: ComponentType<LucideProps>;
 }
 
-export function ProGate({ feature, description, icon = "🔒" }: ProGateProps) {
+export function ProGate({ feature, description, icon: Icon = Lock }: ProGateProps) {
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">
       <div className="w-full max-w-md text-center">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-4xl shadow-lg">
-          {icon}
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg">
+          <Icon className="h-10 w-10" />
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-3 py-1 text-xs font-bold text-white mb-4 shadow-sm">
           <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">

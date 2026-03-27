@@ -1,21 +1,15 @@
 import type { Metadata } from "next";
-import { Playfair_Display, DM_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { NotificationContainer } from "@/components/NotificationContainer";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
-const playfair = Playfair_Display({
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-playfair",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-dm-sans",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -71,7 +65,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${playfair.variable} ${dmSans.variable}`} suppressHydrationWarning>
+    <html lang="es" className={inter.variable} suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ErrorBoundary>
           <NotificationProvider>

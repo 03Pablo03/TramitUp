@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { Plane, Briefcase, Home, Landmark } from "@/lib/icons";
 
 const CATEGORIES = [
-  { id: "reclamaciones", label: "Reclamaciones (vuelos, bancos, facturas...)", icon: "✈️" },
-  { id: "laboral", label: "Laboral (despido, paro, nómina...)", icon: "💼" },
-  { id: "vivienda", label: "Vivienda (alquiler, hipoteca, comunidad...)", icon: "🏠" },
-  { id: "tramites", label: "Trámites (Hacienda, Seguridad Social, multas...)", icon: "🏛️" },
+  { id: "reclamaciones", label: "Reclamaciones (vuelos, bancos, facturas...)", icon: Plane, iconColor: "text-sky-600", iconBg: "bg-sky-50" },
+  { id: "laboral", label: "Laboral (despido, paro, nómina...)", icon: Briefcase, iconColor: "text-blue-600", iconBg: "bg-blue-50" },
+  { id: "vivienda", label: "Vivienda (alquiler, hipoteca, comunidad...)", icon: Home, iconColor: "text-emerald-600", iconBg: "bg-emerald-50" },
+  { id: "tramites", label: "Trámites (Hacienda, Seguridad Social, multas...)", icon: Landmark, iconColor: "text-slate-600", iconBg: "bg-slate-100" },
 ];
 
 type OnboardingStep2Props = {
@@ -39,21 +39,26 @@ export function OnboardingStep2({
         </p>
       </div>
       <div className="space-y-3">
-        {CATEGORIES.map((c) => (
-          <label
-            key={c.id}
-            className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-[#1A56DB]/50"
-          >
-            <input
-              type="checkbox"
-              checked={selected.includes(c.id)}
-              onChange={() => toggle(c.id)}
-              className="h-4 w-4 rounded border-slate-300"
-            />
-            <span className="text-xl">{c.icon}</span>
-            <span className="text-slate-700">{c.label}</span>
-          </label>
-        ))}
+        {CATEGORIES.map((c) => {
+          const Icon = c.icon;
+          return (
+            <label
+              key={c.id}
+              className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-[#1A56DB]/50"
+            >
+              <input
+                type="checkbox"
+                checked={selected.includes(c.id)}
+                onChange={() => toggle(c.id)}
+                className="h-4 w-4 rounded border-slate-300"
+              />
+              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${c.iconBg} shrink-0`}>
+                <Icon className={`h-5 w-5 ${c.iconColor}`} />
+              </div>
+              <span className="text-slate-700">{c.label}</span>
+            </label>
+          );
+        })}
       </div>
       {selected.length < 1 && (
         <p className="text-sm text-amber-600">Selecciona al menos una categoría</p>

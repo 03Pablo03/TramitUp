@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Check, X } from "@/lib/icons";
 
 type OnboardingStep3Props = {
   onBack: () => void;
@@ -29,7 +30,7 @@ export function OnboardingStep3({ onBack, onComplete, loading, error, onClearErr
               item.included ? "text-slate-700" : "text-slate-400"
             }`}
           >
-            <span className="text-xl">{item.included ? "✓" : "✗"}</span>
+            <span className="text-xl">{item.included ? <Check className="h-5 w-5 text-emerald-500" /> : <X className="h-5 w-5 text-slate-300" />}</span>
             <span>{item.text}</span>
           </li>
         ))}

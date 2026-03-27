@@ -7,6 +7,9 @@ import { ContractAnalysisResult } from "@/components/ContractAnalysisResult";
 import { ProGate } from "@/components/ProGate";
 import { ToolHeader } from "@/components/ToolHeader";
 import { useAuth } from "@/context/AuthContext";
+import { FileText, ClipboardList, FolderOpen, Home, Briefcase, FileSignature } from "@/lib/icons";
+import type { ComponentType } from "react";
+import type { LucideProps } from "lucide-react";
 
 const ACCEPTED_TYPES = [
   "application/pdf",
@@ -135,7 +138,7 @@ export default function ContratoPage() {
 
       {!isPro && (
         <ProGate
-          icon="📄"
+          icon={FileText}
           feature="Análisis de contratos"
           description="Detecta cláusulas abusivas e ilegales en tus contratos de alquiler o laborales. Disponible en el plan PRO."
         />
@@ -145,8 +148,8 @@ export default function ContratoPage() {
         <main className="mx-auto max-w-2xl px-4 py-12">
           {/* Cabecera */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-blue-600 text-3xl text-white shadow-lg">
-              📋
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-blue-600 text-white shadow-lg">
+              <ClipboardList className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-slate-900">Analiza tu contrato</h1>
             <p className="mt-2 text-slate-500">
@@ -173,7 +176,7 @@ export default function ContratoPage() {
                   className="hidden"
                   onChange={onInputChange}
                 />
-                <div className="text-4xl">{file ? "📄" : "📁"}</div>
+                <div>{file ? <FileText className="h-10 w-10 text-slate-400" /> : <FolderOpen className="h-10 w-10 text-slate-400" />}</div>
                 {file ? (
                   <div className="mt-3 text-center">
                     <p className="font-semibold text-slate-800">{file.name}</p>
@@ -248,28 +251,28 @@ export default function ContratoPage() {
           {/* Info */}
           {!result && (
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {[
+              {([
                 {
-                  icon: "🏠",
+                  Icon: Home,
                   title: "Contrato de alquiler",
                   desc: "Detectamos fianzas ilegales, renuncias de prórroga, gastos indebidos y más según la LAU.",
                 },
                 {
-                  icon: "💼",
+                  Icon: Briefcase,
                   title: "Contrato laboral",
                   desc: "Identificamos periodos de prueba excesivos, salarios ilegales, cláusulas de no competencia sin compensación.",
                 },
                 {
-                  icon: "📑",
+                  Icon: FileSignature,
                   title: "Otros contratos",
                   desc: "Análisis general de cláusulas abusivas según el Código Civil y la normativa de consumo.",
                 },
-              ].map((item) => (
+              ] as { Icon: ComponentType<LucideProps>; title: string; desc: string }[]).map((item) => (
                 <div
                   key={item.title}
                   className="rounded-xl border border-slate-200 bg-white p-4 text-center shadow-sm"
                 >
-                  <div className="text-3xl">{item.icon}</div>
+                  <div className="flex justify-center"><item.Icon className="h-8 w-8 text-slate-500" /></div>
                   <p className="mt-2 text-sm font-semibold text-slate-800">{item.title}</p>
                   <p className="mt-1 text-xs text-slate-500">{item.desc}</p>
                 </div>

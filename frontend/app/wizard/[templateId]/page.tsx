@@ -10,6 +10,7 @@ import { WizardStepForm } from "@/components/wizard/WizardStepForm";
 import { WizardStepAnalysis } from "@/components/wizard/WizardStepAnalysis";
 import { WizardStepDocument } from "@/components/wizard/WizardStepDocument";
 import { apiFetch } from "@/lib/api";
+import { X, CheckCircle, Bell, AlertTriangle } from "@/lib/icons";
 
 type StepDef = {
   id: string;
@@ -179,7 +180,7 @@ export default function WizardPage() {
       <div className="min-h-screen bg-[#F9FAFB]">
         <ToolHeader title="Error" backHref="/wizard" backLabel="Trámites" />
         <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-2xl">❌</div>
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50"><X className="h-7 w-7 text-red-600" /></div>
           <h2 className="text-lg font-semibold text-slate-800">No se pudo cargar el trámite</h2>
           <p className="mt-2 text-sm text-slate-500">{error}</p>
           <Link
@@ -202,8 +203,8 @@ export default function WizardPage() {
         <ToolHeader title={template.title} backHref="/wizard" backLabel="Trámites" />
         <div className="mx-auto max-w-2xl px-4 py-12">
           <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 text-3xl shadow-lg shadow-green-500/20">
-              ✅
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 shadow-lg shadow-green-500/20">
+              <CheckCircle className="h-8 w-8 text-white" />
             </div>
             <h2 className="text-xl font-bold text-slate-800">¡Trámite completado!</h2>
             <p className="mt-2 text-sm text-slate-500">
@@ -250,7 +251,7 @@ export default function WizardPage() {
         {error && (
           <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
             <div className="flex items-start gap-3">
-              <span className="text-lg">⚠️</span>
+              <AlertTriangle className="h-5 w-5 text-red-600 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-red-800">Error</p>
                 <p className="text-xs text-red-600">{error}</p>
@@ -354,7 +355,7 @@ export default function WizardPage() {
           {currentStepDef?.type === "follow_up" && (
             <div className="space-y-6">
               <div className="rounded-xl border border-blue-100 bg-blue-50 p-6 text-center">
-                <span className="text-3xl">🔔</span>
+                <Bell className="h-8 w-8 text-blue-600" />
                 <h3 className="mt-3 font-semibold text-blue-800">Seguimiento automático</h3>
                 <p className="mt-2 text-sm text-blue-600">
                   {stepResults[currentStep]?.alert_created

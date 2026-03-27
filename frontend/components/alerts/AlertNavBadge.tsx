@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Bell } from "@/lib/icons";
 
 export type AlertNavBadgeProps = {
   count: number;
@@ -14,7 +15,7 @@ export function AlertNavBadge({ count }: AlertNavBadgeProps) {
       href="/alerts"
       className="relative inline-flex items-center gap-1 text-slate-600 hover:text-slate-800"
     >
-      <span className="text-lg">🔔</span>
+      <Bell className="h-5 w-5" />
       <span
         className="absolute -right-2 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white"
       >

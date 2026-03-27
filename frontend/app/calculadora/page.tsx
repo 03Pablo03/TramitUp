@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ToolHeader } from "@/components/ToolHeader";
+import { Scale, ClipboardList, Calendar, Check, AlertTriangle, MessageSquare } from "@/lib/icons";
+import type { ComponentType } from "react";
+import type { LucideProps } from "lucide-react";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -174,27 +177,27 @@ function calcular(
 
 // ─── Datos de los tipos ───────────────────────────────────────────────────────
 
-const TIPOS: { id: TipoCalculo; label: string; descripcion: string; icono: string }[] = [
+const TIPOS: { id: TipoCalculo; label: string; descripcion: string; Icon: ComponentType<LucideProps> }[] = [
   {
     id: "despido_improcedente",
     label: "Despido improcedente",
     descripcion:
       "La empresa te despide sin causa justificada o sin cumplir los requisitos formales.",
-    icono: "⚖️",
+    Icon: Scale,
   },
   {
     id: "despido_procedente",
     label: "Despido procedente / objetivo",
     descripcion:
       "Despido por causas económicas, técnicas, organizativas o de producción.",
-    icono: "📋",
+    Icon: ClipboardList,
   },
   {
     id: "fin_contrato_temporal",
     label: "Fin de contrato temporal",
     descripcion:
       "Tu contrato por obra, eventualidad o interinidad llega a su fecha de vencimiento.",
-    icono: "📅",
+    Icon: Calendar,
   },
 ];
 
@@ -280,7 +283,7 @@ export default function CalculadoraPage() {
                     : "bg-slate-200 text-slate-500"
                 }`}
               >
-                {paso > n ? "✓" : n}
+                {paso > n ? <Check className="h-4 w-4" /> : n}
               </div>
               {n < 3 && (
                 <div
@@ -316,14 +319,14 @@ export default function CalculadoraPage() {
                     }`}
                   >
                     <div className="flex items-start gap-3">
-                      <span className="text-2xl">{t.icono}</span>
+                      <t.Icon className="h-6 w-6 text-slate-500 shrink-0" />
                       <div>
                         <p className="font-semibold text-slate-800">{t.label}</p>
                         <p className="mt-0.5 text-sm text-slate-500">{t.descripcion}</p>
                       </div>
                       {tipo === t.id && (
                         <div className="ml-auto mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary)]">
-                          <span className="text-xs text-white">✓</span>
+                          <Check className="h-3 w-3 text-white" />
                         </div>
                       )}
                     </div>
@@ -349,7 +352,7 @@ export default function CalculadoraPage() {
                 ← Volver
               </button>
               <div className="mb-6 flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
-                <span>{tipoActual.icono}</span>
+                <tipoActual.Icon className="h-5 w-5 text-slate-500" />
                 <span className="text-sm font-medium text-slate-700">{tipoActual.label}</span>
               </div>
               <h2 className="mb-6 text-lg font-semibold text-slate-800">
@@ -429,9 +432,10 @@ export default function CalculadoraPage() {
             <div>
               {/* Importe total */}
               <div className="mb-6 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 p-6 text-center text-white">
-                <p className="text-sm font-medium opacity-90">
-                  {tipoActual.icono} {tipoActual.label}
-                </p>
+                <div className="flex items-center justify-center gap-2 text-sm font-medium opacity-90">
+                  <tipoActual.Icon className="h-4 w-4" />
+                  <span>{tipoActual.label}</span>
+                </div>
                 <p className="mt-2 text-5xl font-extrabold">
                   {resultado.importeTotal.toLocaleString("es-ES", {
                     minimumFractionDigits: 2,
@@ -493,8 +497,9 @@ export default function CalculadoraPage() {
               </div>
 
               {/* Nota orientativa */}
-              <div className="mb-6 rounded-lg bg-amber-50 px-4 py-3 text-xs text-amber-800">
-                ⚠️ {resultado.notaOrientativa}
+              <div className="mb-6 flex items-start gap-2 rounded-lg bg-amber-50 px-4 py-3 text-xs text-amber-800">
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 mt-0.5" />
+                <span>{resultado.notaOrientativa}</span>
               </div>
 
               {/* CTAs */}
@@ -503,7 +508,7 @@ export default function CalculadoraPage() {
                   href="/chat"
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 py-3.5 font-bold text-white shadow-lg hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
                 >
-                  💬 Consultar mi caso con el asistente
+                  <MessageSquare className="h-5 w-5" /> Consultar mi caso con el asistente
                 </Link>
                 <button
                   onClick={reset}

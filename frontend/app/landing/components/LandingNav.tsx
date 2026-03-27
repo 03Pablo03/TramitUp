@@ -2,33 +2,30 @@ import Link from "next/link";
 
 export function LandingNav() {
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 bg-stone-900/20 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <span className="text-xl font-bold tracking-tight text-[var(--primary)]">TramitUp</span>
-        <div className="flex items-center gap-3 sm:gap-6">
+    <nav className="sticky top-0 z-50 bg-stone-900/30 backdrop-blur-lg">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
+        <Link href="/" className="text-lg font-bold tracking-tight text-white">
+          TramitUp
+        </Link>
+        <div className="flex items-center gap-1">
           <Link
             href="/#como-funciona"
-            className="hidden text-sm font-bold text-white hover:text-blue-300 sm:block transition-colors"
+            className="hidden rounded-lg px-3 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white sm:block transition-colors"
           >
             Cómo funciona
           </Link>
           <Link
             href="/pricing"
-            className="hidden text-sm font-bold text-white hover:text-blue-300 sm:block transition-colors"
+            className="hidden rounded-lg px-3 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white sm:block transition-colors"
           >
             Precios
           </Link>
+          <div className="ml-2 h-5 w-px bg-white/20 hidden sm:block" />
           <Link
             href="/login"
-            className="text-sm font-bold text-white hover:text-blue-300 transition-colors"
+            className="ml-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/20 transition-colors"
           >
-            Iniciar sesión
-          </Link>
-          <Link
-            href="/pricing"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--primary)] to-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-500/30 hover:from-[var(--primary-dark)] hover:to-blue-700 transition-all"
-          >
-            <span className="text-amber-300">★</span> Hazte PRO
+            Acceder
           </Link>
         </div>
       </div>

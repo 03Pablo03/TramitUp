@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { StatusDot } from "@/lib/icons";
 
 export type AlertCardProps = {
   alert: {
@@ -43,13 +44,13 @@ export function AlertCard({ alert, onDismiss, onDelete }: AlertCardProps) {
           ? "bg-amber-100 text-amber-800"
           : "bg-blue-100 text-blue-800";
 
-  const emoji = isPast ? "⚫" : alert.days_remaining <= 3 ? "🔴" : alert.days_remaining <= 7 ? "🟡" : "🔵";
+  const urgency = isPast ? "past" : alert.days_remaining <= 3 ? "urgent" : alert.days_remaining <= 7 ? "warning" : "normal";
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span>{emoji}</span>
+          <StatusDot urgency={urgency} />
           <span
             className={`rounded-full px-2 py-0.5 text-xs font-medium ${badgeClass}`}
           >

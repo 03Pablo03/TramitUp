@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Alert } from "@/hooks/useAlerts";
+import { Calendar, Clock } from "@/lib/icons";
 
 type Props = {
   alerts: Alert[];
@@ -157,11 +158,11 @@ export function AlertCalendar({ alerts, onDismiss, onDelete }: Props) {
             {selectedAlert.law_reference && (
               <p className="mb-2 text-xs text-slate-500">{selectedAlert.law_reference}</p>
             )}
-            <p className="mb-1 text-sm text-slate-600">
-              📅 Fecha límite: <span className="font-medium">{selectedAlert.deadline_date}</span>
+            <p className="mb-1 flex items-center gap-1.5 text-sm text-slate-600">
+              <Calendar className="h-4 w-4 text-slate-400" /> Fecha límite: <span className="font-medium">{selectedAlert.deadline_date}</span>
             </p>
-            <p className="mb-4 text-sm text-slate-600">
-              ⏳ {selectedAlert.days_remaining > 0
+            <p className="mb-4 flex items-center gap-1.5 text-sm text-slate-600">
+              <Clock className="h-4 w-4 text-slate-400" /> {selectedAlert.days_remaining > 0
                 ? `${selectedAlert.days_remaining} días restantes`
                 : "Vencida"}
             </p>

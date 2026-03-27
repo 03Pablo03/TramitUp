@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink, Building2, Shield, Mail } from 'lucide-react';
+import { ClipboardList, CheckCircle, Info } from '@/lib/icons';
 
 interface PortalCardProps {
   portalKey: string;
@@ -30,7 +31,8 @@ export default function PortalCard({
         <div className="flex-1 space-y-3">
           <div>
             <h3 className="font-semibold text-green-900 text-sm mb-1">
-              📋 Dónde presentar tu reclamación
+              <ClipboardList className="inline h-4 w-4 mr-1" />
+              Donde presentar tu reclamacion
             </h3>
             <p className="font-bold text-gray-900">{name}</p>
           </div>
@@ -52,7 +54,7 @@ export default function PortalCard({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 border border-green-600 text-green-700 hover:bg-green-50 px-4 py-2 rounded-lg font-medium text-sm transition-colors"
               >
-                <span>📋 Formulario oficial</span>
+                <span className="inline-flex items-center gap-1"><ClipboardList className="h-4 w-4" /> Formulario oficial</span>
                 <ExternalLink className="w-4 h-4" />
               </a>
             )}
@@ -66,7 +68,7 @@ export default function PortalCard({
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                <span>✅</span>
+                <CheckCircle className="w-3 h-3" />
                 <span>Sin certificado digital</span>
               </span>
             )}
@@ -82,7 +84,7 @@ export default function PortalCard({
           {notes && (
             <div className="bg-green-100 border border-green-200 rounded-lg p-3">
               <p className="text-sm text-green-800 leading-relaxed">
-                <span className="font-medium">ℹ️ Nota importante:</span> {notes}
+                <span className="font-medium inline-flex items-center gap-1"><Info className="h-4 w-4" /> Nota importante:</span> {notes}
               </p>
             </div>
           )}

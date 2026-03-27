@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { getCategoryDef, MessageSquare, Bell } from "@/lib/icons";
 
 export interface CaseData {
   id: string;
@@ -19,34 +20,12 @@ const STATUS_CONFIG = {
   archived: { label: "Archivado", bg: "bg-slate-100", text: "text-slate-500" },
 };
 
-const CATEGORY_ICONS: Record<string, string> = {
-  laboral: "💼",
-  vivienda: "🏠",
-  consumo: "🛒",
-  familia: "👨‍👩‍👧",
-  trafico: "🚗",
-  administrativo: "🏛️",
-  fiscal: "💰",
-  penal: "⚖️",
-  otro: "📋",
-};
-
-const CATEGORY_LABELS: Record<string, string> = {
-  laboral: "Laboral",
-  vivienda: "Vivienda",
-  consumo: "Consumo",
-  familia: "Familia",
-  trafico: "Tráfico",
-  administrativo: "Administrativo",
-  fiscal: "Fiscal",
-  penal: "Penal",
-  otro: "Otro",
-};
 
 export function CaseCard({ data }: { data: CaseData }) {
   const statusCfg = STATUS_CONFIG[data.status] ?? STATUS_CONFIG.open;
-  const icon = data.category ? (CATEGORY_ICONS[data.category] ?? "📋") : "📋";
-  const categoryLabel = data.category ? (CATEGORY_LABELS[data.category] ?? data.category) : null;
+  const catDef = getCategoryDef(data.category);
+  const CatIcon = catDef.icon;
+  const categoryLabel = data.category ? catDef.label : null;
   const date = new Date(data.created_at).toLocaleDateString("es-ES", {
     day: "numeric",
     month: "short",
@@ -55,10 +34,10 @@ export function CaseCard({ data }: { data: CaseData }) {
 
   return (
     <Link href={`/casos/${data.id}`} className="block group">
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-[var(--primary)] hover:shadow-md group-hover:translate-y-[-1px]">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200 hover:border-[var(--primary)] hover:shadow-md hover:-translate-y-0.5">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 text-xl">
-            {icon}
+          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${catDef.bg}`}>
+            <CatIcon className={`h-5 w-5 ${catDef.color}`} />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -86,12 +65,12 @@ export function CaseCard({ data }: { data: CaseData }) {
             <div className="mt-3 flex gap-4 text-xs text-slate-400">
               {(data.conversation_count ?? 0) > 0 && (
                 <span className="flex items-center gap-1">
-                  💬 {data.conversation_count} conversación{data.conversation_count !== 1 ? "es" : ""}
+                  <MessageSquare className="h-3.5 w-3.5" /> {data.conversation_count} conversación{data.conversation_count !== 1 ? "es" : ""}
                 </span>
               )}
               {(data.alert_count ?? 0) > 0 && (
                 <span className="flex items-center gap-1 text-amber-500">
-                  🔔 {data.alert_count} alerta{data.alert_count !== 1 ? "s" : ""}
+                  <Bell className="h-3.5 w-3.5" /> {data.alert_count} alerta{data.alert_count !== 1 ? "s" : ""}
                 </span>
               )}
               {(data.conversation_count ?? 0) === 0 && (data.alert_count ?? 0) === 0 && (

@@ -9,6 +9,7 @@ import { useAlerts } from "@/hooks/useAlerts";
 import { ChatWindow } from "./components/ChatWindow";
 import { RateLimitModal } from "./components/RateLimitModal";
 import { apiFetch } from "@/lib/api";
+import { X, Scale } from "@/lib/icons";
 import { AttachedFile } from "@/components/chat/FileUpload";
 
 type DetectedDeadline = {
@@ -496,9 +497,9 @@ function ChatPageContent() {
             className="absolute right-3 top-3 text-slate-400 hover:text-slate-600"
             aria-label="Cerrar"
           >
-            ✕
+            <X className="h-4 w-4" />
           </button>
-          <p className="text-lg">⚖️</p>
+          <Scale className="h-6 w-6 text-slate-700" />
           <p className="mt-1 text-sm font-semibold text-slate-800">
             ¿Sabes cuánto te deben?
           </p>

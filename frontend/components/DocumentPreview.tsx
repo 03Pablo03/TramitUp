@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { Eye, FileText } from "@/lib/icons";
 
 type Section = {
   type: string;
@@ -90,7 +91,7 @@ export function DocumentPreview({
           </>
         ) : (
           <>
-            👁️ Vista previa del documento
+            <Eye className="h-4 w-4" /> Vista previa del documento
           </>
         )}
       </button>
@@ -111,7 +112,7 @@ export function DocumentPreview({
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-200 bg-gradient-to-r from-violet-50 to-blue-50 px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-lg">📄</span>
+          <FileText className="h-5 w-5 text-violet-600" />
           <div>
             <h3 className="text-sm font-semibold text-slate-800">{preview.title}</h3>
             <p className="text-[10px] text-slate-500">Puedes editar el contenido antes de generar</p>

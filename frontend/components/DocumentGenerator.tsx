@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
+import { Bell, FileText, Star } from "@/lib/icons";
 import { DocumentDownloadCard } from "./DocumentDownloadCard";
 
 type DetectedDeadline = {
@@ -138,7 +139,7 @@ export function DocumentGenerator({
         />
         {alertsAdded > 0 && (
           <p className="flex items-center gap-1.5 text-xs text-green-600">
-            🔔 Se han añadido {alertsAdded} {alertsAdded === 1 ? "alerta" : "alertas"} al calendario automáticamente.
+            <Bell className="h-3.5 w-3.5" /> Se han añadido {alertsAdded} {alertsAdded === 1 ? "alerta" : "alertas"} al calendario automáticamente.
           </p>
         )}
       </div>
@@ -152,7 +153,7 @@ export function DocumentGenerator({
           onClick={handleGenerate}
           className="inline-flex items-center gap-2 rounded-lg border border-[#1A56DB] bg-[#1A56DB]/5 px-3 py-2 text-sm font-medium text-[#1A56DB] hover:bg-[#1A56DB]/15"
         >
-          📄 Generar modelo de escrito
+          <FileText className="h-4 w-4" /> Generar modelo de escrito
         </button>
       )}
       {state === "idle" && !hasAccess && (
@@ -160,7 +161,7 @@ export function DocumentGenerator({
           onClick={() => onAccessRequired?.()}
           className="inline-flex items-center gap-2 rounded-lg border-2 border-[#1A56DB] bg-[#1A56DB]/10 px-3 py-2 text-sm font-semibold text-[#1A56DB] hover:bg-[#1A56DB]/20"
         >
-          ★ Hazte PRO para generar modelo de escrito
+          <Star className="h-4 w-4" /> Hazte PRO para generar modelo de escrito
         </button>
       )}
       {state === "loading" && (

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ClipboardList, Circle, CheckCircle } from "@/lib/icons";
 
 interface Clausula {
   id: string;
@@ -25,7 +26,7 @@ const RISK_CONFIG = {
     bg: "bg-red-50",
     border: "border-red-300",
     badge: "bg-red-100 text-red-700 border border-red-300",
-    icon: "🔴",
+    iconColor: "text-red-500",
     dot: "bg-red-500",
   },
   medio: {
@@ -33,7 +34,7 @@ const RISK_CONFIG = {
     bg: "bg-amber-50",
     border: "border-amber-300",
     badge: "bg-amber-100 text-amber-700 border border-amber-300",
-    icon: "🟡",
+    iconColor: "text-amber-500",
     dot: "bg-amber-500",
   },
   bajo: {
@@ -41,7 +42,7 @@ const RISK_CONFIG = {
     bg: "bg-blue-50",
     border: "border-blue-200",
     badge: "bg-blue-100 text-blue-700 border border-blue-200",
-    icon: "🔵",
+    iconColor: "text-blue-500",
     dot: "bg-blue-400",
   },
 };
@@ -66,8 +67,8 @@ export function ContractAnalysisResult({ data }: { data: ContractAnalysisData })
       {/* Cabecera */}
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--primary)] to-blue-600 text-white text-xl">
-            📋
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--primary)] to-blue-600 text-white">
+            <ClipboardList className="h-6 w-6" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -114,7 +115,7 @@ export function ContractAnalysisResult({ data }: { data: ContractAnalysisData })
       {/* Sin problemas */}
       {data.clausulas.length === 0 && (
         <div className="rounded-2xl border border-green-200 bg-green-50 p-6 text-center">
-          <div className="text-4xl">✅</div>
+          <CheckCircle className="h-10 w-10 text-green-500" />
           <p className="mt-2 font-semibold text-green-800">El contrato parece correcto</p>
           <p className="mt-1 text-sm text-green-700">{data.recomendacion_general}</p>
         </div>
@@ -130,7 +131,7 @@ export function ContractAnalysisResult({ data }: { data: ContractAnalysisData })
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-2">
-                <span className="mt-0.5 text-lg">{cfg.icon}</span>
+                <Circle className={`mt-0.5 h-4 w-4 fill-current ${cfg.iconColor}`} />
                 <h3 className="font-semibold text-slate-900">{clausula.titulo}</h3>
               </div>
               <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold ${cfg.badge}`}>

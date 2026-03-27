@@ -14,8 +14,11 @@
   --white: #ffffff;
   --border: #e5e7eb;
   --warning: #f59e0b;
-  --font-display: var(--font-playfair), Georgia, serif;
-  --font-dm-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-display: var(--font-inter), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Dynamic background animations */

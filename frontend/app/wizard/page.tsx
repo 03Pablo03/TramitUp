@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ToolHeader } from "@/components/ToolHeader";
 import { apiFetch } from "@/lib/api";
+import { ClipboardList } from "@/lib/icons";
 
 type Template = {
   id: string;
@@ -52,8 +53,8 @@ export default function WizardGalleryPage() {
       <div className="mx-auto max-w-3xl px-4 py-8">
         {/* Hero */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-blue-600 text-3xl shadow-lg shadow-blue-500/20">
-            📋
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-blue-600 shadow-lg shadow-blue-500/20">
+            <ClipboardList className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-slate-800">
             ¿Qué trámite necesitas gestionar?

@@ -1,14 +1,16 @@
 "use client";
 
+import { Briefcase, Monitor, ClipboardList, Home, GraduationCap, Sunset, Lock } from "@/lib/icons";
+
 const SITUATIONS = [
-  { id: "empleado", label: "Empleado/a por cuenta ajena", icon: "👔" },
-  { id: "autonomo", label: "Autónomo/a", icon: "💻" },
-  { id: "desempleado", label: "Desempleado/a", icon: "📋" },
-  { id: "inquilino", label: "Inquilino/a", icon: "🏠" },
-  { id: "propietario", label: "Propietario/a", icon: "🏡" },
-  { id: "estudiante", label: "Estudiante", icon: "📚" },
-  { id: "jubilado", label: "Jubilado/a", icon: "🌅" },
-  { id: "otro", label: "Otro / Prefiero no decirlo", icon: "🔒" },
+  { id: "empleado", label: "Empleado/a por cuenta ajena", icon: Briefcase, iconColor: "text-blue-600", iconBg: "bg-blue-50" },
+  { id: "autonomo", label: "Autónomo/a", icon: Monitor, iconColor: "text-indigo-600", iconBg: "bg-indigo-50" },
+  { id: "desempleado", label: "Desempleado/a", icon: ClipboardList, iconColor: "text-amber-600", iconBg: "bg-amber-50" },
+  { id: "inquilino", label: "Inquilino/a", icon: Home, iconColor: "text-emerald-600", iconBg: "bg-emerald-50" },
+  { id: "propietario", label: "Propietario/a", icon: Home, iconColor: "text-teal-600", iconBg: "bg-teal-50" },
+  { id: "estudiante", label: "Estudiante", icon: GraduationCap, iconColor: "text-purple-600", iconBg: "bg-purple-50" },
+  { id: "jubilado", label: "Jubilado/a", icon: Sunset, iconColor: "text-orange-600", iconBg: "bg-orange-50" },
+  { id: "otro", label: "Otro / Prefiero no decirlo", icon: Lock, iconColor: "text-slate-500", iconBg: "bg-slate-100" },
 ];
 
 type OnboardingStep4Props = {
@@ -26,16 +28,21 @@ export function OnboardingStep4({ onNext, onBack }: OnboardingStep4Props) {
         </p>
       </div>
       <div className="grid grid-cols-2 gap-2">
-        {SITUATIONS.map((s) => (
-          <button
-            key={s.id}
-            onClick={() => onNext(s.id)}
-            className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left transition-all hover:border-[var(--primary)] hover:shadow-sm"
-          >
-            <span className="text-lg">{s.icon}</span>
-            <span className="text-xs font-medium text-slate-700">{s.label}</span>
-          </button>
-        ))}
+        {SITUATIONS.map((s) => {
+          const Icon = s.icon;
+          return (
+            <button
+              key={s.id}
+              onClick={() => onNext(s.id)}
+              className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left transition-all hover:border-[var(--primary)] hover:shadow-sm"
+            >
+              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.iconBg} shrink-0`}>
+                <Icon className={`h-5 w-5 ${s.iconColor}`} />
+              </div>
+              <span className="text-xs font-medium text-slate-700">{s.label}</span>
+            </button>
+          );
+        })}
       </div>
       <div className="flex gap-3">
         <button

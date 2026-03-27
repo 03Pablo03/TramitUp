@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Search, AlertTriangle } from "@/lib/icons";
 
 interface WizardStepAnalysisProps {
   analysis: string | null;
@@ -49,7 +50,7 @@ export function WizardStepAnalysis({ analysis, loading, onContinue }: WizardStep
     <div className="space-y-6">
       <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-1">
         <div className="flex items-center gap-2 px-4 py-2">
-          <span className="text-lg">🔍</span>
+          <Search className="h-5 w-5 text-blue-600" />
           <span className="text-sm font-semibold text-blue-800">Análisis de tu caso</span>
         </div>
       </div>
@@ -71,7 +72,7 @@ export function WizardStepAnalysis({ analysis, loading, onContinue }: WizardStep
 
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
         <div className="flex gap-3">
-          <span className="text-lg">⚠️</span>
+          <AlertTriangle className="h-5 w-5 shrink-0 text-amber-500" />
           <p className="text-xs text-amber-700">
             Este análisis es orientativo y no sustituye el asesoramiento de un profesional del derecho.
             Los importes y plazos son estimaciones basadas en la normativa vigente.

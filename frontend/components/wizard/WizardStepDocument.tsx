@@ -1,5 +1,7 @@
 "use client";
 
+import { FileText, Lightbulb } from "@/lib/icons";
+
 interface WizardStepDocumentProps {
   title: string;
   content: string | null;
@@ -45,7 +47,7 @@ export function WizardStepDocument({
       <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-1">
         <div className="flex items-center justify-between px-4 py-2">
           <div className="flex items-center gap-2">
-            <span className="text-lg">📄</span>
+            <FileText className="h-5 w-5 text-emerald-600" />
             <span className="text-sm font-semibold text-emerald-800">{title}</span>
           </div>
           <button
@@ -68,7 +70,7 @@ export function WizardStepDocument({
 
       <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
         <div className="flex gap-3">
-          <span className="text-lg">💡</span>
+          <Lightbulb className="h-5 w-5 shrink-0 text-blue-500" />
           <div className="text-xs text-blue-700 space-y-1">
             <p className="font-medium">Antes de enviar el documento:</p>
             <ul className="ml-4 list-disc space-y-0.5">

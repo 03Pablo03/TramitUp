@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { ToolHeader } from "@/components/ToolHeader";
+import { getCategoryDef, FileText, MessageSquare, ClipboardList, X, Check } from "@/lib/icons";
 
 const STATUS_LABELS: Record<string, string> = {
   open: "Abierto",
@@ -27,13 +28,9 @@ const STATUS_NEXT: Record<string, { label: string; value: string }[]> = {
   ],
 };
 
-const CATEGORY_ICONS: Record<string, string> = {
-  laboral: "💼", vivienda: "🏠", consumo: "🛒", familia: "👨‍👩‍👧",
-  trafico: "🚗", administrativo: "🏛️", fiscal: "💰", penal: "⚖️", otro: "📋",
-};
 
 const STEP_STATUS_STYLES: Record<string, { bg: string; text: string; icon: string }> = {
-  completed: { bg: "bg-emerald-500", text: "text-emerald-700", icon: "✓" },
+  completed: { bg: "bg-emerald-500", text: "text-emerald-700", icon: "check" },
   in_progress: { bg: "bg-blue-500", text: "text-blue-700", icon: "→" },
   pending: { bg: "bg-slate-300", text: "text-slate-500", icon: "" },
   skipped: { bg: "bg-slate-200", text: "text-slate-400", icon: "—" },
@@ -237,7 +234,8 @@ export default function CaseDetailPage() {
     );
   }
 
-  const icon = data.category ? (CATEGORY_ICONS[data.category] ?? "📋") : "📋";
+  const catDef = getCategoryDef(data.category);
+  const CatIcon = catDef.icon;
   const linkedConvIds = new Set(data.conversations.map((c) => c.id));
   const unlinkedConvs = allConvs.filter((c) => !linkedConvIds.has(c.id));
   const steps = data.workflow_steps || [];
@@ -248,7 +246,7 @@ export default function CaseDetailPage() {
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
       <ToolHeader
-        title={`${icon} ${data.title}`}
+        title={data.title}
         backHref="/casos"
         backLabel="Expedientes"
         actions={
@@ -264,7 +262,7 @@ export default function CaseDetailPage() {
                   onKeyDown={(e) => { if (e.key === "Enter") handleTitleSave(); if (e.key === "Escape") setEditingTitle(false); }}
                 />
                 <button onClick={handleTitleSave} className="text-xs text-[var(--primary)] font-semibold">Guardar</button>
-                <button onClick={() => setEditingTitle(false)} className="text-xs text-slate-400">✕</button>
+                <button onClick={() => setEditingTitle(false)} className="text-xs text-slate-400"><X className="h-4 w-4" /></button>
               </div>
             ) : (
               <button
@@ -351,7 +349,7 @@ export default function CaseDetailPage() {
                     {/* Timeline line + dot */}
                     <div className="flex flex-col items-center">
                       <div className={`flex h-7 w-7 items-center justify-center rounded-full ${style.bg} text-xs font-bold text-white shrink-0`}>
-                        {style.icon || step.step}
+                        {style.icon === "check" ? <Check className="h-3.5 w-3.5" /> : (style.icon || step.step)}
                       </div>
                       {!isLast && (
                         <div className={`w-0.5 flex-1 min-h-[24px] ${step.status === "completed" || step.status === "skipped" ? "bg-emerald-300" : "bg-slate-200"}`} />
@@ -457,7 +455,12 @@ export default function CaseDetailPage() {
               {data.summary && <p className="text-sm text-slate-600">{data.summary}</p>}
               <p className="text-xs text-slate-400">
                 Creado el {new Date(data.created_at).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}
-                {data.category && <span className="ml-2 capitalize">{icon} {data.category}{data.subcategory ? ` > ${data.subcategory}` : ""}</span>}
+                {data.category && (
+                  <span className="ml-2 inline-flex items-center gap-1 capitalize">
+                    <CatIcon className={`inline h-3.5 w-3.5 ${catDef.color}`} />
+                    {data.category}{data.subcategory ? ` > ${data.subcategory}` : ""}
+                  </span>
+                )}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -575,8 +578,8 @@ export default function CaseDetailPage() {
                   className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-base">
-                      📄
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+                      <FileText className="h-4 w-4 text-blue-600" />
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-slate-800">
@@ -637,7 +640,7 @@ export default function CaseDetailPage() {
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-semibold text-slate-900">Vincular conversación</h3>
-              <button onClick={() => setShowLinkModal(false)} className="text-slate-400 hover:text-slate-600">✕</button>
+              <button onClick={() => setShowLinkModal(false)} className="text-slate-400 hover:text-slate-600"><X className="h-4 w-4" /></button>
             </div>
 
             {unlinkedConvs.length === 0 ? (

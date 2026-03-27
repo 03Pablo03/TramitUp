@@ -6,6 +6,7 @@ import { LandingNav } from "../landing/components/LandingNav";
 import { Footer } from "../landing/components/Footer";
 import { useAuth } from "@/context/AuthContext";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { Check, X } from "@/lib/icons";
 
 const plans = [
   {
@@ -94,12 +95,12 @@ export default function PricingContent() {
               <ul className="mt-6 space-y-3">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-center gap-2 text-[var(--text-body)]">
-                    <span className="text-[var(--accent)]">✓</span> {f}
+                    <Check className="h-4 w-4 shrink-0 text-[var(--accent)]" /> {f}
                   </li>
                 ))}
                 {plan.notIncluded.map((f) => (
                   <li key={f} className="flex items-center gap-2 text-[var(--text-muted)]">
-                    <span>✗</span> {f}
+                    <X className="h-4 w-4 shrink-0" /> {f}
                   </li>
                 ))}
               </ul>

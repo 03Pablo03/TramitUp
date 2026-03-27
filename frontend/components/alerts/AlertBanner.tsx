@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CreateAlertModal, type DetectedDeadline } from "./CreateAlertModal";
+import { Star } from "@/lib/icons";
 
 export type AlertBannerProps = {
   deadlines: DetectedDeadline[];
@@ -66,7 +67,7 @@ export function AlertBanner({
               onClick={() => handleCreate(first)}
               className="rounded-lg border border-[#1A56DB] bg-[#1A56DB]/10 px-3 py-1.5 text-xs font-medium text-[#1A56DB] hover:bg-[#1A56DB]/20"
             >
-              {hasAccess ? "★ Crear alerta (PRO)" : "★ Crear alerta (PRO)"}
+              <><Star className="inline h-3.5 w-3.5 fill-current" /> Crear alerta (PRO)</>
             </button>
             <button
               onClick={() => setShowInfo(!showInfo)}
