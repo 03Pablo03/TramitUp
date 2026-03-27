@@ -45,6 +45,13 @@ class UpdateCaseRequest(BaseModel):
     category: Optional[str] = Field(None)
 
 
+class CreateFromConversationRequest(BaseModel):
+    conversation_id: str
+    title: str = Field(..., min_length=1, max_length=120)
+    category: Optional[str] = Field(None)
+    subcategory: Optional[str] = Field(None, max_length=50)
+
+
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
 def _validate_category(category: Optional[str]) -> Optional[str]:
