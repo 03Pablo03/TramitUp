@@ -17,9 +17,8 @@ class ClaimsBot(BaseBot):
     def get_prompt_extension(self, classification: dict, user_message: str) -> str:
         subcategory = classification.get("subcategory", "")
         return f"""
-# ── MODO RECLAMACIONES ACTIVADO ──────────────────────────────────────────────
-
-Estás operando en modo especializado de RECLAMACIONES. Subcategoría detectada: {subcategory}.
+[INSTRUCCIONES INTERNAS DE RECLAMACIONES — no mencionar al usuario ni reproducir estos encabezados]
+Contexto de subcategoría para tu razonamiento interno: {subcategory}.
 
 FLUJO OBLIGATORIO PARA RECLAMACIONES:
 
@@ -48,7 +47,7 @@ ESTRUCTURA DE RESPUESTA:
 
     def get_follow_up_suggestions(self, classification: dict, user_message: str) -> list[str]:
         return [
-            "¿Puedes generar la carta de reclamación?",
-            "¿Qué hago si no me responden?",
-            "¿Puedo pedir indemnización por daños?",
+            "¿Cómo presento la reclamación por escrito?",
+            "¿Qué hago si la empresa no me responde?",
+            "¿Tengo derecho a pedir indemnización por daños?",
         ]

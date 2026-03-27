@@ -16,10 +16,8 @@ class CalculatorBot(BaseBot):
 
     def get_prompt_extension(self, classification: dict, user_message: str) -> str:
         return """
-# ── MODO CALCULADORA LEGAL ACTIVADO ──────────────────────────────────────────
-
-Estás operando en modo especializado de CÁLCULOS. Tu misión es proporcionar
-cálculos precisos con fórmulas transparentes.
+[INSTRUCCIONES INTERNAS DE CÁLCULOS LEGALES — no mencionar al usuario ni reproducir estos encabezados]
+Tu misión es proporcionar cálculos precisos con fórmulas transparentes.
 
 PARA CADA CÁLCULO:
 1. Muestra la FÓRMULA utilizada

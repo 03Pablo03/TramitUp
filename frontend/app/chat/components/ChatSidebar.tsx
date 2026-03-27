@@ -81,8 +81,9 @@ export function ChatSidebar({
       <div className="flex h-14 items-center justify-between gap-2 border-b border-white/10 px-3">
         {!collapsed && (
           <Link
-            href="/chat"
+            href="/"
             className="pl-1 text-sm font-semibold text-white hover:opacity-70 transition-opacity"
+            title="Volver a inicio"
           >
             TramitUp
           </Link>

@@ -66,11 +66,18 @@ def extract_compensation_info(text: str) -> CompensationEstimate | None:
 
 
 def clean_response_text(text: str, final: bool = False) -> str:
-    """Remove special markers from response text for display."""
+    """Remove special markers and any leaked internal metadata from response text for display."""
+    # Markers de datos extraídos (portal, compensación, contactos) — procesados aparte
     text = re.sub(r'\[PORTAL_KEY:[^\]]+\]', '', text, flags=re.IGNORECASE)
     text = re.sub(r'\[COMPENSATION:[^\]]+\]', '', text, flags=re.IGNORECASE)
     text = re.sub(r'\[SPECIFIC_EMAIL:[^\]]+\]', '', text, flags=re.IGNORECASE)
     text = re.sub(r'\[SPECIFIC_URL:[^\]]+\]', '', text, flags=re.IGNORECASE)
+    # Markers de contexto/instrucciones internas que nunca deben llegar al usuario
+    text = re.sub(r'\[INSTRUCCIONES INTERNAS[^\]]*\]', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\[CONTEXTO INTERNO[^\]]*\]', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\[SISTEMA[^\]]*\]', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\[DEBUG[^\]]*\]', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'\[INFO[^\]]*\]', '', text, flags=re.IGNORECASE)
     # Solo hacer strip en el texto final completo, nunca en chunks individuales
     # (strip en chunks elimina espacios entre palabras al concatenar)
     if final:

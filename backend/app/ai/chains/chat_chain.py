@@ -8,7 +8,8 @@ def build_chat_prompt(rag_context: str, classification: dict | None) -> str:
     """Build system prompt with RAG context."""
     extra = ""
     if classification:
-        extra = f"\n\nClasificación del trámite actual: {classification.get('category', '')} / {classification.get('subcategory', '')}. Urgencia: {classification.get('urgency', 'media')}."
+        # Nota interna para el LLM — NO debe repetirse ni mencionarse en la respuesta al usuario
+        extra = f"\n\n[CONTEXTO INTERNO — no mencionar al usuario: categoría={classification.get('category', '')}, subcategoría={classification.get('subcategory', '')}, urgencia={classification.get('urgency', 'media')}]"
 
     has_documents = "DOCUMENTOS ADJUNTOS POR EL USUARIO" in (rag_context or "")
     doc_instruction = ""

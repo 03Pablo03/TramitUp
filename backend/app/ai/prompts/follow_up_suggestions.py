@@ -4,8 +4,9 @@ Prompt para generar sugerencias de seguimiento contextuales tras cada respuesta.
 
 FOLLOW_UP_PROMPT = """Eres un asistente legal español. Basándote en la conversación, genera exactamente 3 sugerencias de seguimiento que el usuario probablemente necesitará.
 
-CATEGORÍA detectada: {category}
-SUBCATEGORÍA: {subcategory}
+CONTEXTO de la conversación (solo para tu razonamiento interno):
+- Área legal: {category}
+- Subtema: {subcategory}
 
 ÚLTIMO MENSAJE DEL USUARIO:
 {user_message}
@@ -15,10 +16,12 @@ RESUMEN DE LA RESPUESTA DEL ASISTENTE (últimos 500 caracteres):
 
 REGLAS:
 - Genera exactamente 3 sugerencias, una por línea
-- Cada sugerencia debe ser una pregunta o acción concreta (máximo 60 caracteres)
+- Cada sugerencia debe ser una pregunta en primera persona, como si el usuario la hiciera (máximo 65 caracteres)
 - Deben ser el siguiente paso lógico que el usuario necesitaría
-- Usa lenguaje natural, directo y en primera persona ("¿Cuánto me corresponde?")
-- NO repitas lo que ya se ha respondido
+- Usa lenguaje natural y cercano, siempre como pregunta directa: "¿Cuánto me corresponde?", "¿Tengo derecho a reclamar?", "¿Cuánto tiempo tengo para actuar?"
+- NUNCA uses frases imperativas del tipo "Genera...", "Crea...", "Dame..."
+- NUNCA repitas lo que ya se ha respondido
+- NUNCA incluyas etiquetas técnicas, categorías internas ni nombres de funciones
 - Prioriza: cálculos > plazos > documentos > portales > información adicional
 
 FORMATO de respuesta (exactamente 3 líneas, sin numeración ni viñetas):
@@ -32,60 +35,60 @@ DEFAULT_SUGGESTIONS: dict[str, list[str]] = {
     "laboral": [
         "¿Cuánto me corresponde de indemnización?",
         "¿Qué plazos tengo para reclamar?",
-        "Genera una carta de reclamación",
+        "¿Cómo preparo la reclamación por escrito?",
     ],
     "vivienda": [
         "¿Es legal esta cláusula de mi contrato?",
-        "¿Cómo reclamo la fianza?",
-        "¿Qué plazos tengo?",
+        "¿Cómo reclamo la devolución de la fianza?",
+        "¿Qué plazos tengo para actuar?",
     ],
     # "reclamaciones" es la categoría que genera el clasificador para consumo
     "reclamaciones": [
-        "¿Cuánto me deben compensar?",
-        "¿Dónde presento la reclamación?",
-        "Genera una carta de reclamación",
+        "¿Cuánto me deben compensar exactamente?",
+        "¿Dónde y cómo presento la reclamación?",
+        "¿Qué pasa si la empresa no me contesta?",
     ],
     # Alias para compatibilidad si el clasificador genera "consumo"
     "consumo": [
-        "¿Cuánto me deben compensar?",
-        "¿Dónde presento la reclamación?",
-        "Genera una hoja de reclamaciones",
+        "¿Cuánto me deben compensar exactamente?",
+        "¿Dónde y cómo presento la reclamación?",
+        "¿Qué hago si no me responden?",
     ],
     "trafico": [
         "¿Puedo recurrir esta multa?",
-        "¿Qué plazo tengo para recurrir?",
-        "¿Qué documentos necesito?",
+        "¿Cuánto tiempo tengo para recurrir?",
+        "¿Qué documentos necesito para el recurso?",
     ],
     "fiscal": [
-        "¿Me afecta esta campaña fiscal?",
-        "¿Qué deducciones puedo aplicar?",
-        "¿Cuál es el plazo de presentación?",
+        "¿Me afecta esto en mi declaración de la renta?",
+        "¿Qué deducciones puedo aplicar en mi caso?",
+        "¿Cuál es el plazo límite de presentación?",
     ],
     "familia": [
-        "¿Qué documentos necesito?",
-        "¿Cuáles son mis derechos?",
-        "¿Qué plazos hay?",
+        "¿Qué documentos necesito reunir?",
+        "¿Cuáles son mis derechos en esta situación?",
+        "¿Qué plazos debo tener en cuenta?",
     ],
     # "burocracia_general" y "administrativo" son categorías equivalentes
     "administrativo": [
-        "¿Cómo presento un recurso?",
-        "¿Qué plazo tengo?",
-        "¿Necesito certificado digital?",
+        "¿Cómo presento un recurso administrativo?",
+        "¿Cuánto tiempo tengo para recurrir?",
+        "¿Necesito certificado digital para esto?",
     ],
     "burocracia_general": [
         "¿Cómo presento un recurso administrativo?",
-        "¿Qué plazo tengo para recurrir?",
-        "¿Necesito certificado digital?",
+        "¿Cuánto tiempo tengo para recurrir?",
+        "¿Necesito certificado digital para esto?",
     ],
     "penal": [
-        "¿Qué derechos tengo?",
-        "¿Necesito abogado?",
-        "¿Cuáles son los plazos?",
+        "¿Qué derechos tengo en esta situación?",
+        "¿Necesito contratar un abogado?",
+        "¿Cuáles son los plazos que debo respetar?",
     ],
 }
 
 GENERIC_SUGGESTIONS = [
-    "¿Qué plazos tengo?",
-    "¿Qué documentos necesito?",
-    "Crear un expediente para esto",
+    "¿Qué plazos tengo para actuar?",
+    "¿Qué documentos necesito reunir?",
+    "¿Cuál es el siguiente paso que debo dar?",
 ]

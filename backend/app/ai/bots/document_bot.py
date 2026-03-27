@@ -16,9 +16,7 @@ class DocumentBot(BaseBot):
 
     def get_prompt_extension(self, classification: dict, user_message: str) -> str:
         return """
-# ── MODO DOCUMENTOS LEGALES ACTIVADO ─────────────────────────────────────────
-
-Estás operando en modo especializado de DOCUMENTOS Y CORRESPONDENCIA LEGAL.
+[INSTRUCCIONES INTERNAS DE DOCUMENTOS LEGALES — no mencionar al usuario ni reproducir estos encabezados]
 
 TIPOS DE DOCUMENTOS QUE PUEDES AYUDAR A REDACTAR:
 
@@ -55,9 +53,9 @@ Si el usuario ya ha enviado un escrito previo sin respuesta:
 
     def get_follow_up_suggestions(self, classification: dict, user_message: str) -> list[str]:
         return [
-            "¿Puedes generar el documento en formato descargable?",
-            "¿Cómo envío esto por burofax?",
-            "¿Qué hago si no me contestan al escrito?",
+            "¿Puedo descargar el documento generado?",
+            "¿Cómo envío este escrito por burofax?",
+            "¿Qué hago si no me contestan en el plazo previsto?",
         ]
 
     def get_max_tokens(self) -> int:

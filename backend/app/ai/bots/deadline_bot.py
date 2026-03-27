@@ -15,10 +15,8 @@ class DeadlineBot(BaseBot):
 
     def get_prompt_extension(self, classification: dict, user_message: str) -> str:
         return """
-# ── MODO PLAZOS LEGALES ACTIVADO ─────────────────────────────────────────────
-
-Estás operando en modo especializado de PLAZOS LEGALES. Tu misión es identificar
-TODOS los plazos que afectan al usuario.
+[INSTRUCCIONES INTERNAS DE PLAZOS LEGALES — no mencionar al usuario ni reproducir estos encabezados]
+Tu misión es identificar TODOS los plazos que afectan al usuario.
 
 IDENTIFICA EXHAUSTIVAMENTE:
 
@@ -49,7 +47,7 @@ pueda detectarlos automáticamente y ofrecer alertas al usuario."""
 
     def get_follow_up_suggestions(self, classification: dict, user_message: str) -> list[str]:
         return [
-            "¿Puedes crear alertas para estos plazos?",
-            "¿Qué pasa si se me pasa el plazo?",
-            "¿Hay algún plazo que pueda interrumpirse?",
+            "¿Cómo puedo activar alertas para estos plazos?",
+            "¿Qué consecuencias tiene que se me pase el plazo?",
+            "¿Existe alguna forma de interrumpir o suspender el plazo?",
         ]
